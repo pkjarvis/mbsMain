@@ -1,0 +1,149 @@
+import React,{useRef,useState} from "react";
+
+const TheatreCard = () => {
+
+  const [visible,setVisible]=useState(false)
+    const pencilIconRef=useRef(null)
+    const deleteIconRef=useRef(null)
+  
+    const handleClick=()=>{
+        setVisible(!visible)  
+    } 
+
+  return (
+    <div>
+      <div className="card-container h-25 w-[100%]  px-6 pt-7  mb-5">
+        <div className="content flex items-center justify-start border-1 rounded-xl border-zinc-300 py-2">
+          <div className="left w-[4%] ml-2">
+            <img
+              src="../src/assets/pvr.png"
+              alt="MovieBg"
+              className="w-14 h-14 rounded-full"
+            />
+          </div>
+          <div className="right flex items-center justify-between w-[94%] ">
+            <div className="right-left flex flex-col   gap-0.2">
+              <span className="stream-tag flex items-center gap-2">
+                <p className=" text-2xl font-semibold">Cinepolis</p>
+                <p className="rounded-xl border-1 border-zinc-200 p-1 text-xs bg-green-200">
+                  Active
+                </p>
+                <p className="rounded-xl border-1 border-zinc-200 p-1 text-xs">
+                  Total Screen :3
+                </p>
+              </span>
+
+              <span>
+                <p className="font-semibold">Bandra, Mumbai</p>
+              </span>
+
+              <span className="tags flex gap-2 ">
+                <p className="font-sm text-[0.6vw] border-0.4 rounded-md bg-zinc-300 w-auto p-0.5 text-center">
+                  Godzilla X Kong
+                </p>
+                <p className="font-sm text-[0.6vw] border-0.4 rounded-md bg-zinc-300 w-auto p-0.5 text-center">
+                  Crew
+                </p>
+              </span>
+            </div>
+            <div className="right-right left-4 cursor-pointer">
+              <img
+                src="../src/assets/3Dot.png"
+                alt="3Dot"
+                className="w-1 h-4"
+                onClick={handleClick}
+              />
+
+              {
+              visible
+              ?
+              <div className="hidden-card w-[8.5vw] h-[5vw]  bg-white py-2 mt-[-2vw] px-4 rounded-xl gap-3  absolute right-[4vw] shadow-[0_4px_4px_0px_rgb(0,0,0,0.45)] border-1 border-gray-200">
+                 
+                  <span className="flex place-items-center gap-4 my-2 items-center hover:bg-zinc-700 rounded-sm p-0.6 hover:[&>.para]:text-white" 
+                   onMouseOver={()=>{
+                    if(pencilIconRef.current){
+                      pencilIconRef.current.src="../src/assets/Pencil.png"
+                    }
+                   }}
+                   onMouseLeave={()=>{
+                    if(pencilIconRef.current){
+                      pencilIconRef.current.src="../src/assets/DarkPencil.png"
+                    }
+                   }}
+                  >
+                    <img src="../src/assets/DarkPencil.png" alt="PencilIcon" className="w-[0.9vw] h-[0.9vw] pencil" ref={pencilIconRef} />
+                    <p className='text-md font-medium text-zinc-500 hover:text-white para' >Edit</p>
+                  </span>
+
+
+
+                   <span className='flex place-items-center gap-4 my-1 items-centerm hover:bg-zinc-700 rounded-sm p-0.6 text-white hover:[&>.para]:text-white' 
+                    onMouseOver={()=>{
+                      if(deleteIconRef.current){
+                        deleteIconRef.current.src="../src/assets/DeleteIcon.png"
+                      }
+                    }}
+                     onMouseLeave={()=>{
+                      if(deleteIconRef.current){
+                        deleteIconRef.current.src="../src/assets/DeleteDarkIcon.png"
+                      }
+                    }}
+                   >
+                    <img src="../src/assets/DeleteDarkIcon.png" alt="DeleteIcon" className="w-[0.9vw] h-[0.9vw]" ref={deleteIconRef} />
+                    <p className='text-md font-medium text-zinc-500 para '>Delete</p>
+                  </span>
+
+              </div>
+              :
+              <div className="hidden-card w-[8.5vw] h-[5vw]  bg-white py-2 mt-[-2vw] px-4 rounded-xl gap-3  absolute right-[4vw] shadow-[0_4px_4px_0px_rgb(0,0,0,0.45)] border-1 border-gray-200 hidden" >
+                 
+                  <span className="flex place-items-center gap-4 my-2 items-center hover:bg-zinc-700 rounded-sm p-0.6 hover:[&>.para]:text-white" 
+                   onMouseOver={()=>{
+                    if(pencilIconRef.current){
+                      pencilIconRef.current.src="../src/assets/Pencil.png"
+                    }
+                   }}
+                   onMouseLeave={()=>{
+                    if(pencilIconRef.current){
+                      pencilIconRef.current.src="../src/assets/DarkPencil.png"
+                    }
+                   }}
+                  >
+                    <img src="../src/assets/DarkPencil.png" alt="PencilIcon" className="w-[0.9vw] h-[0.9vw] pencil" ref={pencilIconRef} />
+                    <p className='text-md font-medium text-zinc-500 hover:text-white para' >Edit</p>
+                  </span>
+
+
+
+                   <span className='flex place-items-center gap-4 my-1 items-centerm hover:bg-zinc-700 rounded-sm p-0.6 text-white hover:[&>.para]:text-white' 
+                    onMouseOver={()=>{
+                      if(deleteIconRef.current){
+                        deleteIconRef.current.src="../src/assets/DeleteIcon.png"
+                      }
+                    }}
+                     onMouseLeave={()=>{
+                      if(deleteIconRef.current){
+                        deleteIconRef.current.src="../src/assets/DeleteDarkIcon.png"
+                      }
+                    }}
+                   >
+                    <img src="../src/assets/DeleteDarkIcon.png" alt="DeleteIcon" className="w-[0.9vw] h-[0.9vw]" ref={deleteIconRef} />
+                    <p className='text-md font-medium text-zinc-500 para '>Delete</p>
+                  </span>
+
+
+              </div>
+              }
+              
+              
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default TheatreCard;
