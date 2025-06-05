@@ -3,13 +3,14 @@
 package controllers
 
 import (
-    "go-auth/models"
-    "time"
+	"go-auth/models"
+	
+	"time"
 
-    "go-auth/utils"
+	"go-auth/utils"
 
-    "github.com/dgrijalva/jwt-go"
-    "github.com/gin-gonic/gin"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
 )
 
 // The string "my_secret_key" is just an example and should be replaced with a secret key of sufficient length and complexity in a real-world scenario.
@@ -101,6 +102,7 @@ var jwtKey = []byte("DavidGoggins@123456789")
       models.DB.Create(&user)
 
       c.JSON(200, gin.H{"success": "user created"})
+      
   }
 
 

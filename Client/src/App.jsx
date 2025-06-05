@@ -10,6 +10,8 @@ import Shows from './pages/Shows'
 import AddNewMovie from './pages/AddNewMovie'
 import AddNewTheatre from './pages/AddNewTheatre'
 import AddNewShowtime from './pages/AddNewShowtime'
+import SignUp from './pages/SignUp'
+import Root from './pages/Root'
 
 function App() {
  
@@ -18,7 +20,9 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Login/>}/>
+          <Route path="/" element={<Root/>}/>
+          <Route path="/signup" element={<SignUp/>}/>
+          <Route path="/login" element={<Login/>}/>
           <Route path="/logout" element={<Logout/>}/>
           <Route path="/dashboard" element={<Dashboard/>}/>
           <Route path="/movie" element={<MovieManagement/>}/>
@@ -27,6 +31,7 @@ function App() {
           <Route path="/addnewmovie" element={<AddNewMovie/>}/>
           <Route path="/addnewtheatre" element={<AddNewTheatre/>}/>
           <Route path="/addnewshows" element={<AddNewShowtime/>}/>
+
           
         </Routes>
       </BrowserRouter>

@@ -1,20 +1,25 @@
-// PATH: go-auth/main.go
-
 package main
 
 import (
-    "go-auth/models"
-    "go-auth/routes"
-    "log"
-    "os"
+	// "go-auth/middlewares"
+	"go-auth/models"
+	"go-auth/routes"
 
-    "github.com/gin-gonic/gin"
-    "github.com/joho/godotenv"
+	"log"
+	"os"
+
+	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
+    "github.com/gin-contrib/cors"
+	// "github.com/rs/cors"
 )
 
 func main() {
     // Create a new gin instance
     r := gin.Default()
+
+    // cors middleware
+    r.Use(cors.Default())
 
     // Load .env file and Create a new connection to the database
     err := godotenv.Load()
@@ -32,6 +37,8 @@ func main() {
 
     // Initialize DB
     models.InitDB(config)
+
+    
 
     // Load the routes
     routes.AuthRoutes(r)

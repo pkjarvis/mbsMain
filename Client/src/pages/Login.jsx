@@ -1,28 +1,127 @@
-import React from "react";
-import Blocks from "../components/Blocks";
-import GoogleLogo from "../assets/GoogleLogo.png";
-import EmailLogo from "../assets/email.png"
+import React, { useState } from "react";
+
+import { Link, useNavigate } from "react-router-dom";
+import PasswordInput from "../components/PasswordInput";
+
+import { isEmailValid } from "../utils/helper.js";
+import axiosInstance from "../utils/axiosInstance.js"
 
 
 const Login = () => {
+
+
+  const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState(null);
+  
+    const navigate = useNavigate();
+  
+    const handleSignup = async (e) => {
+      e.preventDefault();
+      // if (!name) {
+      //   setError("Please enter your name");
+      //   return;
+      // }
+      if (!isEmailValid(email)) {
+        setError("Please enter a valid email address.");
+        return;
+      }
+      if (!password) {
+        setError("Please enter the password");
+        return;
+      }
+      setError("");
+      // signup api call 
+  
+      try {
+        // posting login method to axiosInstance
+        const response = await axiosInstance.post("/login", {
+          
+          email: email,
+          password: password,
+        });
+  
+       
+        navigate("/dashboard");
+  
+        // handle successful register
+        // if (response.data && response.data.accessToken) {
+        //   localStorage.setItem("token", response.data.accessToken);
+        //   console.log("1");
+        //   console.log("2");
+        //   return;
+        // }
+  
+        // if (response.data && response.data.error) {
+        //   setError(response.data.message);
+        //   return;
+        // }
+      } catch (e) {
+        // handle error while login
+        console.log(e);
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.message
+        ) {
+          setError(error.response.data.message);
+        } else {
+          setError("An unexpected error occurred. Please try again!");
+        }
+      }
+    };
+  
+  
+  
+  
+
+
   return (
-    <>
-      <div className="container h-[100vh] max-w-[100%] bg-white place-items-center">
-        
-        <div className="content  h-[90%] pt-12 w-[90%] flex justify-between gap-[9rem] mx-auto my-auto">
-          <div className="left w-[50%] flex flex-col gap-7">
-            <img src="../src/assets/Logo.png" alt="Logo" className="w-[4rem]"/>
-            <img src="../src/assets/Welcome.png" alt="Welcome" className="w-[16rem] mx-auto mt-22 mb-6" />
-            <Blocks icon={GoogleLogo} name="Google" />
-            <Blocks icon={EmailLogo} name="Email" />
-            <p className="text-gray-600 mt-[19rem] mx-auto">I agree to the Terms & Conditions & Privacy Policy</p>
-          </div>
-          <div className="right w-[50%]">
-            <img src="../src/assets/Bg.png" alt="BackgroundImg" className="w-[100%] h-[100%]"/>
-          </div>
+    <div className="flex items-center justify-center mt-[9vw] font-[inter]">
+        <div className="w-[22vw] border-1 border-zinc-300  rounded bg-white px-7 py-10 items-center shadow-lg">
+          <form 
+          onSubmit={handleSignup}
+          className="flex flex-col gap-2"
+          >
+            <h4 className="text-2xl mb-7 mx-auto">Login</h4>
+            {/* <input
+              type="text"
+              placeholder="Name"
+              className="w-[100%] border-1 border-zinc-300 outline-none px-5 py-2 rounded-sm"
+              // value={name}
+              // onChange={(e) => setName(e.target.value)}
+              
+            /> */}
+
+            <input
+              type="email"
+              placeholder="Email"
+              className="w-[100%] border-1 border-zinc-300 outline-none px-5 py-2 rounded-sm"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+
+            <PasswordInput
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+
+            {error && <p className="text-red-500 text-xs pb-1">{error}</p>}
+
+            <button type="submit" className="bg-blue-500 w-[50%] p-2 rounded-sm text-md font-light items-center  mx-auto cursor-pointer">
+              Login
+            </button>
+            <p className="text-sm text-center mt-4">
+              Already have an account?{" "}
+              <Link to="/signup" className="font-medium text-primary underline">
+                SignUp
+              </Link>
+            </p>
+          </form>
         </div>
       </div>
-    </>
+   
   );
 };
 

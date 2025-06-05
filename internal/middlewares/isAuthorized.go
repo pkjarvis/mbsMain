@@ -4,9 +4,10 @@ package middlewares
 
 import (
 	"go-auth/utils"
-
+	// "github.com/rs/cors"
 	"github.com/gin-gonic/gin"
 )
+
 
 func IsAuthorized() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -30,3 +31,20 @@ func IsAuthorized() gin.HandlerFunc {
 		c.Next()
 	}
 }
+
+
+// func corsMiddleware() gin.HandlerFunc {
+//     return func(c *gin.Context) {
+//         c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+//         c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+//         c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+
+//         if c.Request.Method == "OPTIONS" {
+//             c.AbortWithStatus(204)
+//             return
+//         }
+
+//         c.Next()
+//     }
+// }
+
