@@ -6,7 +6,7 @@ const AddNewShowtime = () => {
   return (
     <div>
         <div className="showtime-container">
-            <Navbar para="Find showtimes by Movie, Theatre, Date, etc."/>
+            <Navbar para="Find showtimes by Movie, Theatre, Date, etc." />
             <span className="flex items-center gap-2 mx-6 ">
             <a href="http://localhost:5173/dashboard"><p className="text-zinc-400 font-light text-md">Home /</p></a>
             <a href="http://localhost:5173/shows"><p className="text-zinc-400 font-light text-md">Showtime Scheduling /</p></a>

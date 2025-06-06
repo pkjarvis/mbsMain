@@ -1,10 +1,10 @@
-// PATH: go-auth/controllers/auth.go
-
 package controllers
 
 import (
 	"go-auth/models"
-	
+	// "net/http"
+	// "os"
+
 	"time"
 
 	"go-auth/utils"
@@ -13,10 +13,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// The string "my_secret_key" is just an example and should be replaced with a secret key of sufficient length and complexity in a real-world scenario.
+
 var jwtKey = []byte("DavidGoggins@123456789")
 
-  // PATH: go-auth/controllers/auth.go
 
   func Login(c *gin.Context) {
 
@@ -62,17 +61,26 @@ var jwtKey = []byte("DavidGoggins@123456789")
           return
       }
 
-      c.SetCookie("token", tokenString, int(expirationTime.Unix()), "/", "localhost", false, true)
-      c.JSON(200, gin.H{"success": "user logged in"})
-
-	  
+    //   c.SetCookie("token", tokenString, int(expirationTime.Unix()), "/", "localhost", false, true)
 
 
+//     http.SetCookie(w, &http.Cookie{
+//     Name:     "token",
+//     Value:    yourToken,
+//     Path:     "/",
+//     HttpOnly: true,
+//     Secure:   true, // <-- If your site is not served over HTTPS, the browser will reject this cookie
+//     SameSite: http.SameSiteLaxMode, // or SameSiteNoneMode for cross-site
+// })
 
+      c.JSON(200,gin.H{"token":tokenString,
+      "msg":"logged in ",
+    })
+      
 
   }
 
-    // PATH: go-auth/controllers/auth.go
+
 
   func Signup(c *gin.Context) {
       var user models.User
@@ -102,11 +110,10 @@ var jwtKey = []byte("DavidGoggins@123456789")
       models.DB.Create(&user)
 
       c.JSON(200, gin.H{"success": "user created"})
-      
   }
 
 
-    // PATH: go-auth/controllers/auth.go
+
 
   func Home(c *gin.Context) {
 
@@ -133,8 +140,6 @@ var jwtKey = []byte("DavidGoggins@123456789")
   }
 
 
-    // PATH: go-auth/controllers/auth.go
-
   func Premium(c *gin.Context) {
 
       cookie, err := c.Cookie("token")
@@ -159,8 +164,6 @@ var jwtKey = []byte("DavidGoggins@123456789")
       c.JSON(200, gin.H{"success": "premium page", "role": claims.Role})
   }
 
-
-    // PATH: go-auth/controllers/auth.go
 
   func Logout(c *gin.Context) {
       c.SetCookie("token", "", -1, "/", "localhost", false, true)

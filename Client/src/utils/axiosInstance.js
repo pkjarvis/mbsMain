@@ -1,27 +1,26 @@
 import axios from "axios"
+// import Cookies from "js-cookie"
+
 
 const axiosInstance=axios.create({
     baseURL:"http://localhost:8080/",
     timeout:1000,
-
+    credentials: "include",
+    body:JSON.stringify({}),
     headers: {
     "Content-type": "application/json",
   },
 })
 
-
-axiosInstance.interceptors.request.use(
-  (config) => {
-    const accessToken = localStorage.getItem("token");
-    console.log(accessToken);
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
-    }
-    return config;
-  },
+axiosInstance.interceptors.response.use(
+  (response) => response,
   (error) => {
-    return Promise.reject(error);
-  }
-);
+    if (error.response && error.response.status === 401) {
+      console.log('call the refresh token api here')
+      // Handle 401 error, e.g., redirect to login or refresh token
+    }
+    return Promise.reject(error)
+  },
+)
 
 export default axiosInstance;

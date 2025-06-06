@@ -13,9 +13,11 @@ import AddNewShowtime from './pages/AddNewShowtime'
 import SignUp from './pages/SignUp'
 import Root from './pages/Root'
 
+
+
+
 function App() {
  
-
   return (
     <>
       <BrowserRouter>

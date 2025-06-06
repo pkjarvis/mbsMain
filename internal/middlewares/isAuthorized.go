@@ -3,48 +3,49 @@
 package middlewares
 
 import (
-	"go-auth/utils"
-	// "github.com/rs/cors"
-	"github.com/gin-gonic/gin"
+    "go-auth/utils"
+    "net/http"
+    "github.com/gin-gonic/gin"
 )
 
-
 func IsAuthorized() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		cookie, err := c.Cookie("token")
+    return func(c *gin.Context) {
+        cookie, err := c.Cookie("token")               
 
-		if err != nil {
-			c.JSON(401, gin.H{"error": "unauthorized"})
-			c.Abort()
-			return
-		}
+        if err != nil {
+            c.JSON(401, gin.H{"error": "unauthorized"})
+            c.Abort()
+            return
+        }
 
-		claims, err := utils.ParseToken(cookie)
+        claims, err := utils.ParseToken(cookie)
 
-		if err != nil {
-			c.JSON(401, gin.H{"error": "unauthorized"})
-			c.Abort()
-			return
-		}
+        if err != nil {
+            c.JSON(401, gin.H{"error": "unauthorized"})
+            c.Abort()
+            return
+        }
 
-		c.Set("admin", claims.Role)
-		c.Next()
-	}
+        c.Set("role", claims.Role)
+        c.Next()
+    }
+}
+
+func CORSMiddleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173") // your frontend origin
+        w.Header().Set("Access-Control-Allow-Credentials", "true")
+        w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+        w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+
+        if r.Method == "OPTIONS" {
+            w.WriteHeader(http.StatusOK)
+            return
+        }
+
+        next.ServeHTTP(w, r)
+    })
 }
 
 
-// func corsMiddleware() gin.HandlerFunc {
-//     return func(c *gin.Context) {
-//         c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-//         c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
-//         c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
-
-//         if c.Request.Method == "OPTIONS" {
-//             c.AbortWithStatus(204)
-//             return
-//         }
-
-//         c.Next()
-//     }
-// }
 

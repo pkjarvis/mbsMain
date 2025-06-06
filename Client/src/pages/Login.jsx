@@ -10,7 +10,7 @@ import axiosInstance from "../utils/axiosInstance.js"
 const Login = () => {
 
 
-  const [name, setName] = useState("");
+  // const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
@@ -43,20 +43,22 @@ const Login = () => {
         });
   
        
-        navigate("/dashboard");
+        
   
         // handle successful register
-        // if (response.data && response.data.accessToken) {
-        //   localStorage.setItem("token", response.data.accessToken);
-        //   console.log("1");
-        //   console.log("2");
-        //   return;
-        // }
+        if (response.data && response.data.token) {
+          console.log(response)
+          localStorage.setItem("token", response.data.token);
+          console.log("1");
+          navigate("/dashboard");
+          console.log("2");
+          return;
+        }
   
-        // if (response.data && response.data.error) {
-        //   setError(response.data.message);
-        //   return;
-        // }
+        if (response.data && response.data.error) {
+          setError(response.data.message);
+          return;
+        }
       } catch (e) {
         // handle error while login
         console.log(e);

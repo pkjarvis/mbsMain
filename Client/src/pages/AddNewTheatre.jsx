@@ -8,7 +8,7 @@ const AddNewTheatre = () => {
   return (
     <div>
         <div className="theatre-info">
-            <Navbar para="Find showtimes by Movie, Theatre, Date, etc." />
+            <Navbar para="Find showtimes by Movie, Theatre, Date, etc."  />
             <span className="flex items-center gap-2 mx-6 ">
             <a href="http://localhost:5173/dashboard"><p className="text-zinc-400 font-light text-md">Home /</p></a>
             <a href="http://localhost:5173/theatre"><p className="text-zinc-400 font-light text-md">Theatre Management /</p></a>

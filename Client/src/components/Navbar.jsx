@@ -4,7 +4,7 @@ const Navbar = (props) => {
   return (
     <div>
         <div className="navbar  flex items-center justify-start my-2 ">
-          <img src="../src/assets/Logo.png" alt="Logo" className="w-12 h-12 mx-6 "/>
+          <a href="http://localhost:5173/dashboard"><img src="../src/assets/Logo.png" alt="Logo" className="w-12 h-12 mx-6 cursor-pointer"/></a>
           {/* <span className='searchBar flex items-center  justify-between w-[50vw] border-1 rounded-2xl px-3 py-2  border-gray-400'>
             <p className='text-gray-500 font-[inter] font-normal leading-1'>{props.para}</p>
             <img src="../src/assets/searchIcon.png" alt="searchIcon" className="w-[1.2vw] h-[1.2vw]"/>
