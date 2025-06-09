@@ -1,43 +1,46 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Navbar from '../components/Navbar'
 import AddButton from '../components/AddButton'
 import MovieCard from '../components/MovieCard'
 import MainHeader from '../components/MainHeader'
+import { MoviesContext } from '../context/MovieContext'
 
 
 const MovieManagement = () => {
+
+    const {movies}=useContext(MoviesContext);
+    // if(!movies.length) return <p>No movies added yet.</p>
+
   return (
     <div>
-        {/* <div className="movie-container font-[Inter]">
-            <Navbar para="Find showtimes by Movie, Theatre, Date, etc." />
-            <span className="flex items-center justify-start ml-6">
-                <a href="http://localhost:5173/dashboard" className='cursor-pointer font-light '>Home / </a>
-                <a href="http://localhost:5173/movie" className='cursor-pointer'>Movie Management</a>
-            </span>
-            <span className="flex items-center justify-between mx-6">
-                <h2 className="font-bold text-2xl">Manage Movies</h2>
-                <AddButton title="+Add Movies" /> 
-            </span>
-            <MovieCard/>
-            <MovieCard/>
-            <MovieCard/>
-            <MovieCard/>
-            <MovieCard/>
-            <MovieCard/>
-            <MovieCard/>
-            
-
-        </div> */}
         <div>
 
         <MainHeader title="Manage Movies" btncontent="+Add New Movie" headerlink="Movie Management" btnlink="http://localhost:5173/addnewmovie"/>
+        {
+            movies.map((m)=>(
+                <MovieCard
+                    key={m.id}
+                    id={m.id}
+                    movie={m.movie}
+                    description={m.description}
+                    startDate={m.startDate}
+                    endDate={m.endDate}
+                    genre={m.genre}
+                    language={m.language}
+                    status={m.status}
+                    file={m.file}
+
+                
+                />
+            ))
+        }
+            {/* <MovieCard/>
             <MovieCard/>
             <MovieCard/>
             <MovieCard/>
             <MovieCard/>
             <MovieCard/>
-            <MovieCard/>
-            <MovieCard/>
+            <MovieCard/>     */}
         </div>
     </div>
   )

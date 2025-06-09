@@ -1,136 +1,221 @@
-import React, { useRef, useState } from 'react'
+import React, { useContext, useRef, useState } from "react";
+import { MoviesContext } from "../context/MovieContext";
+import { useNavigate } from "react-router-dom";
 
+const MovieCard = ({
+  id,
+  movie,
+  description,
+  language,
+  genre,
+  startDate,
+  endDate,
+  file,
+  status,
+}) => {
+  const navigate = useNavigate("");
 
+  const [visible, setVisible] = useState(false);
+  const pencilIconRef = useRef(null);
+  const deleteIconRef = useRef(null);
 
-const MovieCard = () => {
+  const handleClick = () => {
+    setVisible(!visible);
+  };
 
-  const [visible,setVisible]=useState(false)
-  const pencilIconRef=useRef(null)
-  const deleteIconRef=useRef(null)
+  const { deleteMovie, setEditMovie, updateMovie } = useContext(MoviesContext);
 
-  const handleClick=()=>{
-      setVisible(!visible)  
-  } 
-    
+  const handleDelete = () => {
+    deleteMovie(id);
+  };
 
-  
+  const handleUpdate = () => {
+    // saving move to context for pre-filling form data
+    setEditMovie({
+      id,
+      movie,
+      description,
+      genre,
+      language,
+      file,
+      startDate,
+      endDate,
+      status,
+    });
+    navigate("/addnewmovie");
+  };
+
   return (
     <div>
       <div className="card-container h-22 w-[100%] mx-auto p-6 mb-6">
-          <div className="content flex items-center justify-start border-1 rounded-xl border-zinc-300 ">
-              <div className="left w-[6.2%]">
-            <img src="../src/assets/Inception.png" alt="MovieBg" className="w-23 h-23 rounded-l-md" />
+        <div className="content flex items-center justify-start border-1 rounded-xl border-zinc-300 ">
+          <div className="left w-[6.2%]">
+            <img
+              src={file}
+              alt="MovieBg"
+              className="w-23 h-23 rounded-l-md"
+            />
           </div>
           <div className="right flex items-center justify-between w-[92%] my-1">
             <div className="right-left flex flex-col">
               <span className="stream-tag flex items-center">
-                <p className='bg-green-300 rounded-xl  p-1 text-xs'>Now Showing</p>
-                <p className='rounded-xl border-1 border-zinc-200 p-1 text-xs'>Show Added :5</p>
-
+                <p className="bg-green-300 rounded-xl  p-1 text-xs">
+                  {status}
+                </p>
+                <p className="rounded-xl border-1 border-zinc-200 p-1 text-xs">
+                  {status}
+                </p>
               </span>
-              <p className="font-semibold">Harry Potter Season 3</p>
-              <span className='tags flex gap-2'>
-                <p className="font-thin text-xs border-0.4 rounded-md bg-zinc-300 w-auto p-0.7 text-center">English</p>
-                <p className="font-thin text-xs border-0.4 rounded-md bg-zinc-300 w-auto p-0.7 text-center">Hindi</p>
-                <p className="font-thin text-xs border-0.4 rounded-md bg-zinc-300 w-auto p-0.7 text-center">Spanish</p>
-                <p className="font-thin text-xs border-0.4 rounded-md bg-zinc-300 w-auto p-0.7 text-center">German</p>
-                <p className="font-thin text-xs border-0.4 rounded-md bg-zinc-300 w-auto p-0.7 text-center">French</p>
-                <p className="font-thin text-xs border-0.4 rounded-md bg-zinc-300 w-auto p-0.7 text-center">Sanskrit</p>
-                <p className="font-thin text-xs border-0.4 rounded-md bg-zinc-300 w-auto p-0.7 text-center">Dutch</p>
+              <p className="font-semibold">{movie}</p>
+              <span className="tags flex gap-2">
+                <p className="font-thin text-xs border-0.4 rounded-md bg-zinc-300 w-auto p-0.7 text-center">
+                  {language}
+                </p>
+                <p className="font-thin text-xs border-0.4 rounded-md bg-zinc-300 w-auto p-0.7 text-center">
+                  {language}
+                </p>
+                <p className="font-thin text-xs border-0.4 rounded-md bg-zinc-300 w-auto p-0.7 text-center">
+                  {language}
+                </p>
+                <p className="font-thin text-xs border-0.4 rounded-md bg-zinc-300 w-auto p-0.7 text-center">
+                  {language}
+                </p>
+                <p className="font-thin text-xs border-0.4 rounded-md bg-zinc-300 w-auto p-0.7 text-center">
+                  {language}
+                </p>
+                <p className="font-thin text-xs border-0.4 rounded-md bg-zinc-300 w-auto p-0.7 text-center">
+                  {language}
+                </p>
+                <p className="font-thin text-xs border-0.4 rounded-md bg-zinc-300 w-auto p-0.7 text-center">
+                  {language}
+                </p>
               </span>
-              <p className="font-light text-sm">Thriller</p>
+              <p className="font-light text-sm">{genre}</p>
             </div>
             <div className="right-right">
-              <img src="../src/assets/3Dot.png" alt="3Dot" className="w-1.2 h-4" onClick={handleClick}/>
-              {
-              visible
-              ?
-              <div className="hidden-card w-[8.5vw] h-[5vw]  bg-white py-2 mt-[-2vw] px-4 rounded-xl gap-3  absolute right-[4vw] shadow-[0_4px_4px_0px_rgb(0,0,0,0.45)] border-1 border-gray-200">
-                 
-                  <span className="flex place-items-center gap-4 my-2 items-center hover:bg-zinc-700 rounded-sm p-0.6 hover:[&>.para]:text-white" 
-                   onMouseOver={()=>{
-                    if(pencilIconRef.current){
-                      pencilIconRef.current.src="../src/assets/Pencil.png"
-                    }
-                   }}
-                   onMouseLeave={()=>{
-                    if(pencilIconRef.current){
-                      pencilIconRef.current.src="../src/assets/DarkPencil.png"
-                    }
-                   }}
+              <img
+                src="../src/assets/3Dot.png"
+                alt="3Dot"
+                className="w-1.2 h-4"
+                onClick={handleClick}
+              />
+              {visible ? (
+                <div className="hidden-card w-[8.5vw] h-[5vw]  bg-white py-2 mt-[-2vw] px-4 rounded-xl gap-3  absolute right-[4vw] shadow-[0_4px_4px_0px_rgb(0,0,0,0.45)] border-1 border-gray-200">
+                  <span
+                    className="flex place-items-center gap-4 my-2 items-center hover:bg-zinc-700 rounded-sm p-0.6 hover:[&>.para]:text-white"
+                    onMouseOver={() => {
+                      if (pencilIconRef.current) {
+                        pencilIconRef.current.src = "../src/assets/Pencil.png";
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      if (pencilIconRef.current) {
+                        pencilIconRef.current.src =
+                          "../src/assets/DarkPencil.png";
+                      }
+                    }}
+                    onClick={handleUpdate}
                   >
-                    <img src="../src/assets/DarkPencil.png" alt="PencilIcon" className="w-[0.9vw] h-[0.9vw] pencil" ref={pencilIconRef} />
-                    <p className='text-md font-medium text-zinc-500 hover:text-white para' >Edit</p>
+                    <img
+                      src="../src/assets/DarkPencil.png"
+                      alt="PencilIcon"
+                      className="w-[0.9vw] h-[0.9vw] pencil"
+                      ref={pencilIconRef}
+                    />
+                    <p className="text-md font-medium text-zinc-500 hover:text-white para">
+                      Edit
+                    </p>
                   </span>
 
-
-
-                   <span className='flex place-items-center gap-4 my-1 items-centerm hover:bg-zinc-700 rounded-sm p-0.6 text-white hover:[&>.para]:text-white' 
-                    onMouseOver={()=>{
-                      if(deleteIconRef.current){
-                        deleteIconRef.current.src="../src/assets/DeleteIcon.png"
+                  <span
+                    className="flex place-items-center gap-4 my-1 items-centerm hover:bg-zinc-700 rounded-sm p-0.6 text-white hover:[&>.para]:text-white"
+                    onMouseOver={() => {
+                      if (deleteIconRef.current) {
+                        deleteIconRef.current.src =
+                          "../src/assets/DeleteIcon.png";
                       }
                     }}
-                     onMouseLeave={()=>{
-                      if(deleteIconRef.current){
-                        deleteIconRef.current.src="../src/assets/DeleteDarkIcon.png"
+                    onMouseLeave={() => {
+                      if (deleteIconRef.current) {
+                        deleteIconRef.current.src =
+                          "../src/assets/DeleteDarkIcon.png";
                       }
                     }}
-                   >
-                    <img src="../src/assets/DeleteDarkIcon.png" alt="DeleteIcon" className="w-[0.9vw] h-[0.9vw]" ref={deleteIconRef} />
-                    <p className='text-md font-medium text-zinc-500 para '>Delete</p>
-                  </span>
-
-              </div>
-              :
-              <div className="hidden-card w-[8.5vw] h-[5vw]  bg-white py-2 mt-[-2vw] px-4 rounded-xl gap-3  absolute right-[4vw] shadow-[0_4px_4px_0px_rgb(0,0,0,0.45)] border-1 border-gray-200 hidden" >
-                 
-                  <span className="flex place-items-center gap-4 my-2 items-center hover:bg-zinc-700 rounded-sm p-0.6 hover:[&>.para]:text-white" 
-                   onMouseOver={()=>{
-                    if(pencilIconRef.current){
-                      pencilIconRef.current.src="../src/assets/Pencil.png"
-                    }
-                   }}
-                   onMouseLeave={()=>{
-                    if(pencilIconRef.current){
-                      pencilIconRef.current.src="../src/assets/DarkPencil.png"
-                    }
-                   }}
+                    onClick={handleDelete}
                   >
-                    <img src="../src/assets/DarkPencil.png" alt="PencilIcon" className="w-[0.9vw] h-[0.9vw] pencil" ref={pencilIconRef} />
-                    <p className='text-md font-medium text-zinc-500 hover:text-white para' >Edit</p>
+                    <img
+                      src="../src/assets/DeleteDarkIcon.png"
+                      alt="DeleteIcon"
+                      className="w-[0.9vw] h-[0.9vw]"
+                      ref={deleteIconRef}
+                    />
+                    <p className="text-md font-medium text-zinc-500 para ">
+                      Delete
+                    </p>
                   </span>
-
-
-
-                   <span className='flex place-items-center gap-4 my-1 items-centerm hover:bg-zinc-700 rounded-sm p-0.6 text-white hover:[&>.para]:text-white' 
-                    onMouseOver={()=>{
-                      if(deleteIconRef.current){
-                        deleteIconRef.current.src="../src/assets/DeleteIcon.png"
+                </div>
+              ) : (
+                <div className="hidden-card w-[8.5vw] h-[5vw]  bg-white py-2 mt-[-2vw] px-4 rounded-xl gap-3  absolute right-[4vw] shadow-[0_4px_4px_0px_rgb(0,0,0,0.45)] border-1 border-gray-200 hidden">
+                  <span
+                    className="flex place-items-center gap-4 my-2 items-center hover:bg-zinc-700 rounded-sm p-0.6 hover:[&>.para]:text-white"
+                    onMouseOver={() => {
+                      if (pencilIconRef.current) {
+                        pencilIconRef.current.src = "../src/assets/Pencil.png";
                       }
                     }}
-                     onMouseLeave={()=>{
-                      if(deleteIconRef.current){
-                        deleteIconRef.current.src="../src/assets/DeleteDarkIcon.png"
+                    onMouseLeave={() => {
+                      if (pencilIconRef.current) {
+                        pencilIconRef.current.src =
+                          "../src/assets/DarkPencil.png";
                       }
                     }}
-                   >
-                    <img src="../src/assets/DeleteDarkIcon.png" alt="DeleteIcon" className="w-[0.9vw] h-[0.9vw]" ref={deleteIconRef} />
-                    <p className='text-md font-medium text-zinc-500 para '>Delete</p>
+                    onClick={handleUpdate}
+                  >
+                    <img
+                      src="../src/assets/DarkPencil.png"
+                      alt="PencilIcon"
+                      className="w-[0.9vw] h-[0.9vw] pencil"
+                      ref={pencilIconRef}
+                    />
+                    <p className="text-md font-medium text-zinc-500 hover:text-white para">
+                      Edit
+                    </p>
                   </span>
 
-
-              </div>
-              }
-              
-              
+                  <span
+                    className="flex place-items-center gap-4 my-1 items-centerm hover:bg-zinc-700 rounded-sm p-0.6 text-white hover:[&>.para]:text-white"
+                    onMouseOver={() => {
+                      if (deleteIconRef.current) {
+                        deleteIconRef.current.src =
+                          "../src/assets/DeleteIcon.png";
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      if (deleteIconRef.current) {
+                        deleteIconRef.current.src =
+                          "../src/assets/DeleteDarkIcon.png";
+                      }
+                    }}
+                    onClick={handleDelete}
+                  >
+                    <img
+                      src="../src/assets/DeleteDarkIcon.png"
+                      alt="DeleteIcon"
+                      className="w-[0.9vw] h-[0.9vw]"
+                      ref={deleteIconRef}
+                    />
+                    <p className="text-md font-medium text-zinc-500 para ">
+                      Delete
+                    </p>
+                  </span>
+                </div>
+              )}
             </div>
           </div>
-          </div>
-          
+        </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default MovieCard
+export default MovieCard;

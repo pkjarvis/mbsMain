@@ -12,7 +12,7 @@ const Navbar = (props) => {
           <input type="text" placeholder={props.para}  className="border-1 rounded-3xl w-[60vw] px-3 py-2 border-gray-400 outline-none">
            </input>
            <img src="../src/assets/searchIcon.png" alt="Icon" className="w-[1.2vw] h-[1.2vw] relative ml-[-2rem]" />
-          <span className="user flex items-center justify-between gap-2 ml-[18vw] px-4">
+          <span className="user flex items-center justify-between gap-2  ml-[18vw] px-4">
 
              <p className='text-gray-700 font-[inter] text-xl font-medium leading-1'>New Delhi</p>
              <img src="../src/assets/dropDownIcon.png" alt="DropDown" className="w-3 h-2" />

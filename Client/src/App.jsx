@@ -12,15 +12,19 @@ import AddNewTheatre from './pages/AddNewTheatre'
 import AddNewShowtime from './pages/AddNewShowtime'
 import SignUp from './pages/SignUp'
 import Root from './pages/Root'
+import MoviesProvider from './context/MovieContext'
+import { PrimeReactProvider } from 'primereact/api';
 
 
 
 
-function App() {
+function App({ Component, pageProps }) {
  
   return (
     <>
+      <PrimeReactProvider>
       <BrowserRouter>
+      <MoviesProvider>
         <Routes>
           <Route path="/" element={<Root/>}/>
           <Route path="/signup" element={<SignUp/>}/>
@@ -36,7 +40,9 @@ function App() {
 
           
         </Routes>
+        </MoviesProvider>
       </BrowserRouter>
+      </PrimeReactProvider>
     </>
   )
 }
