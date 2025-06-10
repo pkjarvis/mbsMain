@@ -1,5 +1,10 @@
-import React, { use, useEffect, useRef, useState } from "react";
+import React, { use, useContext, useEffect, useRef, useState } from "react";
 import Navbar from "../components/Navbar";
+
+import { Chips } from "primereact/chips";
+import { FloatLabel } from "primereact/floatlabel";
+import { useNavigate } from "react-router-dom";
+import { TheatreContext } from "../context/TheatreContext";
 
 const AddNewTheatre = () => {
   const [theatrename, setTheatreName] = useState("");
@@ -8,9 +13,13 @@ const AddNewTheatre = () => {
   const [stateName, setStateName] = useState("");
   const [status, setStatus] = useState("");
   const [totalscreens, setTotalScreens] = useState("");
-  const [currentmovies, setCurrentMovies] = useState("");
-  const [items, setItems] = useState([]);
+
   const [theatrefile, setTheatreFile] = useState("");
+
+  const [value, setValue] = useState([]); // multi input state
+
+  const navigate = useNavigate("");
+  const { addTheatre } = useContext(TheatreContext);
 
   const fileInputRef = useRef("");
 
@@ -52,31 +61,23 @@ const AddNewTheatre = () => {
     let bg = document.getElementById("ImageBg");
     bg.style.background = "";
   };
-  useEffect(() => {
-    console.log(currentmovies, "currebt");
-  }, [currentmovies]);
 
-  // const divRef = useRef(null);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const newTheatre = {
+      id: Date.now(),
+      theatrename: theatrename,
+      address: address,
+      cityName: cityName,
 
-  const handleMultipleInput = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault(); // prevent new line in contentEditable
-      const text = e.target.innerText.trim();
-      if (text !== "") {
-        setItems([...items, text]);
-        e.target.innerText = ""; // clear contentEditable div
-      }
-    }
-  };
-
-  const handleDelete = (index) => {
-    const updatedItems = [...items];
-    updatedItems.splice(index, 1);
-    setItems(updatedItems);
-  };
-
-  const handleChange = (e) => {
-    // console.log(e.t)
+      stateName: stateName,
+      status: status,
+      totalscreens: totalscreens,
+      theatrefile: theatrefile,
+      value: value,
+    };
+    addTheatre(newTheatre);
+    navigate("/theatre");
   };
 
   return (
@@ -144,31 +145,26 @@ const AddNewTheatre = () => {
               />
             </div>
 
-            <div>
-              <div
-                contentEditable="true"
-                id="MultiInput"
-                className="w-[30vw] min-h-8 text-sm text-zinc-400 border border-gray-300 rounded-sm p-2 flex flex-wrap gap-2 items-center justify-start mb-1 outline-none"
-                onKeyDown={handleMultipleInput}
-                ref={divRef}
-              ></div>
-
-              <div className="flex flex-wrap gap-2 mt-2">
-                {items.map((item, index) => (
-                  <span
-                    key={index}
-                    className="w-auto px-2 py-1 flex items-center justify-between border border-gray-300 rounded-xl bg-gray-100"
-                  >
-                    <h4 className="text-xs text-zinc-700 mr-1">{item}</h4>
-                    <span
-                      className="remove text-sm text-zinc-600 cursor-pointer"
-                      onClick={() => handleDelete(index)}
-                    >
-                      x
-                    </span>
-                  </span>
-                ))}
-              </div>
+            <div className="border-1 border-zinc-400 rounded-md card p-fluid mt-2 ">
+              <FloatLabel>
+                <Chips
+                  id="username"
+                  value={value}
+                  onChange={(e) => setValue(e.value)}
+                  allowDuplicate={false}
+                  pt={{
+                    label: { className: "text-sm" },
+                    root:{className:"max-w-[30vw] h-[2vw] rounded-md text-zinc-700 p-1 scroll-auto"},
+                    container:{className:" flex "},
+                    token: {
+                      className: "h-[1.2vw] bg-gray-200 rounded-xl font-xs p-1",
+                    },
+                    
+                  }}
+                 
+                />
+                <label htmlFor="Current Movies">Current Movies</label>
+              </FloatLabel>
             </div>
             <p className="font-semibold text-zinc-600 text-base mb-1">
               Upload Theatre Icon
@@ -218,10 +214,13 @@ const AddNewTheatre = () => {
             stateName &&
             status &&
             totalscreens &&
-            currentmovies &&
+            value &&
             theatrefile ? (
               <div className="buttons flex items-center justify-start gap-5 mb-1 ">
-                <button className="bg-pink-500 cursor-pointer w-[6vw] h-[2vw] text-md text-white font-semibold p-1 rounded-xl">
+                <button
+                  className="bg-pink-500 cursor-pointer w-[6vw] h-[2vw] text-md text-white font-semibold p-1 rounded-xl"
+                  onClick={handleSubmit}
+                >
                   Add
                 </button>
                 <button
@@ -233,7 +232,10 @@ const AddNewTheatre = () => {
               </div>
             ) : (
               <div className="buttons flex items-center justify-start gap-5 mb-1 opacity-15">
-                <button className="bg-pink-500 cursor-pointer w-[6vw] h-[2vw] text-md text-white font-semibold p-1 rounded-xl">
+                <button
+                  className="bg-pink-500 cursor-pointer w-[6vw] h-[2vw] text-md text-white font-semibold p-1 rounded-xl"
+                  onClick={handleSubmit}
+                >
                   Add
                 </button>
                 <button

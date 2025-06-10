@@ -1,14 +1,25 @@
-import React,{useRef,useState} from "react";
+import React,{useContext, useRef,useState} from "react";
+import { TheatreContext } from "../context/TheatreContext";
+import DeleteBox from "./DeleteBox";
 
-const TheatreCard = () => {
+const TheatreCard = ({id,theatrename,address,cityName,stateName,status,totalscreens,theatrefile,value}) => {
 
-  const [visible,setVisible]=useState(false)
-    const pencilIconRef=useRef(null)
-    const deleteIconRef=useRef(null)
+  const [visible,setVisible]=useState(false);
+    const pencilIconRef=useRef(null);
+    const deleteIconRef=useRef(null);
+    const [check,setCheck]=useState(false);
   
     const handleClick=()=>{
-        setVisible(!visible)  
-    } 
+        setVisible(!visible);
+    };
+    const {deleteTheatre}=useContext(TheatreContext);
+
+    const handleDelete=(id)=>{
+      setCheck(!check);
+      setVisible(!visible);
+
+      // deleteTheatre(id);
+    };
 
   return (
     <div>
@@ -16,42 +27,61 @@ const TheatreCard = () => {
         <div className="content flex items-center justify-start border-1 rounded-xl border-zinc-300 py-2">
           <div className="left w-[4%] ml-2">
             <img
-              src="../src/assets/pvr.png"
+              src={theatrefile}
               alt="MovieBg"
-              className="w-14 h-14 rounded-full"
+              className="w-15 h-15 rounded-full"
             />
           </div>
           <div className="right flex items-center justify-between w-[94%] ">
             <div className="right-left flex flex-col   gap-0.2">
               <span className="stream-tag flex items-center gap-2">
-                <p className=" text-2xl font-semibold">Cinepolis</p>
+                <p className=" text-2xl font-semibold">{theatrename}</p>
+                {
+                status==="Active"
+                ?
                 <p className="rounded-xl border-1 border-zinc-200 p-1 text-xs bg-green-200">
-                  Active
+                  {status}
+                </p>:(
+                 
+                  <p className="rounded-xl border-1 border-zinc-200 p-1 text-xs bg-yellow-200">
+                  {status}
                 </p>
+                )
+                
+                }
+                {/* <p className="rounded-xl border-1 border-zinc-200 p-1 text-xs bg-green-200">
+                  {status}
+                </p> */}
                 <p className="rounded-xl border-1 border-zinc-200 p-1 text-xs">
-                  Total Screen :3
+                  Total Screen :{totalscreens}
                 </p>
               </span>
 
-              <span>
-                <p className="font-semibold">Bandra, Mumbai</p>
+              <span className="flex items-center gap-2">
+                <img src="../src/assets/Locate.png" alt="LocateIcon" className="w-[0.8vw] h-[0.9vw]" />
+                <p className="font-semibold">{cityName}, {stateName}</p>
               </span>
 
               <span className="tags flex gap-2 ">
-                <p className="font-sm text-[0.6vw] border-0.4 rounded-md bg-zinc-300 w-auto p-0.5 text-center">
-                  Godzilla X Kong
-                </p>
-                <p className="font-sm text-[0.6vw] border-0.4 rounded-md bg-zinc-300 w-auto p-0.5 text-center">
-                  Crew
-                </p>
-              </span>
+                {
+                 value?.map((item,index)=>(
+                      <p key={index} className="font-sm text-[0.6vw] border-0.4 rounded-md bg-zinc-300 w-auto p-0.5 text-center">
+                        {item}
+                      </p>
+                    )
+                  )
+                }
+              </span> 
+              {
+                check?<DeleteBox name={theatrename} id={id} val={check} func={setCheck} type="theatre"/>:null
+              }
             </div>
             <div className="right-right left-4 cursor-pointer">
               <img
                 src="../src/assets/3Dot.png"
                 alt="3Dot"
                 className="w-1 h-4"
-                onClick={handleClick}
+                onClick={()=>handleClick(id)}
               />
 
               {
@@ -88,6 +118,7 @@ const TheatreCard = () => {
                         deleteIconRef.current.src="../src/assets/DeleteDarkIcon.png"
                       }
                     }}
+                    onClick={()=>handleDelete(id)}
                    >
                     <img src="../src/assets/DeleteDarkIcon.png" alt="DeleteIcon" className="w-[0.9vw] h-[0.9vw]" ref={deleteIconRef} />
                     <p className='text-md font-medium text-zinc-500 para '>Delete</p>
@@ -126,6 +157,7 @@ const TheatreCard = () => {
                         deleteIconRef.current.src="../src/assets/DeleteDarkIcon.png"
                       }
                     }}
+                    onClick={handleDelete}
                    >
                     <img src="../src/assets/DeleteDarkIcon.png" alt="DeleteIcon" className="w-[0.9vw] h-[0.9vw]" ref={deleteIconRef} />
                     <p className='text-md font-medium text-zinc-500 para '>Delete</p>

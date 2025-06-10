@@ -10,15 +10,32 @@ import "react-datepicker/dist/react-datepicker.css";
 import { MoviesContext } from "../context/MovieContext";
 import { useNavigate } from "react-router-dom";
 
+import { MultiSelect } from 'primereact/multiselect';
+
+
 const AddNewMovie = () => {
   const [movie, setMovie] = useState("");
   const [description,setDescription]=useState("")
    const [startDate, setStartDate] = useState(new Date());
    const [endDate, setEndDate] = useState(new Date());
    const [genre,setGenre]=useState("");
-   const [language,setLanguage]=useState("");
    const [status,setStatus]=useState("");
    const [file,setFile]=useState("");
+
+
+    const [selectedCities, setSelectedCities] = useState("");
+    const cities = [
+        { name: 'English', code: 'ENG' },
+        { name: 'Hindi', code: 'HN' },
+        { name: 'Marathi', code: 'MT' },
+        { name: 'Telugu', code: 'TLG' },
+        { name: 'Punjabi', code: 'PNJ' },
+        { name: 'Spanish', code: 'SPN' },
+        { name: 'French', code: 'FRN' },
+        { name: 'German', code: 'GER' },
+    ];
+
+    const {addMovie} =useContext(MoviesContext);
    
    const fileInputRef=useRef(null);
 
@@ -49,7 +66,7 @@ const AddNewMovie = () => {
     setStartDate("");
     setEndDate("");
     setGenre("");
-    setLanguage("");
+    setSelectedCities("");
     setStatus("");
     setFile(null);
     let bg=document.getElementById("ImageBg");
@@ -59,62 +76,26 @@ const AddNewMovie = () => {
 
    const navigate=useNavigate()
 
+
    
 
-   const {addMovie,editMovie,setEditMovie} = useContext(MoviesContext);
-
-   const [formData,setFormData]=useState({
-    id:null,
-    movie:'',
-    description:'',
-    genre:'',
-    language:'',
-    file:null,
-    startDate:'',
-    endDate:'',
-    status:''
-   });
-
-   useEffect(()=>{
-    if(editMovie){
-      setEditMovie(editMovie.movie);
-      setDescription(editMovie.description);
-      setGenre(editMovie.genre);
-      setLanguage(editMovie.language);
-      setStatus(editMovie.status);
-      setStartDate(editMovie.startDate);
-      setEndDate(editMovie.endDate);
-      setFile(editMovie.file);
-    }
-  },[editMovie])
 
    const handleSubmit = (e)=>{
     e.preventDefault();
-    // selected file need to be converted into url such that it could be passed as src props
-    // const imageURL=file?URL.createObjectURL(file):"";
-
-    const newmovie={
-      id:editMovie?editMovie.id:Date.now(),
+    const newMovie={
+      id:Date.now(),
       movie:movie,
       description:description,
-      language:language,
-      genre:genre,
-      status:status,
       startDate:startDate,
       endDate:endDate,
-      file:file
+      genre:genre,
+      language:selectedCities,
+      status:status,
+      file:file,
     }
-
-    if(editMovie){
-      updateMovie(newmovie);
-      setEditMovie(null);
-    }
-
-    addMovie(newmovie)
-    console.log("movies content",newmovie)
-    navigate("/movie")
-
-   }
+    addMovie(newMovie);
+    navigate("/movie");
+   };
 
 
    
@@ -165,13 +146,24 @@ const AddNewMovie = () => {
                 </select>
                
          
-               <select id="language" value={language} onChange={(e)=>setLanguage(e.target.value)} className="w-[14vw] h-[2vw]  border-1 border-gray-300 rounded-sm p-1 flex items-center justify-between outline-none">
-                  <option  id="default" value="Language(s)">Language(s)</option>
-                  <option id="english" value="english" className="outline-none">English</option>
-                  <option id="hindi" value="hindi">Hindi</option>
-                  <option id="marathi" value="marathi">Marathi</option>
-                  <option id="telugu" value="telugu">Telugu</option>
-                </select>
+               
+                  <div className="card flex justify-content-center w-[14vw] h-[2vw]">
+            <MultiSelect value={selectedCities} onChange={(e) => setSelectedCities(e.value)} options={cities} optionLabel="name" display="chip" 
+                placeholder="Language(s)" maxSelectedLabels={3} className="w-full md:w-20rem"
+                pt={{
+                  root:{
+                    onFocus:"outline-none border-none",
+                    focus:"outline-none border-none"
+                  
+                  },
+                  input:{
+                    onFocus:"outline-none border-zinc-400 border-none"
+                  },
+                 
+                }}
+                />
+        </div>
+
             </div>  
 
             <div className="flex items-center justify-start gap-9 mb-1">
@@ -184,19 +176,10 @@ const AddNewMovie = () => {
             
             </div>
 
-            {/* <div className="w-[30vw] border-1 border-gray-300 rounded-sm p-2 flex items-center justify-between mb-1">
-              {/* <p className="text-sm text-gray-500">Status</p>
-              <img
-                src="../src/assets/dropDownIcon.png"
-                alt="DropDown"
-                className="w-3 h-2"
-              /> }
-              
-            </div> */}
-
              <select id="language" value={status} onChange={(e)=>setStatus(e.target.value)} className="w-[100%] h-[2vw]  border-1 border-gray-300 rounded-sm p-2 flex items-center justify-between outline-none">
-                  <option id="english" value="nowShowing" className="outline-none">Now Showing</option>
-                  <option id="hindi" value="showAdded">Show Added</option>
+                  <option id="nowshowing" value="nowShowing" className="outline-none">Now Showing</option>
+                  <option id="expired" value="expired">Expired</option>
+                  <option id="upcoming" value="upcoming">Upcoming</option>
                 
             </select>
 
@@ -221,8 +204,6 @@ const AddNewMovie = () => {
                 </div>
               }
              
-              {/* <img src="../src/assets/Upload.png" alt="Upload.png"  className="w-[1.4vw] h-[1.4vw]" />  
-              <p className=" text-gray-500 text-sm mx-auto hidden">Upload file here</p> */}
               <input type="file"   className=" text-gray-500 text-sm mx-auto hidden"  ref={fileInputRef} onChange={handleFileChange}  />
             </div>
             {

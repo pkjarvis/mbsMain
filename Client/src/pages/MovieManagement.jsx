@@ -17,7 +17,8 @@ const MovieManagement = () => {
 
         <MainHeader title="Manage Movies" btncontent="+Add New Movie" headerlink="Movie Management" btnlink="http://localhost:5173/addnewmovie"/>
         {
-            movies.map((m)=>(
+            movies.length>0?
+            (movies.map((m)=>(
                 <MovieCard
                     key={m.id}
                     id={m.id}
@@ -26,21 +27,19 @@ const MovieManagement = () => {
                     startDate={m.startDate}
                     endDate={m.endDate}
                     genre={m.genre}
+                    
                     language={m.language}
                     status={m.status}
                     file={m.file}
 
                 
                 />
-            ))
+            )))
+            :(null)
         }
-            {/* <MovieCard/>
-            <MovieCard/>
-            <MovieCard/>
-            <MovieCard/>
-            <MovieCard/>
-            <MovieCard/>
-            <MovieCard/>     */}
+            
+            {/* <MovieCard/> */}
+           
         </div>
     </div>
   )
