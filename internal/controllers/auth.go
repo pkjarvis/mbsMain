@@ -2,8 +2,7 @@ package controllers
 
 import (
 	"go-auth/models"
-	// "net/http"
-	// "os"
+	"os"
 
 	"time"
 
@@ -14,7 +13,7 @@ import (
 )
 
 
-var jwtKey = []byte("DavidGoggins@123456789")
+var jwtKey = []byte(os.Getenv("SECRET"));
 
 
   func Login(c *gin.Context) {
@@ -61,17 +60,12 @@ var jwtKey = []byte("DavidGoggins@123456789")
           return
       }
 
-    //   c.SetCookie("token", tokenString, int(expirationTime.Unix()), "/", "localhost", false, true)
+      // SetCookie(name, value string, maxAge int, path, domain string, secure, httpOnly bool)
+      c.SetCookie("token", tokenString, int(expirationTime.Unix()-time.Now().Unix()), "/", "localhost", false, true)
 
 
-//     http.SetCookie(w, &http.Cookie{
-//     Name:     "token",
-//     Value:    yourToken,
-//     Path:     "/",
-//     HttpOnly: true,
-//     Secure:   true, // <-- If your site is not served over HTTPS, the browser will reject this cookie
-//     SameSite: http.SameSiteLaxMode, // or SameSiteNoneMode for cross-site
-// })
+
+
 
       c.JSON(200,gin.H{"token":tokenString,
       "msg":"logged in ",
@@ -98,6 +92,8 @@ var jwtKey = []byte("DavidGoggins@123456789")
           c.JSON(400, gin.H{"error": "user already exists"})
           return
       }
+
+      user.Role="admin";
 
       var errHash error
       user.Password, errHash = utils.GenerateHashPassword(user.Password)

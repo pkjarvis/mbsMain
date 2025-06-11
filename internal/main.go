@@ -1,7 +1,7 @@
 package main
 
 import (
-	// "go-auth/middlewares"
+	
 	"go-auth/models"
 	"go-auth/routes"
     "time"
@@ -12,23 +12,22 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
     "github.com/gin-contrib/cors"
-	// "github.com/rs/cors"
+	
 )
 
 func main() {
     // Create a new gin instance
     r := gin.Default()
 
-    // cors middleware
-    corconfig := cors.DefaultConfig()
-    corconfig.AllowAllOrigins = true
-    corconfig.AllowMethods = []string{"POST", "GET", "PUT", "OPTIONS"}
-    corconfig.AllowHeaders = []string{"Origin", "Content-Type", "Authorization", "Accept", "User-Agent", "Cache-Control", "Pragma"}
-    corconfig.ExposeHeaders = []string{"Content-Length"}
-    corconfig.AllowCredentials = true
-    corconfig.MaxAge = 12 * time.Hour
 
-    r.Use(cors.New(corconfig))
+
+    r.Use(cors.New(cors.Config{ 
+        AllowOrigins:     []string{"http://localhost:5173"},
+        AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+        AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
+        AllowCredentials: true,
+        MaxAge: 12 * time.Hour,
+    }))
 
   
 

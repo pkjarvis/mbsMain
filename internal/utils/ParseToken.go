@@ -2,13 +2,13 @@ package utils
 
 import (
 	"go-auth/models"
-
+	"os"
 	"github.com/dgrijalva/jwt-go"
 )
 
 func ParseToken(tokenString string) (claims *models.Claims, err error) {
 	token, err := jwt.ParseWithClaims(tokenString, &models.Claims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte("DavidGoggins@123456789"), nil
+		return []byte(os.Getenv("SECRET")), nil
 	})
 
 	if err != nil {

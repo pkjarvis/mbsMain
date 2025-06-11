@@ -3,7 +3,7 @@ import Navbar from "../components/Navbar";
 
 import { Chips } from "primereact/chips";
 import { FloatLabel } from "primereact/floatlabel";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { TheatreContext } from "../context/TheatreContext";
 
 const AddNewTheatre = () => {
@@ -19,13 +19,56 @@ const AddNewTheatre = () => {
   const [value, setValue] = useState([]); // multi input state
 
   const navigate = useNavigate("");
-  const { addTheatre } = useContext(TheatreContext);
+  const { addTheatre,updateTheatre } = useContext(TheatreContext);
+  
+  const {state}=useLocation();
+  const editingTheatre=state?.theatre;
+
+
+  // theatrename,address,cityName,stateName,status,totalscreens,theatrefile,value
+
+  useEffect(()=>{
+    if(editingTheatre){
+      setAddress(editingTheatre.address);
+      setCityName(editingTheatre.cityName);
+      setStateName(editingTheatre.stateName);
+      setStatus(editingTheatre.status);
+      setTotalScreens(editingTheatre.totalscreens);
+      setValue(editingTheatre.value);
+      setTheatreFile(editingTheatre.theatrefile);
+      setTheatreName(editingTheatre.theatrename);
+    }
+    const bg=document.getElementById("ImageBg");
+    if(bg && editingTheatre){
+      bg.style.background=`url(${editingTheatre.theatrefile})`;
+      bg.style.backgroundSize="cover";
+      bg.style.objectFit="fill";
+    }
+
+
+  },[editingTheatre]);
+
+
+   // done to persist image on render
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+  
+
+
+
 
   const fileInputRef = useRef("");
 
   const handleDivChange = () => {
     fileInputRef.current.click();
   };
+
 
   const handleFileChange = async (e) => {
     const val = e.target.files[0];
@@ -65,7 +108,7 @@ const AddNewTheatre = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const newTheatre = {
-      id: Date.now(),
+      id:editingTheatre?editingTheatre.id: Date.now(),
       theatrename: theatrename,
       address: address,
       cityName: cityName,
@@ -73,11 +116,18 @@ const AddNewTheatre = () => {
       stateName: stateName,
       status: status,
       totalscreens: totalscreens,
-      theatrefile: theatrefile,
+      theatrefile: theatrefile || editingTheatre?.theatrefile,
       value: value,
     };
-    addTheatre(newTheatre);
+
+    if(editingTheatre){
+      updateTheatre(newTheatre)
+    }else{
+      addTheatre(newTheatre);
+    }
+
     navigate("/theatre");
+    
   };
 
   return (

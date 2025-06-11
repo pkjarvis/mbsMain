@@ -17,12 +17,9 @@ const Login = () => {
   
     const navigate = useNavigate();
   
-    const handleSignup = async (e) => {
+    const handleLogin = async (e) => {
       e.preventDefault();
-      // if (!name) {
-      //   setError("Please enter your name");
-      //   return;
-      // }
+     
       if (!isEmailValid(email)) {
         setError("Please enter a valid email address.");
         return;
@@ -37,9 +34,8 @@ const Login = () => {
       try {
         // posting login method to axiosInstance
         const response = await axiosInstance.post("/login", {
-          
-          email: email,
-          password: password,
+          email,
+          password,
         });
   
        
@@ -59,15 +55,15 @@ const Login = () => {
           setError(response.data.message);
           return;
         }
-      } catch (e) {
+      } catch (error) {
         // handle error while login
-        console.log(e);
+        console.log("Logging error:",error);
         if (
           error.response &&
           error.response.data &&
           error.response.data.message
         ) {
-          setError(error.response.data.message);
+          setError(error.response.data.error);
         } else {
           setError("An unexpected error occurred. Please try again!");
         }
@@ -83,7 +79,7 @@ const Login = () => {
     <div className="flex items-center justify-center mt-[9vw] font-[inter]">
         <div className="w-[22vw] border-1 border-zinc-300  rounded bg-white px-7 py-10 items-center shadow-lg">
           <form 
-          onSubmit={handleSignup}
+          onSubmit={handleLogin}
           className="flex flex-col gap-2"
           >
             <h4 className="text-2xl mb-7 mx-auto">Login</h4>

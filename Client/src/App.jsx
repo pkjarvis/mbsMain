@@ -14,6 +14,7 @@ import Root from "./pages/Root";
 import {MoviesProvider} from "./context/MovieContext";
 import { PrimeReactProvider } from "primereact/api";
 import { TheatreProvider } from "./context/TheatreContext";
+import { ShowTimeProvider } from "./context/ShowTimeContext";
 
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 
@@ -24,19 +25,21 @@ function App() {
         <BrowserRouter>
           <MoviesProvider>
            <TheatreProvider>
-            <Routes>
-              <Route path="/" element={<Root />} />
-              <Route path="/signup" element={<SignUp />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/logout" element={<Logout />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/movie" element={<MovieManagement />} />
-              <Route path="/theatre" element={<Theatres />} />
-              <Route path="/shows" element={<Shows />} />
-              <Route path="/addnewmovie" element={<AddNewMovie />} />
-              <Route path="/addnewtheatre" element={<AddNewTheatre />} />
-              <Route path="/addnewshows" element={<AddNewShowtime />} />
-            </Routes>
+            <ShowTimeProvider>
+              <Routes>
+                <Route path="/" element={<Root />} />
+                <Route path="/signup" element={<SignUp />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/logout" element={<Logout />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/movie" element={<MovieManagement />} />
+                <Route path="/theatre" element={<Theatres />} />
+                <Route path="/shows" element={<Shows />} />
+                <Route path="/addnewmovie" element={<AddNewMovie />} />
+                <Route path="/addnewtheatre" element={<AddNewTheatre />} />
+                <Route path="/addnewshows" element={<AddNewShowtime />} />
+              </Routes>
+             </ShowTimeProvider>
             </TheatreProvider>
           </MoviesProvider>
         </BrowserRouter>

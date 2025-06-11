@@ -4,7 +4,7 @@ export const TheatreContext=createContext({
     theatres:[],
     addTheatre:()=>{},
     deleteTheatre:()=>{},
-   
+    updateTheatre:()=>{},
     
 });
 
@@ -34,9 +34,13 @@ export const TheatreProvider = ({children}) => {
       setTheatre(theatres.filter(t=>t.id!==id))
     }
 
+    const updateTheatre=(updatedTheatre)=>{
+      setTheatre(theatres.map(t=>(t.id===updatedTheatre.id?updatedTheatre:t)));
+    }
+
 
   return (
-    <TheatreContext.Provider value={{theatres,addTheatre,deleteTheatre}}>
+    <TheatreContext.Provider value={{theatres,addTheatre,deleteTheatre,updateTheatre}}>
             {children}
     </TheatreContext.Provider>
   )

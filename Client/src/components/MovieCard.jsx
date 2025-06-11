@@ -21,7 +21,7 @@ const MovieCard = ({id,movie,description,startDate,endDate,genre,language,status
   const handleDelete = (id) => {
     setCheck(!check);
     setVisible(!visible);
-    //  deleteMovie(id);
+   
   }
 
   const handleUpdate=()=>{
@@ -81,7 +81,7 @@ const MovieCard = ({id,movie,description,startDate,endDate,genre,language,status
               <p className="font-light text-sm">{genre}</p>
             </div>
             {
-                check?<DeleteBox name={movie} id={id} val={check} func={setCheck} type="movie"/>:null
+                check?<DeleteBox name={movie} id={id} val={check} func={setCheck} type="movie" status="Delete"/>:null
               }
             <div className="right-right">
               <img

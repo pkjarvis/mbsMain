@@ -1,6 +1,7 @@
 import React,{useContext, useRef,useState} from "react";
 import { TheatreContext } from "../context/TheatreContext";
 import DeleteBox from "./DeleteBox";
+import { useNavigate } from "react-router-dom";
 
 const TheatreCard = ({id,theatrename,address,cityName,stateName,status,totalscreens,theatrefile,value}) => {
 
@@ -8,6 +9,8 @@ const TheatreCard = ({id,theatrename,address,cityName,stateName,status,totalscre
     const pencilIconRef=useRef(null);
     const deleteIconRef=useRef(null);
     const [check,setCheck]=useState(false);
+
+    const navigate=useNavigate("");
   
     const handleClick=()=>{
         setVisible(!visible);
@@ -20,6 +23,10 @@ const TheatreCard = ({id,theatrename,address,cityName,stateName,status,totalscre
 
       // deleteTheatre(id);
     };
+
+    const handleUpdate=()=>{
+      navigate("/addnewtheatre",{state:{theatre:{id,theatrename,address,cityName,stateName,status,totalscreens,theatrefile,value}}})
+    }
 
   return (
     <div>
@@ -73,7 +80,7 @@ const TheatreCard = ({id,theatrename,address,cityName,stateName,status,totalscre
                 }
               </span> 
               {
-                check?<DeleteBox name={theatrename} id={id} val={check} func={setCheck} type="theatre"/>:null
+                check?<DeleteBox name={theatrename} id={id} val={check} func={setCheck} type="theatre" status="Delete"/>:null
               }
             </div>
             <div className="right-right left-4 cursor-pointer">
@@ -100,6 +107,7 @@ const TheatreCard = ({id,theatrename,address,cityName,stateName,status,totalscre
                       pencilIconRef.current.src="../src/assets/DarkPencil.png"
                     }
                    }}
+                   onClick={handleUpdate}
                   >
                     <img src="../src/assets/DarkPencil.png" alt="PencilIcon" className="w-[0.9vw] h-[0.9vw] pencil" ref={pencilIconRef} />
                     <p className='text-md font-medium text-zinc-500 hover:text-white para' >Edit</p>
@@ -139,6 +147,7 @@ const TheatreCard = ({id,theatrename,address,cityName,stateName,status,totalscre
                       pencilIconRef.current.src="../src/assets/DarkPencil.png"
                     }
                    }}
+                   onClick={handleUpdate}
                   >
                     <img src="../src/assets/DarkPencil.png" alt="PencilIcon" className="w-[0.9vw] h-[0.9vw] pencil" ref={pencilIconRef} />
                     <p className='text-md font-medium text-zinc-500 hover:text-white para' >Edit</p>

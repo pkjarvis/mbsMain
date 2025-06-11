@@ -6,11 +6,26 @@ const axiosInstance=axios.create({
     baseURL:"http://localhost:8080/",
     timeout:1000,
     credentials: "include",
+    withCredentials:true,
     body:JSON.stringify({}),
     headers: {
-    "Content-type": "application/json",
+    "Content-Type": "application/json",
   },
 })
+
+axiosInstance.interceptors.request.use(
+  config=>{
+    if (!['/signup', '/login'].includes(config.url)){
+      const token=localStorage.getItem('token');
+      if(token){
+        config.headers['Authorization']=`Bearer ${token}`;
+      }
+     
+    }
+    return config;
+  },
+  (error)=>Promise.reject(error)
+);
 
 axiosInstance.interceptors.response.use(
   (response) => response,
