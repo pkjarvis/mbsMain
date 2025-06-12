@@ -16,9 +16,9 @@ export const ShowTimeProvider = ({ children }) => {
       return [];
     }
   });
+  // const [archived,setArchived]=useState(false);
 
   useEffect(() => {
-    
     localStorage.setItem("showtime", JSON.stringify(showtimes));
   }, [showtimes]);
 
@@ -33,8 +33,10 @@ export const ShowTimeProvider = ({ children }) => {
   };
 
   const archive = (id) => {
-    const val = showtimes.filter((item) => item.id !== id);
-    val.style.background = "black";
+    const updated = showtimes.map((item) =>
+      item.id === id ? { ...item, archived: !item.archived } : item
+    );
+    setShowTimes(updated);
   };
 
   return (

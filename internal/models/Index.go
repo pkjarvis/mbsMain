@@ -33,6 +33,14 @@ func InitDB(cfg Config) {
         panic(err)
     }
 
+    if err := db.AutoMigrate(&Movie{});err !=nil{
+        panic(err)
+    }
+
+    if err :=db.AutoMigrate(&Showtime{});err!=nil{
+        panic(err)
+    }
+
     fmt.Println("Migrated database")
 
     DB = db

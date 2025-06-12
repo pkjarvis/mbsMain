@@ -19,9 +19,11 @@ func AuthRoutes(r *gin.Engine) {
     protected:=r.Group("/");
     protected.Use(middlewares.IsAuthorized());
 
-    // r.GET("/home", controllers.Home)
-    // r.GET("/premium", controllers.Premium)
-    // r.GET("/logout", controllers.Logout)
+    protected.POST("/add-movie",controllers.AddMovie);
+    protected.POST("/add-theatre",controllers.AddTheatre);
+    protected.POST("/add-showtime",controllers.AddShowTime);
+
+ 
 }
 
 

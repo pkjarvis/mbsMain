@@ -5,46 +5,44 @@ package middlewares
 import (
     "go-auth/utils"
     "github.com/gin-gonic/gin"
+    "fmt"
 )
 
 func IsAuthorized() gin.HandlerFunc {
     return func(c *gin.Context) {
         cookie, err := c.Cookie("token")               
+        
+        fmt.Println("cookie is:",cookie)
 
+        fmt.Println("No error part 1")
         if err != nil {
             c.JSON(401, gin.H{"error": "unauthorized"})
             c.Abort()
             return
         }
+
+        fmt.Println("No error part 2")
 
         claims, err := utils.ParseToken(cookie)
 
+        fmt.Println("No error part 3")
+        fmt.Println("Check",err);
+
         if err != nil {
             c.JSON(401, gin.H{"error": "unauthorized"})
             c.Abort()
             return
         }
+
+
+        fmt.Println("No error part 4")
 
         c.Set("role", claims.Role)
         c.Next()
     }
 }
 
-// func CORSMiddleware(next http.Handler) http.Handler {
-//     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-//         w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173") // your frontend origin
-//         w.Header().Set("Access-Control-Allow-Credentials", "true")
-//         w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-//         w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 
-//         if r.Method == "OPTIONS" {
-//             w.WriteHeader(http.StatusOK)
-//             return
-//         }
-
-//         next.ServeHTTP(w, r)
-//     })
-// }
 
 
 

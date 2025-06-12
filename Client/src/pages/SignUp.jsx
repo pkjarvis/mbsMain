@@ -39,7 +39,7 @@ const SignUp = () => {
       // posting login method to axiosInstance
       console.log("No error1");
       const response = await axiosInstance.post("/signup", {
-        name: name,
+        name: name? name.toUpperCase():"",
         email: email,
         password: password,
       });

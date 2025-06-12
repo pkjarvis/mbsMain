@@ -10,6 +10,7 @@ import { MoviesContext } from "../context/MovieContext";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { MultiSelect } from "primereact/multiselect";
+import axiosInstance from "../utils/axiosInstance";
 
 const AddNewMovie = () => {
   const [movie, setMovie] = useState("");
@@ -46,7 +47,7 @@ const AddNewMovie = () => {
       setGenre(editingMovie.genre);
       setFile(editingMovie.file);
       setStatus(editingMovie.status);
-      setSelectedCities(editingMovie.selectedCities);
+      setSelectedCities(editingMovie.language);
     }
 
     const bg = document.getElementById("ImageBg");
@@ -129,8 +130,16 @@ const AddNewMovie = () => {
       addMovie(newMovie);
     }
 
+    
+    await axiosInstance.post("/add-movie",newMovie,{
+      withCredentials:true,
+    })
+    .then(res=>console.log(res.data))
+    .catch(err=>console.log(err));
+
+
     navigate("/movie");
-  };
+  }
 
   return (
     <div>

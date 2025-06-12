@@ -6,6 +6,7 @@ import { MultiSelect } from 'primereact/multiselect';
 import { Calendar } from 'primereact/calendar';
 import { ShowTimeContext } from '../context/ShowTimeContext';
 import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const AddNewShowtime = () => {
 
@@ -89,7 +90,7 @@ const AddNewShowtime = () => {
       setStartDate(editingNewShowTime.startDate);
       setTheatreName(editingNewShowTime.theatrename);
       setTimeArray(editingNewShowTime.timearray);
-      setSelectedCities(editingNewShowTime.selectedCities);
+      setSelectedCities(editingNewShowTime.language);
     }
   },[editingNewShowTime]);
 
@@ -97,6 +98,7 @@ const AddNewShowtime = () => {
     setTimeArray(timearray.filter(t=>t.id!=timearray.id));
   }
 
+  
   const handleSubmit=(e)=>{
     e.preventDefault();
     const newShowTime={
@@ -108,7 +110,10 @@ const AddNewShowtime = () => {
       datetime:datetime,
       timearray:timearray,
       language:selectedCities,
+      archived:false,
     };
+
+   
     if(editingNewShowTime){
       updateShowTime(newShowTime)
     }else{
@@ -146,8 +151,9 @@ const AddNewShowtime = () => {
   // },[datetime12h])
 
   useEffect(()=>{
-    console.log(timearray);
-  },[timearray]);
+    
+    console.log(datetime);
+  },[datetime]);
 
 
 

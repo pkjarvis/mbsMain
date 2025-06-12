@@ -12,12 +12,16 @@ id,
      datetime,
    timearray,
    language,  
+   archived,
 }) => {
 
     const [visible,setVisible]=useState(false)
     const pencilIconRef=useRef(null)
     const deleteIconRef=useRef(null)
     const [check,setCheck]=useState(false);
+    // const [archive,setArchive]=useState(false);
+    const {showtimes}=useContext(ShowTimeContext);
+    const thisShow=showtimes.find(s=>s.id===id);
   
     const handleClick=()=>{
         setVisible(!visible)  
@@ -30,16 +34,18 @@ id,
       navigate("/addnewshows",{state:{showtime:{id,theatrename,startDate,moviename,datetime12h,datetime,timearray,language}}});
     }
 
-    const handleArchive=(id)=>{
+    const handleArchive=()=>{
       setCheck(!check);
       setVisible(!visible);
+     
       
     }
       
 
   return (
     <div>
-         <div className="card-container h-22 w-[100%] mx-auto p-6 mb-7">
+      {/* Add archive condition here */}
+         <div className={thisShow?.archived?"card-container h-22 w-[100%] mx-auto p-6 mb-7 opacity-45":"card-container h-22 w-[100%] mx-auto p-6 mb-7 "}>
           <div className="content flex items-center justify-start border-1 rounded-xl border-zinc-300 ">
               <div className="left w-[6.2%]">
             <img src="../src/assets/Inception.png" alt="MovieBg" className="w-26 h-25 rounded-l-md" />
@@ -77,7 +83,13 @@ id,
              
             </div>
             <div className="right-right">
-              <img src="../src/assets/3Dot.png" alt="3Dot" className="w-1.2 h-4" onClick={handleClick}/>
+              {
+                archived ?
+                 <img src="../src/assets/3Dot.png" alt="3Dot" className="w-1.2 h-4" />
+                 : <img src="../src/assets/3Dot.png" alt="3Dot" className="w-1.2 h-4" onClick={handleClick}/>
+
+              }
+              
               {
               visible
               ?

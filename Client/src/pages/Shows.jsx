@@ -32,6 +32,7 @@ const Shows = () => {
                datetime={s.datetime}
                timearray={s.timearray}
                language={s.language}
+               archived={s.archived}
             />
           ))):(null)
         }

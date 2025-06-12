@@ -5,7 +5,6 @@ import axios from "axios"
 const axiosInstance=axios.create({
     baseURL:"http://localhost:8080/",
     timeout:1000,
-    credentials: "include",
     withCredentials:true,
     body:JSON.stringify({}),
     headers: {
@@ -20,6 +19,7 @@ axiosInstance.interceptors.request.use(
       if(token){
         config.headers['Authorization']=`Bearer ${token}`;
       }
+      console.log("Passed");
      
     }
     return config;
