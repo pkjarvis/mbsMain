@@ -37,6 +37,10 @@ func InitDB(cfg Config) {
         panic(err)
     }
 
+    if err :=db.AutoMigrate(&Theatre{});err!=nil{
+        panic(err)
+    }
+
     if err :=db.AutoMigrate(&Showtime{});err!=nil{
         panic(err)
     }

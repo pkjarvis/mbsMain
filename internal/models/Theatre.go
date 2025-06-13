@@ -16,6 +16,8 @@ import (
 //       theatrefile: theatrefile || editingTheatre?.theatrefile,
 //       value: value,
 
+
+
 type Theatre struct {
 	gorm.Model
 	Id           uint           `json:"id" gorm:"primaryKey"`

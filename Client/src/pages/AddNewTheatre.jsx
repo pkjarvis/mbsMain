@@ -6,6 +6,12 @@ import { FloatLabel } from "primereact/floatlabel";
 import { useLocation, useNavigate } from "react-router-dom";
 import { TheatreContext } from "../context/TheatreContext";
 
+import axiosInstance from "../utils/axiosInstance";
+
+// import { InputText } from "primereact/inputtext";
+// import { classNames } from "primereact/utils";
+
+
 const AddNewTheatre = () => {
   const [theatrename, setTheatreName] = useState("");
   const [address, setAddress] = useState("");
@@ -105,7 +111,7 @@ const AddNewTheatre = () => {
     bg.style.background = "";
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     const newTheatre = {
       id:editingTheatre?editingTheatre.id: Date.now(),
@@ -125,6 +131,14 @@ const AddNewTheatre = () => {
     }else{
       addTheatre(newTheatre);
     }
+
+    // backend call to put data to db when user clicks on add new theatre button
+    await axiosInstance.post("/add-theatre",newTheatre,{
+      withCredentials:true,
+    })
+    .then(res=>console.log(res.data))
+    .catch(err=>console.log(err));
+
 
     navigate("/theatre");
     
@@ -154,8 +168,16 @@ const AddNewTheatre = () => {
               value={theatrename}
               onChange={(e) => setTheatreName(e.target.value)}
               required
-              className="w-[30vw] h-[2vw] text-md  text-zinc-400 border-1 border-gray-300 p-2 rounded-sm mb-1 outline-none"
+              className="w-[30vw] h-[2vw] text-md  text-zinc-500 border-1 border-gray-300 p-2 rounded-sm mb-1 outline-none "
             />
+            {/* <div className="card flex justify-content-center ">
+            <FloatLabel>
+                <InputText id="username" value={theatrename} onChange={(e) => setTheatreName(e.target.value)}     
+                 className="w-[30vw] h-[2vw] text-md  text-zinc-500"
+                 />
+                <label htmlFor="username">Username</label>
+            </FloatLabel>
+            </div> */}
             <textarea
               type="text"
               placeholder="Theatre Address"
@@ -204,16 +226,24 @@ const AddNewTheatre = () => {
                   allowDuplicate={false}
                   pt={{
                     label: { className: "text-sm" },
-                    root:{className:"max-w-[30vw] h-[2vw] rounded-md text-zinc-700 p-1 scroll-auto"},
-                    container:{className:" flex "},
-                    token: {
-                      className: "h-[1.2vw] bg-gray-200 rounded-xl font-xs p-1",
+                    root:{className:"h-[2vw] rounded-md text-zinc-700 p-1 scroll-auto"},
+                    container:{
+                      className:"max-w-[30vw]"
                     },
+                   
+                    token: {
+                      className: "h-[1.2vw]   font-xs p-1",
+                    },
+                    input:{
+                      className:"max-w-[5vw]"
+                    }
+
                     
                   }}
+                  className=""
                  
                 />
-                <label htmlFor="Current Movies">Current Movies</label>
+                <label htmlFor="Current Movies" className="max-w-[30vw]">Current Movies</label>
               </FloatLabel>
             </div>
             <p className="font-semibold text-zinc-600 text-base mb-1">

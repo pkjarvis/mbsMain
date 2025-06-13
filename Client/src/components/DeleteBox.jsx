@@ -2,6 +2,7 @@ import React, { useContext } from 'react'
 import { TheatreContext } from '../context/TheatreContext'
 import { MoviesContext } from '../context/MovieContext';
 import { ShowTimeContext } from '../context/ShowTimeContext';
+import axiosInstance from '../utils/axiosInstance';
 
 const DeleteBox = (props) => {
 
@@ -14,6 +15,9 @@ const DeleteBox = (props) => {
            deleteTheatre(id);
        }
        if(props.type==="movie"){
+           // delete api call 
+           
+           // frontend delete
            deleteMovie(id);
        }
        if(props.type==="blur"){

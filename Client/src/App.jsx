@@ -1,5 +1,5 @@
-import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import React, { useState } from "react";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Login from "./pages/Login";
 import Logout from "./pages/Logout";
 import Dashboard from "./pages/Dashboard";
@@ -19,6 +19,14 @@ import { ShowTimeProvider } from "./context/ShowTimeContext";
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 
 function App() {
+
+const token=localStorage.getItem("token");
+ useState(()=>{
+  console.log("Protected route")
+ },[token])
+
+
+
   return (
     <>
       <PrimeReactProvider>
@@ -27,17 +35,20 @@ function App() {
            <TheatreProvider>
             <ShowTimeProvider>
               <Routes>
+                
+                <Route path="*" element={<Navigate to="/"/>} />
                 <Route path="/" element={<Root />} />
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/logout" element={<Logout />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/movie" element={<MovieManagement />} />
-                <Route path="/theatre" element={<Theatres />} />
-                <Route path="/shows" element={<Shows />} />
-                <Route path="/addnewmovie" element={<AddNewMovie />} />
-                <Route path="/addnewtheatre" element={<AddNewTheatre />} />
-                <Route path="/addnewshows" element={<AddNewShowtime />} />
+                {token ? <Route path="/logout" element={<Logout />} />:<Route path="/" element={<Root />}/>}
+                {token ? <Route path="/dashboard" element={<Dashboard />} /> : <Route path="/" element={<Root />} />}
+                {token ? <Route path="/movie" element={<MovieManagement />} /> :  <Route path="/" element={<Root />} />}
+                {token ? <Route path="/theatre" element={<Theatres />} />: <Route path="/" element={<Root />} />}
+                {token ? <Route path="/shows" element={<Shows />} />: <Route path="/" element={<Root />} />}
+                {token ? <Route path="/addnewmovie" element={<AddNewMovie />} />: <Route path="/" element={<Root />} />}
+                {token ? <Route path="/addnewtheatre" element={<AddNewTheatre />} />: <Route path="/" element={<Root />} />}
+                {token ? <Route path="/addnewshows" element={<AddNewShowtime />} />:  <Route path="/" element={<Root />} />}
+                
               </Routes>
              </ShowTimeProvider>
             </TheatreProvider>

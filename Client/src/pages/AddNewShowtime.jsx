@@ -7,6 +7,7 @@ import { Calendar } from 'primereact/calendar';
 import { ShowTimeContext } from '../context/ShowTimeContext';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import axiosInstance from '../utils/axiosInstance';
 
 const AddNewShowtime = () => {
 
@@ -119,6 +120,13 @@ const AddNewShowtime = () => {
     }else{
       addShowTime(newShowTime); 
     }
+
+    // backend call to put data to db when user clicks on add new showtime
+    axiosInstance.post("/add-showtime",newShowTime,{
+      withCredentials:true,
+    }).then(res=>console.log(res.data))
+    .catch(err=>console.log(err));
+
     navigate("/shows");
 
   };

@@ -34,10 +34,15 @@ id,
       navigate("/addnewshows",{state:{showtime:{id,theatrename,startDate,moviename,datetime12h,datetime,timearray,language}}});
     }
 
-    const handleArchive=()=>{
+    const handleArchive=(id)=>{
       setCheck(!check);
       setVisible(!visible);
-     
+
+      axiosInstance.post("/delete-showtime",id,{
+      withCredentials:true
+      })
+      .then(res=>console.log(res.data))
+      .catch(err=>console.log(err))
       
     }
       

@@ -23,6 +23,11 @@ func AuthRoutes(r *gin.Engine) {
     protected.POST("/add-theatre",controllers.AddTheatre);
     protected.POST("/add-showtime",controllers.AddShowTime);
 
+
+    protected.POST("/delete-movie",controllers.DeleteMovie);
+    protected.POST("/delete-theatre",controllers.DeleteTheatre);
+    protected.POST("/delete-showtime",controllers.DeleteShowTime);
+
  
 }
 

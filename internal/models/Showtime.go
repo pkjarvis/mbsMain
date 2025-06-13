@@ -12,21 +12,17 @@ package models
 
 import (
 	"gorm.io/datatypes"
-	"time"
 	"gorm.io/gorm"
+	"time"
 )
 
 type Showtime struct {
 	gorm.Model
-	Id uint `json:"id" gorm:"primaryKey"`
-	TheatreName string `json:"theatrename"`
-	StartDate time.Time `json:"startDate"`
-	MovieName string `json:"moviename"`
-	ShowStartTime string `json:"datetime12h"`
-	ShowEndTime string `json:"datetime"`
-	TimeArray datatypes.JSON `json:"timearray"`
-	Language datatypes.JSON `json:"language"`
-	Archived  bool `json:"archived"`
-
+	Id          uint           `json:"id" gorm:"primaryKey"`
+	TheatreName string         `json:"theatrename"`
+	StartDate   time.Time      `json:"startDate"`
+	MovieName   string         `json:"moviename"`
+	TimeArray   datatypes.JSON `json:"timearray"`
+	Language    datatypes.JSON `json:"language"`
+	Archived    bool           `json:"archived"`
 }
-

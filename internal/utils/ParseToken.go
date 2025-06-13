@@ -5,28 +5,45 @@ import (
 	"fmt"
 	"go-auth/models"
 	"os"
+   	"github.com/dgrijalva/jwt-go"
+	
+	
 
-	"github.com/dgrijalva/jwt-go"
 )
 
-var jwtKey=[]byte(os.Getenv("SECRET"))
+
 
 func ParseToken(tokenString string) (claims *models.Claims, err error) {
+
+	// err1 := godotenv.Load()
+    // if err1 != nil {
+    //     log.Fatal("Error loading .env file")
+    // }
+
+	secret:=os.Getenv("SECRET")
+	if secret==""{
+		return nil,errors.New("SECRET env  variable is empty")
+	}
+
 	token, err := jwt.ParseWithClaims(tokenString, &models.Claims{}, func(token *jwt.Token) (interface{}, error) {
 		if _,ok:=token.Method.(*jwt.SigningMethodHMAC); !ok{
 			return nil,fmt.Errorf("unexpected signing method")
 		}
-		return []byte(os.Getenv("SECRET")), nil  
+
+
+		return []byte(secret), nil  
 	})
 
-	fmt.Println("Secret is :",jwtKey)
+	fmt.Println("Secret is :",secret)
 	
 
 	if err != nil {
-		return nil,errors.New("invalid signed token");
+		return nil,err;
 	}
 
 	claims, ok := token.Claims.(*models.Claims)
+
+	fmt.Println("Parsed claims",claims)
 
 	if !ok || !token.Valid{
 		return nil,errors.New("invalid token claims")

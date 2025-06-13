@@ -2,6 +2,7 @@ import React, { useContext, useRef, useState } from "react";
 import { MoviesContext } from "../context/MovieContext";
 import { useNavigate } from "react-router-dom";
 import DeleteBox from "./DeleteBox";
+import axiosInstance from "../utils/axiosInstance";
 
 const MovieCard = ({id,movie,description,startDate,endDate,genre,language,status,file}) => {
   const navigate = useNavigate("");
@@ -19,8 +20,15 @@ const MovieCard = ({id,movie,description,startDate,endDate,genre,language,status
   const { movies,deleteMovie,updateMovie } = useContext(MoviesContext);
   
   const handleDelete = (id) => {
+
     setCheck(!check);
     setVisible(!visible);
+
+    // delete movie api call would go here
+    axiosInstance.post("/delete-movie",id,{
+      withCredentials:true
+    }).then(res=>console.log(res.data))
+    .catch(err=>console.log(err))
    
   }
 

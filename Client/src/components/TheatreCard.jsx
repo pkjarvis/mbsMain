@@ -2,6 +2,7 @@ import React,{useContext, useRef,useState} from "react";
 import { TheatreContext } from "../context/TheatreContext";
 import DeleteBox from "./DeleteBox";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "../utils/axiosInstance";
 
 const TheatreCard = ({id,theatrename,address,cityName,stateName,status,totalscreens,theatrefile,value}) => {
 
@@ -18,8 +19,16 @@ const TheatreCard = ({id,theatrename,address,cityName,stateName,status,totalscre
     const {deleteTheatre}=useContext(TheatreContext);
 
     const handleDelete=(id)=>{
+
       setCheck(!check);
       setVisible(!visible);
+
+      axiosInstance.post("/delete-theatre",id,{
+      withCredentials:true
+      })
+      .then(res=>console.log(res.data))
+      .catch(err=>console.log(err))
+   
 
       // deleteTheatre(id);
     };
@@ -166,7 +175,7 @@ const TheatreCard = ({id,theatrename,address,cityName,stateName,status,totalscre
                         deleteIconRef.current.src="../src/assets/DeleteDarkIcon.png"
                       }
                     }}
-                    onClick={handleDelete}
+                    onClick={()=>handleDelete(id)}
                    >
                     <img src="../src/assets/DeleteDarkIcon.png" alt="DeleteIcon" className="w-[0.9vw] h-[0.9vw]" ref={deleteIconRef} />
                     <p className='text-md font-medium text-zinc-500 para '>Delete</p>

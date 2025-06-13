@@ -1,367 +1,438 @@
 package controllers
 
 import (
+	"encoding/json"
+	"fmt"
+	"io"
+
+	// "fmt"
 	"go-auth/models"
-	"os"
-	"time"
 	"go-auth/utils"
-	"github.com/dgrijalva/jwt-go" 
+	"os"
+	"strconv"
+	"time"
+
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-    "encoding/json"
 	"gorm.io/datatypes"
-    "github.com/joho/godotenv"
-    "log"
-    
+
+	"log"
 )
 
+func Login(c *gin.Context) {
 
+	var user models.User
 
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
 
+	var existingUser models.User
 
+	models.DB.Where("email = ?", user.Email).First(&existingUser)
 
-  func Login(c *gin.Context) {
+	if existingUser.ID == 0 {
+		c.JSON(400, gin.H{"error": "user does not exist"})
+		return
+	}
 
-      var user models.User
+	errHash := utils.CompareHashPassword(user.Password, existingUser.Password)
 
-      if err := c.ShouldBindJSON(&user); err != nil {
-          c.JSON(400, gin.H{"error": err.Error()})
-          return
-      }
+	if !errHash {
+		c.JSON(400, gin.H{"error": "invalid password"})
+		return
+	}
 
-      var existingUser models.User
+	expirationTime := time.Now().Add(24 * 7 * time.Hour)
 
-      models.DB.Where("email = ?", user.Email).First(&existingUser)
+	claims := &models.Claims{
+		Role: "admin",
+		StandardClaims: jwt.StandardClaims{
+			Subject:   existingUser.Email,
+			ExpiresAt: expirationTime.Unix(),
+			IssuedAt:  time.Now().Unix(),
+		},
+	}
 
-      if existingUser.ID == 0 {
-          c.JSON(400, gin.H{"error": "user does not exist"})
-          return
-      }
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-      errHash := utils.CompareHashPassword(user.Password, existingUser.Password)
+	secret := (os.Getenv("SECRET"))
+	if secret == "" {
+		log.Fatal("SECRET env is empty")
+	}
 
-      if !errHash {
-          c.JSON(400, gin.H{"error": "invalid password"})
-          return
-      }
+	tokenString, err := token.SignedString([]byte(secret))
 
-      expirationTime := time.Now().Add(15 * time.Minute)
+	if err != nil {
+		c.JSON(500, gin.H{"error": "could not generate token"})
+		return
+	}
 
-      claims := &models.Claims{
-          Role: existingUser.Role,
-          StandardClaims: jwt.StandardClaims{
-              Subject:   existingUser.Email,
-              ExpiresAt: expirationTime.Unix(),
-          },
-      }
+	// SetCookie(name, value string, maxAge int, path, domain string, secure, httpOnly bool)
+	c.SetCookie("token", tokenString, 7*24*60*60, "/", "localhost", false, true)
 
-      token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	c.JSON(200, gin.H{"token": tokenString,
+		"msg": "logged in ",
+	})
 
-      err1 := godotenv.Load()
-      if err1 != nil {
-          log.Fatal("Error loading .env file")
-        }
-        var jwtKey = []byte(os.Getenv("SECRET"));
+}
 
-      tokenString, err := token.SignedString(jwtKey)
+func Signup(c *gin.Context) {
+	var user models.User
 
-      if err != nil {
-          c.JSON(500, gin.H{"error": "could not generate token"})
-          return
-      }
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
 
-      // SetCookie(name, value string, maxAge int, path, domain string, secure, httpOnly bool)
-      c.SetCookie("token", tokenString, 7*24*60*60, "/", "localhost", false, true)
+	var existingUser models.User
 
+	models.DB.Where("email = ?", user.Email).First(&existingUser)
 
+	if existingUser.ID != 0 {
+		c.JSON(400, gin.H{"error": "user already exists"})
+		return
+	}
 
+	user.Role = "admin"
 
+	var errHash error
+	user.Password, errHash = utils.GenerateHashPassword(user.Password)
 
-      c.JSON(200,gin.H{"token":tokenString,
-      "msg":"logged in ",
-    })
-      
+	if errHash != nil {
+		c.JSON(500, gin.H{"error": "could not generate password hash"})
+		return
+	}
 
-  }
+	models.DB.Create(&user)
 
+	c.JSON(200, gin.H{"success": "user created"})
+}
 
+func Home(c *gin.Context) {
 
-  func Signup(c *gin.Context) {
-      var user models.User
+	cookie, err := c.Cookie("token")
 
-      if err := c.ShouldBindJSON(&user); err != nil {
-          c.JSON(400, gin.H{"error": err.Error()})
-          return
-      }
+	if err != nil {
+		c.JSON(401, gin.H{"error": "unauthorized"})
+		return
+	}
 
-      var existingUser models.User
-
-      models.DB.Where("email = ?", user.Email).First(&existingUser)
-
-      if existingUser.ID != 0 {
-          c.JSON(400, gin.H{"error": "user already exists"})
-          return
-      }
-
-      user.Role="admin";
-
-      var errHash error
-      user.Password, errHash = utils.GenerateHashPassword(user.Password)
-
-      if errHash != nil {
-          c.JSON(500, gin.H{"error": "could not generate password hash"})
-          return
-      }
-
-      models.DB.Create(&user)
-
-      c.JSON(200, gin.H{"success": "user created"})
-  }
-
-
-
-
-  func Home(c *gin.Context) {
-
-      cookie, err := c.Cookie("token")
-
-      if err != nil {
-          c.JSON(401, gin.H{"error": "unauthorized"})
-          return
-      }
-
-      claims, err := utils.ParseToken(cookie)
-
-      if err != nil {
-          c.JSON(401, gin.H{"error": "unauthorized"})
-          return
-      }
-
-      if claims.Role != "user" && claims.Role != "admin" {
-          c.JSON(401, gin.H{"error": "unauthorized"})
-          return
-      }
-
-      c.JSON(200, gin.H{"success": "home page", "role": claims.Role})
-  }
-
-
-  func Premium(c *gin.Context) {
-
-      cookie, err := c.Cookie("token")
-
-      if err != nil {
-          c.JSON(401, gin.H{"error": "unauthorized"})
-          return
-      }
-
-      claims, err := utils.ParseToken(cookie)
-
-      if err != nil {
-          c.JSON(401, gin.H{"error": "unauthorized"})
-          return
-      }
-
-      if claims.Role != "admin" {
-          c.JSON(401, gin.H{"error": "unauthorized"})
-          return
-      }
-
-      c.JSON(200, gin.H{"success": "premium page", "role": claims.Role})
-  }
-
-
-  func Logout(c *gin.Context) {
-      c.SetCookie("token", "", -1, "/", "localhost", false, true)
-      c.JSON(200, gin.H{"success": "user logged out"})
-  }
-
-
-  func AddMovie(c*gin.Context){
-    // Here this struct gets mapped to model but json validates the tpes coming from frontend
-    
-    var input struct{
-        Id           uint    `json:"id"`
-        Movie        string `json:"movie"`
-        Description  string `json:"description"`
-        Genre        string `json:"genre"`
-        StartDate    string `json:"startDate"`
-        EndDate      string `json:"endDate"`
-        Language    []string `json:"language"`
-        Status       string `json:"status"`
-        MovieURL     string `json:"file"`
-    }
-
-    if err:=c.ShouldBindJSON(&input);err!=nil{
-        c.JSON(400,gin.H{
-            "error":err.Error(),
-        })
-        return
-    }
-
-    languagebytes,err:=json.Marshal(input.Language)
-
-    if err!=nil{
-        c.JSON(500,gin.H{"error":"failed to marshal language"})
-        return
-    }
-    
-
-
-    // parsing into time format 
-    
-   dateFormat:="Mon Jan 2 2006 15:04:05 GMT-0700 (MST)"
-   parsedStartDate,err:=time.Parse(dateFormat,input.StartDate)
-   if err!=nil{
-    c.JSON(400,gin.H{"error":"Invalid StartDate format"+err.Error()})
-   }
-
-   parsedEndDate,err:=time.Parse(dateFormat,input.EndDate)
-   if err!=nil{
-    c.JSON(400,gin.H{"error":"Invalid EndDate format"+err.Error()})
-   }
-
-
-    movie:=models.Movie{
-        Id: input.Id,
-        Title:input.Movie,
-        Description:input.Description,
-        Genre:input.Genre,
-        StartDate:parsedStartDate,
-        EndDate:parsedEndDate,
-        Languages:datatypes.JSON(languagebytes),
-        Status:input.Status,
-        MovieURL:input.MovieURL,
-    }
-
-    if err:=models.DB.Create(&movie).Error;err!=nil{
-        c.JSON(500,gin.H{"error":"failed to create movie"})
-    }
-
-    c.JSON(200,gin.H{"message":"movie added","movie":movie})
-
-
-  }
-
-
-func AddTheatre(c*gin.Context){
-    var input struct{
-        Id uint `json:"id"`
-        Theatre string `json:"theatrename"`
-        Address string `json:"address"`
-        CityName string `json:"cityName"`
-        StateName string `json:"stateName"`
-        Status string `json:"status"`
-        TotalScreens uint `json:"totalscreens"`
-        TheatreURL  string `json:"theatrefile"`
-        Value []string `json:"value"`
-    }
-
-    if err:=c.ShouldBindJSON(&input);err!=nil{
-        c.JSON(400,gin.H{"error":err.Error()})
-        return
-    }
-
-    valuebytes,err:=json.Marshal(input.Value)
-
-    if err!=nil{
-        c.JSON(500,gin.H{"error":"failed to marshal value"})
-        return
-    }
-
-    theatre:=models.Theatre{
-        Id:input.Id,
-        TheatreName:input.Theatre,
-        Address:input.Address,
-        CityName: input.CityName,
-        StateName: input.StateName,
-        Status:input.Status,
-        TotalScreens: input.TotalScreens,
-        TheatreURL: input.TheatreURL,
-        Value: valuebytes,
-    }
-
-    if err:=models.DB.Create(&theatre).Error;err!=nil{
-        c.JSON(500,gin.H{"error":"failed to create theatre"})
-        return
-    }
-    c.JSON(200,gin.H{"message":"theatre added","theatre":theatre})
+	claims, err := utils.ParseToken(cookie)
+
+	if err != nil {
+		c.JSON(401, gin.H{"error": "unauthorized"})
+		return
+	}
+
+	if claims.Role != "user" && claims.Role != "admin" {
+		c.JSON(401, gin.H{"error": "unauthorized"})
+		return
+	}
+
+	c.JSON(200, gin.H{"success": "home page", "role": claims.Role})
+}
+
+func Premium(c *gin.Context) {
+
+	cookie, err := c.Cookie("token")
+
+	if err != nil {
+		c.JSON(401, gin.H{"error": "unauthorized"})
+		return
+	}
+
+	claims, err := utils.ParseToken(cookie)
+
+	if err != nil {
+		c.JSON(401, gin.H{"error": "unauthorized"})
+		return
+	}
+
+	if claims.Role != "admin" {
+		c.JSON(401, gin.H{"error": "unauthorized"})
+		return
+	}
+
+	c.JSON(200, gin.H{"success": "premium page", "role": claims.Role})
+}
+
+func Logout(c *gin.Context) {
+	c.SetCookie("token", "", -1, "/", "localhost", false, true)
+	c.JSON(200, gin.H{"success": "user logged out"})
+}
+
+func AddMovie(c *gin.Context) {
+	// Here this struct gets mapped to model but json validates the tpes coming from frontend
+
+	type Language struct {
+		Name string `json:"name"`
+		Code string `json:"code"`
+	}
+
+	var input struct {
+		Id          uint       `json:"id"`
+		Movie       string     `json:"movie"`
+		Description string     `json:"description"`
+		Genre       string     `json:"genre"`
+		StartDate   string     `json:"startDate"`
+		EndDate     string     `json:"endDate"`
+		Language    []Language `json:"language"`
+		Status      string     `json:"status"`
+		File        string     `json:"file"`
+	}
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	languagebytes, err := json.Marshal(input.Language)
+
+	if err != nil {
+		c.JSON(500, gin.H{"error": "failed to marshal language"})
+		return
+	}
+
+	// parsing into time format  , here we need to pass this reference time else it would give error
+
+	layout := "2006-01-02"
+	parsedStartDate, err := time.Parse(layout, input.StartDate)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "Invalid StartDate format" + err.Error()})
+		return
+	}
+
+	parsedEndDate, err := time.Parse(layout, input.EndDate)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "Invalid EndDate format" + err.Error()})
+		return
+	}
+
+	movie := models.Movie{
+		Id:          input.Id,
+		Title:       input.Movie,
+		Description: input.Description,
+		Genre:       input.Genre,
+		StartDate:   parsedStartDate,
+		EndDate:     parsedEndDate,
+		Languages:   datatypes.JSON(languagebytes),
+		Status:      input.Status,
+		MovieURL:    input.File,
+	}
+
+	if err := models.DB.Create(&movie).Error; err != nil {
+		c.JSON(500, gin.H{"error": "failed to create movie"})
+		return
+	}
+
+	c.JSON(200, gin.H{"message": "movie added", "movie": movie})
+
+}
+
+func AddTheatre(c *gin.Context) {
+	var input struct {
+		Id           uint     `json:"id"`
+		Theatre      string   `json:"theatrename"`
+		Address      string   `json:"address"`
+		CityName     string   `json:"cityName"`
+		StateName    string   `json:"stateName"`
+		Status       string   `json:"status"`
+		TotalScreens string   `json:"totalscreens"`
+		TheatreURL   string   `json:"theatrefile"`
+		Value        []string `json:"value"`
+	}
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	totalScreensInt, err := strconv.Atoi(input.TotalScreens)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "Invalid TotalScreensInt"})
+		return
+	}
+
+	valuebytes, err := json.Marshal(input.Value)
+
+	if err != nil {
+		c.JSON(500, gin.H{"error": "failed to marshal value"})
+		return
+	}
+
+	theatre := models.Theatre{
+		Id:           input.Id,
+		TheatreName:  input.Theatre,
+		Address:      input.Address,
+		CityName:     input.CityName,
+		StateName:    input.StateName,
+		Status:       input.Status,
+		TotalScreens: uint(totalScreensInt),
+		TheatreURL:   input.TheatreURL,
+		Value:        valuebytes,
+	}
+
+	if err := models.DB.Create(&theatre).Error; err != nil {
+		c.JSON(500, gin.H{"error": "failed to create theatre"})
+		return
+	}
+	c.JSON(200, gin.H{"message": "theatre added", "theatre": theatre})
+
+}
+
+func AddShowTime(c *gin.Context) {
+	type Timearray struct {
+		Val1 string `json:"val1"`
+		Val2 string `json:"val2"`
+	}
+
+	type Language struct {
+		Name string `json:"name"`
+		Code string `json:"code"`
+	}
+
+	var input struct {
+		Id          uint        `json:"id"`
+		TheatreName string      `json:"theatrename"`
+		StartDate   string      `json:"startDate"`
+		MovieName   string      `josn:"moviename"`
+		TimeArray   []Timearray `json:"timearray"`
+		Language    []Language  `json:"language"`
+		Archived    bool        `json:"archived"`
+	}
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	languagebytes, err := json.Marshal(input.Language)
+
+	if err != nil {
+		c.JSON(500, gin.H{"error": "failed to marshal language"})
+		return
+	}
+
+	timearraybytes, err := json.Marshal(input.TimeArray)
+
+	if err != nil {
+		c.JSON(500, gin.H{"error": "failed to marshal timearray"})
+		return
+	}
+
+	// parsing into time format
+	dateFormat := "2006-01-02"
+
+	parsedStartDate, err := time.Parse(dateFormat, input.StartDate)
+
+	if err != nil {
+		c.JSON(400, gin.H{"error": "Invalid StartDate format" + err.Error()})
+		return
+	}
+
+	showtime := models.Showtime{
+		Id:          input.Id,
+		TheatreName: input.TheatreName,
+		StartDate:   parsedStartDate,
+		MovieName:   input.MovieName,
+		TimeArray:   timearraybytes,
+		Language:    languagebytes,
+		Archived:    input.Archived,
+	}
+
+	if err := models.DB.Create(&showtime).Error; err != nil {
+		c.JSON(500, gin.H{"error": "failed to add showtime"})
+	}
+
+	c.JSON(200, gin.H{"message": "showtime added", "showtime": showtime})
 
 }
 
 
-func AddShowTime(c*gin.Context){
-    var input struct{
-        Id uint `json:"id"`
-        TheatreName string `json:"theatrename"`
-        StartDate string `json:"startDate"`
-        MovieName string `josn:"moviename"`
-        ShowStartTime string `json:"datetime12h"`
-        ShowEndTime string `json:"datetime"`
-        TimeArray []string `json:"timearray"`
-        Language []string `json:"language"`
-        Archived bool `json:"archived"`
-    }
+// Delete Controller Call
 
-    if err:=c.ShouldBindJSON(&input);err!=nil{
-        c.JSON(400,gin.H{
-            "error":err.Error(),
-        })
-        return
-    }
+func DeleteMovie(c *gin.Context) {
 
-    languagebytes,err:=json.Marshal(input.Language)
-    
-    if err!=nil{
-        c.JSON(500,gin.H{"error":"failed to marshal language"})
-        return
-    }
+	// for reading raw data we use io.read all
+	data,err:=io.ReadAll(c.Request.Body)
+	if err!=nil{
+		c.JSON(400,gin.H{"message":"Failed to read request body"})
+		return
+	}
 
-    timearraybytes,err:=json.Marshal(input.TimeArray)
+	// convert to base64
+	// For ParseInt, the 0 means infer the base from the string. 64 requires that the result fit in 64 bits.
+	id,err:=strconv.ParseInt(string(data),0,64)
+	if err!=nil{
+		c.JSON(400,gin.H{"message":"Error in parsing"})
+		return
+	}
 
-    if err!=nil{
-        c.JSON(500,gin.H{"error":"failed to marshal timearray"})
-    }
-
-
-    // parsing into time format
-    dateFormat:="Mon Jan 2 2006 15:04:05 GMT-0700 (MST)"
-
-
-    // parsedShowStartTime,err:=time.Parse(dateFormat,input.ShowStartTime)
-
-    // if err!=nil{
-    //     c.JSON(400,gin.H{"error":"Invalid ShowStartTime format"+err.Error()})
-    // }
-
-    // parsedShowEndTime,err:=time.Parse(dateFormat,input.ShowEndTime)
-
-    // if err!=nil{
-    //     c.JSON(400,gin.H{"error":"Invalid ShowEndTime format"+err.Error()})
-    // }
-
-    parsedStartDate,err:=time.Parse(dateFormat,input.StartDate)
-
-    if err!=nil{
-        c.JSON(400,gin.H{"error":"Invalid StartDate format"+err.Error()})
-    }
-
-    showtime:=models.Showtime{
-        Id:input.Id,
-        TheatreName: input.TheatreName,
-        StartDate: parsedStartDate,
-        MovieName: input.MovieName,
-        ShowStartTime:input.ShowStartTime,
-        ShowEndTime: input.ShowEndTime,
-        TimeArray: timearraybytes,
-        Language: languagebytes,
-        Archived: input.Archived,
-
-    }
-
-    if err:=models.DB.Create(&showtime).Error;err!=nil{
-        c.JSON(500,gin.H{"error":"failed to add showtime"})
-    }
-
-    c.JSON(200,gin.H{"message":"showtime added","showtime":showtime})
+	// Fetch movie
+	var movie models.Movie
+	if err := models.DB.First(&movie, id).Error; err != nil {
+		c.JSON(400, gin.H{"message": "Data with id doesn't exist"})
+		return
+	}
+	
+	// Delete movie
+	models.DB.Delete(&movie)
+	c.JSON(200, gin.H{"message": "succesfully deleted", "id": id})
 
 }
+
+func DeleteTheatre(c*gin.Context){
+	data,err:=io.ReadAll(c.Request.Body)
+	if err!=nil{
+		c.JSON(400,gin.H{"message":"Invalid theatre body"})
+		return 
+	}
+	fmt.Println("Data is:",data)
+	
+	id,err:=strconv.ParseInt(string(data),0,64)
+	if err!=nil{
+		c.JSON(400,gin.H{"message":"Parsing error"})
+		return
+	}
+
+	fmt.Print("Parsed id is",id)
+
+	var theatre models.Theatre
+	if err:=models.DB.First(&theatre,id).Error;err!=nil{
+		c.JSON(400,gin.H{"message":"Data doesn't exist"})
+		return
+	}
+
+	models.DB.Delete(&theatre)
+	c.JSON(200,gin.H{"message":"successfully deleted theatre","id":id})
+	
+}
+
+func DeleteShowTime(c*gin.Context){
+	data,err:=io.ReadAll(c.Request.Body)
+	if err!=nil{
+		c.JSON(400,gin.H{"message":"Invalid body data"})
+		return
+	}
+
+	id,err:=strconv.ParseInt(string(data),0,64)
+	if(err!=nil){
+		c.JSON(400,gin.H{"message":"Invalid Parsing"})
+		return
+	}
+
+	var showtime models.Showtime
+	if err:=models.DB.First(&showtime,id).Error;err!=nil{
+		c.JSON(400,gin.H{"message":"Data doesn't exist in db"})
+		return 
+	}
+	models.DB.Delete(&showtime)
+	c.JSON(200,gin.H{"message":"successfully deleted showtime","id":id})
+}
+
