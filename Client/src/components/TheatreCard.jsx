@@ -2,7 +2,7 @@ import React,{useContext, useRef,useState} from "react";
 import { TheatreContext } from "../context/TheatreContext";
 import DeleteBox from "./DeleteBox";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "../utils/axiosInstance";
+
 
 const TheatreCard = ({id,theatrename,address,cityName,stateName,status,totalscreens,theatrefile,value}) => {
 
@@ -16,21 +16,13 @@ const TheatreCard = ({id,theatrename,address,cityName,stateName,status,totalscre
     const handleClick=()=>{
         setVisible(!visible);
     };
-    const {deleteTheatre}=useContext(TheatreContext);
+    // const {deleteTheatre}=useContext(TheatreContext);
 
     const handleDelete=(id)=>{
 
       setCheck(!check);
       setVisible(!visible);
-
-      axiosInstance.post("/delete-theatre",id,{
-      withCredentials:true
-      })
-      .then(res=>console.log(res.data))
-      .catch(err=>console.log(err))
-   
-
-      // deleteTheatre(id);
+     
     };
 
     const handleUpdate=()=>{

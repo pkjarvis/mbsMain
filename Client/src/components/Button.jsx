@@ -2,7 +2,7 @@ import React from 'react'
 
 const Button = (props) => {
   return (
-    <div className="button-container cursor-pointer h-[1.8vw] w-[8vw] bg-pink-500  flex items-center  p-3 text-base text-white font-[Inter] font-semibold rounded-xl justify-center">
+    <div className="button-container cursor-pointer h-[1.8vw] w-[8vw]  bg-pink-500  flex items-center  p-3 text-sm text-white font-[Inter] font-semibold rounded-xl justify-center">
         {
         props.title=="Go to Movies"
         ?<a href="http://localhost:5173/movie">{props.title}</a>

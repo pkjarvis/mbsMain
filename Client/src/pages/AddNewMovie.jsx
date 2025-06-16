@@ -12,6 +12,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { MultiSelect } from "primereact/multiselect";
 import axiosInstance from "../utils/axiosInstance";
 
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+
 const AddNewMovie = () => {
   const [movie, setMovie] = useState("");
   const [description, setDescription] = useState("");
@@ -64,24 +67,22 @@ const AddNewMovie = () => {
     fileInputRef.current.click();
   };
 
-  // done to persist image on render
-  const convertToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
-    });
-  };
-
   const handleFileChange = async (e) => {
     e.preventDefault();
     const val = e.target.files[0];
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      const base64String = reader.result;
+      setFile(base64String);
+    };
 
     if (val) {
+      reader.readAsDataURL(val);
       console.log("file", val);
       let bg = document.getElementById("ImageBg");
       let imageUrl = val ? URL.createObjectURL(val) : "";
+      // let imageUrl=val?convertToBase64(val):"";
       setFile(imageUrl);
       bg.style.background = `url(${imageUrl})`;
       bg.style.backgroundSize = "cover";
@@ -102,44 +103,62 @@ const AddNewMovie = () => {
     bg.style.background = "";
   };
 
+  const handleRemoveFile=()=>{
+    file="";
+    setFile(file);
+   
+    
+  }
+
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // var filebase64="";
-    // if(file){
-    //   filebase64=await convertToBase64(file);
-    // }
-
     const newMovie = {
       id: editingMovie ? editingMovie.id : Date.now(),
-      movie: movie,
-      description: description,
-      startDate: startDate,
-      endDate: endDate,
-      genre: genre,
+      movie,
+      description,
+      startDate,
+      endDate,
+      genre,
       language: selectedCities,
-      status: status,
+      status,
       file: file || editingMovie?.file,
     };
 
+    console.log(newMovie);
+
     if (editingMovie) {
+      // update api call
+      await axiosInstance
+        .post("/update-movie", newMovie, {
+          withCredentials: true,
+        })
+        .then((res) => console.log(res.data))
+        .catch((err) => console.log(err));
+
       updateMovie(newMovie);
     } else {
       addMovie(newMovie);
+
+      // add api call
+      await axiosInstance
+        .post("/add-movie", newMovie, {
+          withCredentials: true,
+        })
+        .then((res) => console.log(res.data))
+        .catch((err) => console.log(err));
     }
 
-    
-    await axiosInstance.post("/add-movie",newMovie,{
-      withCredentials:true,
-    })
-    .then(res=>console.log(res.data))
-    .catch(err=>console.log(err));
-
-
-    navigate("/movie");
-  }
+    navigate("/movie", {
+      state: {
+        toastMessage: editingMovie
+          ? "Movie has been updated successfully"
+          : "Movie has been added successfully",
+      },
+    });
+  };
 
   return (
     <div>
@@ -159,29 +178,122 @@ const AddNewMovie = () => {
         <div className="info flex flex-col place-items-center mt-[1.8vw]">
           <div className="flex flex-col justify-between gap-2">
             <p className="font-semibold text-base">Basic Info</p>
-            <input
+            {/* <input
               type="text"
               placeholder="Movie Title"
               required
               value={movie}
               className="w-[30vw] h-[2vw] className='text-sm text-gray-500' border-1 border-gray-300 p-2 rounded-sm mb-1 outline-none"
               onChange={(e) => setMovie(e.target.value)}
-            />
-            <textarea
+            /> */}
+            <Box
+              component="form"
+              sx={{ "& > :not(style)": { width: "30vw", margin: "0.2vw 0" } }}
+              noValidate
+              autoComplete="off"
+            >
+              <TextField
+                id="outlined-basic"
+                label="Movie Title"
+                variant="outlined"
+                value={movie}
+                onChange={(e) => setMovie(e.target.value)}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    // Default border color for outlined input
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#A1A2A4", // Grey border by default
+                      borderWidth: "1px",
+                    },
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#A1A2A4", // Keep grey on hover if not focused
+                    },
+                    // Styles when the input itself is focused
+                    "&.Mui-focused": {
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#000", // Black border when focused
+                        borderWidth: "1px", // Keep border width consistent
+                      },
+                    },
+                  },
+                  // Target the label component directly
+                  "& .MuiInputLabel-root": {
+                    color: "#A1A2A4", // Default label color (grey)
+                    fontWeight: "normal", // Assuming default is normal, if you want bold when focused
+                    "&.Mui-focused": {
+                      color: "#000", // Black label when focused
+                      fontWeight: "light", // Bold label when focused
+                    },
+                    // Optional: Keep label black when it has a value (shrunk) and is not focused
+                    "&.MuiInputLabel-shrink": {
+                      color: "#000", // Black label when shrunk (has value)
+                    },
+                  },
+                }}
+              />
+            </Box>
+
+            {/* <textarea
               type="text"
               placeholder="Movie Description"
               required
               value={description}
               className="w-[30vw] h-[8vw]  border-1 border-gray-300 p-2  rounded-sm mb-1 outline-none "
               onChange={(e) => setDescription(e.target.value)}
-            />
+            /> */}
+            <Box
+              component="form"
+              sx={{ "& > :not(style)": { width: "30vw", margin: "0.2vw 0" } }}
+              noValidate
+              autoComplete="off"
+            >
+              <TextField
+                id="outlined-basic"
+                label="Movie Description"
+                variant="outlined"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    // Default border color for outlined input
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#A1A2A4", // Grey border by default
+                      borderWidth: "1px",
+                    },
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#A1A2A4", // Keep grey on hover if not focused
+                    },
+                    // Styles when the input itself is focused
+                    "&.Mui-focused": {
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#000", // Black border when focused
+                        borderWidth: "1px", // Keep border width consistent
+                      },
+                    },
+                  },
+                  // Target the label component directly
+                  "& .MuiInputLabel-root": {
+                    color: "#A1A2A4", // Default label color (grey)
+                    fontWeight: "normal", // Assuming default is normal, if you want bold when focused
+                    "&.Mui-focused": {
+                      color: "#000", // Black label when focused
+                      fontWeight: "light", // Bold label when focused
+                    },
+                    // Optional: Keep label black when it has a value (shrunk) and is not focused
+                    "&.MuiInputLabel-shrink": {
+                      color: "#000", // Black label when shrunk (has value)
+                    },
+                  },
+                }}
+              />
+            </Box>
             <div className="flex items-center justify-between mb-1">
               <select
                 id="genre"
                 placeholder="Genre"
                 value={genre}
                 onChange={(e) => setGenre(e.target.value)}
-                className="w-[14vw] h-[2vw] border-1 border-gray-300 rounded-sm p-1 flex items-center justify-between outline-none"
+                className="w-[14vw] h-[2vw] border-1 border-[#A1A2A4] rounded-sm p-1 flex items-center justify-between outline-none"
               >
                 <option id="default">Genre</option>
                 <option id="thriller">Thriller</option>
@@ -204,7 +316,7 @@ const AddNewMovie = () => {
                   display="chip"
                   placeholder="Language(s)"
                   maxSelectedLabels={3}
-                  className="w-full md:w-20rem"
+                  className="w-full md:w-20rem border-[#A1A2A4]"
                   pt={{
                     root: {
                       onFocus: "outline-none border-none",
@@ -223,13 +335,13 @@ const AddNewMovie = () => {
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="outline-none border-1 border-zinc-300 rounded-sm p-1 text-center w-[14vw]"
+                className="outline-none border-1 border-[#A1A2A4] rounded-sm p-1 text-center w-[14vw]"
               />
               <input
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="outline-none border-1 border-zinc-300 rounded-sm p-1 text-center w-[14vw]"
+                className="outline-none border-1 border-[#A1A2A4] rounded-sm p-1 text-center w-[14vw]"
               />
             </div>
 
@@ -237,7 +349,7 @@ const AddNewMovie = () => {
               id="language"
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="w-[100%] h-[2vw]  border-1 border-gray-300 rounded-sm p-2 flex items-center justify-between outline-none"
+              className="w-[100%] h-[2vw]  border-1 border-[#A1A2A4] rounded-sm p-2 flex items-center justify-between outline-none"
             >
               <option value="">Status</option>
               <option id="nowshowing" className="outline-none">
@@ -266,6 +378,9 @@ const AddNewMovie = () => {
                   <p className=" text-gray-500 text-xs mx-auto hidden">
                     Upload file here
                   </p>
+                  <span onClick={handleRemoveFile} className="cursor-pointer">
+                    <p className="ml-[6vw] mb-[5.8vw] w-[1vw] h-[1vw] bg-black text-white flex items-center justify-center text-center rounded-xl text-xs font-semibold">x</p>
+                  </span>
                 </div>
               ) : (
                 <div>

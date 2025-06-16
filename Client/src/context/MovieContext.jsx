@@ -1,4 +1,5 @@
 import React,{ createContext,useEffect,useState} from 'react'
+import axiosInstance from '../utils/axiosInstance';
 
 export const MoviesContext=createContext({
     movies:[],
@@ -28,6 +29,8 @@ export const MoviesProvider = ({children}) => {
     // stringify transforms into json string
     localStorage.setItem('movies',JSON.stringify(movies))
   },[movies]);
+
+   
 
   const addMovie = (movie)=>{
     setMovies([...movies,movie]);

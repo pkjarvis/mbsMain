@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS users{
+    Id BIGINT PRIMARY KEY,
+    Name TEXT NOT NULL,
+    Email TEXT NOT NULL,
+    Password TEXT NOT NULL,
+    Role TEXT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    deleted_at TIMESTAMP
+
+}

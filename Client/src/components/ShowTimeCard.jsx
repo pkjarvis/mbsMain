@@ -36,14 +36,7 @@ id,
 
     const handleArchive=(id)=>{
       setCheck(!check);
-      setVisible(!visible);
-
-      axiosInstance.post("/delete-showtime",id,{
-      withCredentials:true
-      })
-      .then(res=>console.log(res.data))
-      .catch(err=>console.log(err))
-      
+      setVisible(!visible);      
     }
       
 
@@ -70,12 +63,11 @@ id,
                 <p className='w-auto h-auto bg-zinc-300 text-[0.7vw] border-1 border-zinc-300 rounded-xl text-center items-center px-1 flex place-items-center font-thin text-zinc-800'>9:00 PM - 12:00 AM</p> */}
                 {
                   timearray?.map((item,index)=>(
-                    <p key={index} className='w-auto h-auto bg-zinc-300 text-[0.7vw] border-1 border-zinc-300 rounded-xl text-center items-center px-1 flex place-items-center font-thin text-zinc-800'>{item.val1}-{item.val2}</p>
+                    <p key={index} className='w-auto h-auto bg-zinc-300 text-[0.7vw] border-1 border-zinc-300 rounded-xl text-center items-center px-1 flex place-items-center font-light text-zinc-800'>{item.val1}-{item.val2}</p>
                   ))
                 }
               </span>
               <span className='flex gap-1'>
-                {/* <p className="text-xs font-light text-zinc-700">Hindi, English, Spanish, German, Sanskrit</p> */}
                 {
                   language?.map((item,index)=>(
                     <p key={index} className="text-xs font-light text-zinc-700">{item.name},</p>

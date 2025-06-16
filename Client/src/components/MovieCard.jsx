@@ -1,8 +1,10 @@
 import React, { useContext, useRef, useState } from "react";
-import { MoviesContext } from "../context/MovieContext";
+
 import { useNavigate } from "react-router-dom";
 import DeleteBox from "./DeleteBox";
-import axiosInstance from "../utils/axiosInstance";
+import { toast } from "react-toastify";
+
+
 
 const MovieCard = ({id,movie,description,startDate,endDate,genre,language,status,file}) => {
   const navigate = useNavigate("");
@@ -17,20 +19,19 @@ const MovieCard = ({id,movie,description,startDate,endDate,genre,language,status
     setVisible(!visible);
   };
 
-  const { movies,deleteMovie,updateMovie } = useContext(MoviesContext);
+ 
   
   const handleDelete = (id) => {
 
     setCheck(!check);
     setVisible(!visible);
-
-    // delete movie api call would go here
-    axiosInstance.post("/delete-movie",id,{
-      withCredentials:true
-    }).then(res=>console.log(res.data))
-    .catch(err=>console.log(err))
+    
+    
+   
    
   }
+
+
 
   const handleUpdate=()=>{
     navigate("/addnewmovie",{state:{movie:{id,movie,description,startDate,endDate,genre,language,status,file}}});
@@ -57,13 +58,13 @@ const MovieCard = ({id,movie,description,startDate,endDate,genre,language,status
             <div className="right-left flex flex-col">
               <span className="stream-tag flex items-center">
                 {
-                  status==="nowShowing"
+                  status==="Now Showing"
                   ?(
                   <p className="bg-green-300 rounded-xl  p-1 text-xs">
                   {status}
                   </p>)
                   :(
-                  status==="expired"
+                  status==="Expired"
                   ?(
                   <p className="bg-orange-300 rounded-xl  p-1 text-xs">
                   {status}
@@ -83,7 +84,7 @@ const MovieCard = ({id,movie,description,startDate,endDate,genre,language,status
               <p className="font-semibold">{movie}</p>
               <span className="tags flex gap-2">
                 {language?.map((lang,index)=>(
-                  <p key={index} className="font-thin text-xs border-0.4 rounded-md bg-zinc-300 w-auto p-0.7 text-center">{lang.name}</p>
+                  <p key={index} className="font-normal text-xs border-0.4 rounded-md bg-zinc-300 w-auto p-0.9 text-center">{lang.name}</p>
                 ))}
               </span>
               <p className="font-light text-sm">{genre}</p>
@@ -91,12 +92,13 @@ const MovieCard = ({id,movie,description,startDate,endDate,genre,language,status
             {
                 check?<DeleteBox name={movie} id={id} val={check} func={setCheck} type="movie" status="Delete"/>:null
               }
-            <div className="right-right">
+            <div className="right-right cursor-pointer">
               <img
                 src="../src/assets/3Dot.png"
                 alt="3Dot"
                 className="w-1.2 h-4"
                 onClick={handleClick}
+                
               />
               {visible ? (
                 <div className="hidden-card w-[8.5vw] h-[5vw]  bg-white py-2 mt-[-2vw] px-4 rounded-xl gap-3  absolute right-[4vw] shadow-[0_4px_4px_0px_rgb(0,0,0,0.45)] border-1 border-gray-200">

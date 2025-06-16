@@ -69,11 +69,16 @@ func Login(c *gin.Context) {
 		return
 	}
 
+
 	// SetCookie(name, value string, maxAge int, path, domain string, secure, httpOnly bool)
 	c.SetCookie("token", tokenString, 7*24*60*60, "/", "localhost", false, true)
 
-	c.JSON(200, gin.H{"token": tokenString,
+	fmt.Println("User",existingUser.Name)
+
+	c.JSON(200, gin.H{
 		"msg": "logged in ",
+		"token": tokenString,
+		"username":existingUser.Name,
 	})
 
 }
@@ -162,6 +167,8 @@ func Logout(c *gin.Context) {
 	c.SetCookie("token", "", -1, "/", "localhost", false, true)
 	c.JSON(200, gin.H{"success": "user logged out"})
 }
+
+// Add Controller calls
 
 func AddMovie(c *gin.Context) {
 	// Here this struct gets mapped to model but json validates the tpes coming from frontend
@@ -354,23 +361,22 @@ func AddShowTime(c *gin.Context) {
 
 }
 
-
 // Delete Controller Call
 
 func DeleteMovie(c *gin.Context) {
 
 	// for reading raw data we use io.read all
-	data,err:=io.ReadAll(c.Request.Body)
-	if err!=nil{
-		c.JSON(400,gin.H{"message":"Failed to read request body"})
+	data, err := io.ReadAll(c.Request.Body)
+	if err != nil {
+		c.JSON(400, gin.H{"message": "Failed to read request body"})
 		return
 	}
 
 	// convert to base64
 	// For ParseInt, the 0 means infer the base from the string. 64 requires that the result fit in 64 bits.
-	id,err:=strconv.ParseInt(string(data),0,64)
-	if err!=nil{
-		c.JSON(400,gin.H{"message":"Error in parsing"})
+	id, err := strconv.ParseInt(string(data), 0, 64)
+	if err != nil {
+		c.JSON(400, gin.H{"message": "Error in parsing"})
 		return
 	}
 
@@ -380,59 +386,238 @@ func DeleteMovie(c *gin.Context) {
 		c.JSON(400, gin.H{"message": "Data with id doesn't exist"})
 		return
 	}
-	
+
 	// Delete movie
 	models.DB.Delete(&movie)
 	c.JSON(200, gin.H{"message": "succesfully deleted", "id": id})
 
 }
 
-func DeleteTheatre(c*gin.Context){
-	data,err:=io.ReadAll(c.Request.Body)
-	if err!=nil{
-		c.JSON(400,gin.H{"message":"Invalid theatre body"})
-		return 
+func DeleteTheatre(c *gin.Context) {
+	data, err := io.ReadAll(c.Request.Body)
+	if err != nil {
+		c.JSON(400, gin.H{"message": "Invalid theatre body"})
+		return
 	}
-	fmt.Println("Data is:",data)
-	
-	id,err:=strconv.ParseInt(string(data),0,64)
-	if err!=nil{
-		c.JSON(400,gin.H{"message":"Parsing error"})
+	fmt.Println("Data is:", data)
+
+	id, err := strconv.ParseInt(string(data), 0, 64)
+	if err != nil {
+		c.JSON(400, gin.H{"message": "Parsing error"})
 		return
 	}
 
-	fmt.Print("Parsed id is",id)
+	fmt.Print("Parsed id is", id)
 
 	var theatre models.Theatre
-	if err:=models.DB.First(&theatre,id).Error;err!=nil{
-		c.JSON(400,gin.H{"message":"Data doesn't exist"})
+	if err := models.DB.First(&theatre, id).Error; err != nil {
+		c.JSON(400, gin.H{"message": "Data doesn't exist"})
 		return
 	}
 
 	models.DB.Delete(&theatre)
-	c.JSON(200,gin.H{"message":"successfully deleted theatre","id":id})
-	
+	c.JSON(200, gin.H{"message": "successfully deleted theatre", "id": id})
+
 }
 
-func DeleteShowTime(c*gin.Context){
-	data,err:=io.ReadAll(c.Request.Body)
-	if err!=nil{
-		c.JSON(400,gin.H{"message":"Invalid body data"})
+func ArchiveShowTime(c *gin.Context) {
+	data, err := io.ReadAll(c.Request.Body)
+	if err != nil {
+		c.JSON(400, gin.H{"message": "Invalid body data"})
 		return
 	}
 
-	id,err:=strconv.ParseInt(string(data),0,64)
-	if(err!=nil){
-		c.JSON(400,gin.H{"message":"Invalid Parsing"})
+	id, err := strconv.ParseInt(string(data), 0, 64)
+	if err != nil {
+		c.JSON(400, gin.H{"message": "Invalid Parsing"})
 		return
 	}
 
 	var showtime models.Showtime
-	if err:=models.DB.First(&showtime,id).Error;err!=nil{
-		c.JSON(400,gin.H{"message":"Data doesn't exist in db"})
-		return 
+	if err := models.DB.First(&showtime, id).Error; err != nil {
+		c.JSON(400, gin.H{"message": "Data doesn't exist in db"})
+		return
 	}
-	models.DB.Delete(&showtime)
-	c.JSON(200,gin.H{"message":"successfully deleted showtime","id":id})
+	showtime.Archived=true
+	models.DB.Save(&showtime)
+	c.JSON(200, gin.H{"message": "successfully deleted showtime", "id": id})
+
 }
 
+// Update Controllers
+
+func UpdateMovie(c *gin.Context) {
+
+	var input struct {
+		Id          uint            `json:"id"`
+		Movie       string          `json:"movie"`
+		Description string          `json:"description"`
+		Genre       string          `json:"genre"`
+		StartDate   string          `json:"startDate"`
+		EndDate     string          `json:"endDate"`
+		Language    json.RawMessage `json:"language"`
+		Status      string          `json:"status"`
+		File        string          `json:"file"`
+	}
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	// parsing into time format  , here we need to pass this reference time else it would give error
+
+	layout := "2006-01-02"
+	parsedStartDate, err := time.Parse(layout, input.StartDate)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "Invalid StartDate format" + err.Error()})
+		return
+	}
+
+	parsedEndDate, err := time.Parse(layout, input.EndDate)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "Invalid EndDate format" + err.Error()})
+		return
+	}
+
+	update := models.Movie{
+		Id:          input.Id,
+		Title:       input.Movie,
+		Description: input.Description,
+		Genre:       input.Genre,
+		StartDate:   parsedStartDate,
+		EndDate:     parsedEndDate,
+		Languages:   datatypes.JSON(input.Language),
+		Status:      input.Status,
+		MovieURL:    input.File,
+	}
+
+	// model was not updating previously then i google this way
+	if err := models.DB.Model(&models.Movie{}).Where("id =?", update.Id).Updates(update).Error; err != nil {
+		c.JSON(400, gin.H{"message": "Failed to update movie"})
+		return
+	}
+
+	c.JSON(200, gin.H{"message": "movie updated", "movie": update})
+
+}
+
+func UpdateTheatre(c *gin.Context) {
+
+	var input struct {
+		Id           uint            `json:"id"`
+		Address      string          `json:"address"`
+		CityName     string          `json:"cityName"`
+		StateName    string          `json:"stateName"`
+		Status       string          `json:"status"`
+		TheatreName  string          `json:"theatrename"`
+		TheatreFile  string          `json:"theatrefile"`
+		TotalScreens uint          `json:"totalscreens"`
+		Value        json.RawMessage `json:"value"`
+	}
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(400, gin.H{"message": err.Error()})
+		return
+	}
+
+	
+	update := models.Theatre{
+		Id:           input.Id,
+		Address:      input.Address,
+		CityName:     input.CityName,
+		StateName:    input.StateName,
+		Status:       input.Status,
+		TheatreURL:   input.TheatreFile,
+		TotalScreens: input.TotalScreens,
+		Value:        datatypes.JSON(input.Value),
+		TheatreName:  input.TheatreName,
+	}
+
+	if err := models.DB.Model(&models.Theatre{}).Where("id =?", update.Id).Updates(update).Error; err != nil {
+		c.JSON(400, gin.H{"message": "Updates Failed"})
+		return
+	}
+
+	c.JSON(200, gin.H{"message": "Theatre Updated Successfully!", "theatre": update})
+
+}
+
+func UpdateShowTime(c *gin.Context) {
+	var input struct{
+		Id uint `json:"id"`
+		MovieName string `json:"moviename"`
+		TheatreName string `json:"theatrename"`
+		Archived bool `json:"archived"`
+		StartDate string `json:"startDate"`
+		Language json.RawMessage `json:"language"`
+		TimeArray json.RawMessage `json:"timearray"`
+	}
+
+	if err:=c.ShouldBindJSON(&input);err!=nil{
+		c.JSON(400,gin.H{"message":err.Error()})
+		return 
+	}
+
+	// Parse StartDate 
+	layout := "2006-01-02"
+	parsedStartDate, err := time.Parse(layout, input.StartDate)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "Invalid StartDate format" + err.Error()})
+		return
+	}
+
+	update:=models.Showtime{
+		Id:input.Id,
+		MovieName: input.MovieName,
+		TheatreName: input.TheatreName,
+		Archived: input.Archived,
+		StartDate: parsedStartDate,
+		Language: datatypes.JSON(input.Language),
+		TimeArray: datatypes.JSON(input.TimeArray),
+
+	}
+
+	if err:=models.DB.Model(&models.Showtime{}).Where("id =?",update.Id).Updates(update).Error;err!=nil{
+		c.JSON(400,gin.H{"message":"Failed to update showtime"})
+		return 
+	}
+
+	c.JSON(200,gin.H{"message":"Successfully updated showtime","showtime":update})
+
+
+
+}	
+
+
+func GetMovies(c*gin.Context){
+	var movies []models.Movie
+	if err:=models.DB.Find(&movies).Error; err!=nil{
+		c.JSON(400,gin.H{"message":"Failed to fetch movies"})
+		return
+	}
+
+	c.JSON(200,movies)
+
+
+}
+
+func GetTheatres(c*gin.Context){
+	var theatres []models.Theatre
+	if err:=models.DB.Find(&theatres).Error;err!=nil{
+		c.JSON(400,gin.H{"message":"Failed to fetch theatres"})
+		return
+	}
+	c.JSON(200,theatres)
+}
+
+func GetShowTime(c*gin.Context){
+	var showtime []models.Showtime
+	if err:=models.DB.Find(&showtime).Error;err!=nil{
+		c.JSON(400,gin.H{"message":"Failed to fetch showtime"})
+		return
+	}
+	c.JSON(200,showtime)
+}

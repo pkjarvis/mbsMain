@@ -1,20 +1,65 @@
-import React, { useContext } from 'react'
+import React, { useContext ,useState,useEffect} from 'react'
 import Navbar from '../components/Navbar'
 import AddButton from '../components/AddButton'
 import MainHeader from '../components/MainHeader'
 import TheatreCard from '../components/TheatreCard'
 import { TheatreContext } from '../context/TheatreContext'
+import axiosInstance from '../utils/axiosInstance'
+import { toast, ToastContainer } from 'react-toastify'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 const Theatres = () => {
 
-  const {theatres}=useContext(TheatreContext)
+  // const {theatres}=useContext(TheatreContext)
+
+
+   const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (location.state?.toastMessage) {
+      toast.success(location.state.toastMessage);
+      navigate(location.pathname,{replace:true,state:{}});
+      
+    }
+  }, [location,navigate]);
+
+
+  
+  const [theatres, setTheatres] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Get movies api call
+  useEffect(() => {
+    axiosInstance
+      .get("/get-theatres", { withCredentials: true })
+      .then((res) => {
+        console.log(res.data);
+        setTheatres(res.data);
+      })
+      .catch((err) =>
+        console.log("Error fetching movies", err.response?.data || err.message)
+      )
+      .finally(() => setLoading(false));
+  }, []);
 
   return (
    <div>
+      <ToastContainer
+          position="top-center"
+          autoClose={2000}
+          theme="colored"
+          newestOnTop
+          hideProgressBar={true}
+          toastClassName={() =>
+            "relative flex p-3 rounded-md justify-between items-center text-white bg-[rgba(31,132,90,1)] shadow-lg mt-12"
+          }
+        />
        
         <MainHeader title="Manage Theatres" btncontent="+Add New Theatres" headerlink="Theatre Management" btnlink="http://localhost:5173/addnewtheatre" />
-        {
-          theatres.length>0?(theatres.map((t)=>(
+        { loading?(<p className="text-center mt-8">Loading Theatres ...</p>)
+          :theatres.length>0
+          ?(theatres.map((t)=>(
             <TheatreCard
               key={t.id}
               id={t.id}
@@ -30,9 +75,9 @@ const Theatres = () => {
 
             />
           )))
-          :(
-            null
-          )
+          :
+            <p className="text-center text-gray-500 mt-8">No theatres added yet</p>
+          
         }
         
         

@@ -25,4 +25,5 @@ type Showtime struct {
 	TimeArray   datatypes.JSON `json:"timearray"`
 	Language    datatypes.JSON `json:"language"`
 	Archived    bool           `json:"archived"`
+	
 }

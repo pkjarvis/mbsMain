@@ -1,0 +1,8 @@
+.env
+*.env
+
+*.log
+*.tmp
+temp/
+cache/
+go.sum
