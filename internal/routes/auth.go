@@ -11,9 +11,26 @@ import (
 
 func AuthRoutes(r *gin.Engine) {
 
-	r.POST("/signup", controllers.Signup)
+	// r.POST("/signup", controllers.Signup)
 
-	r.POST("/login", controllers.Login)
+	// r.POST("/login", controllers.Login)
+
+	// Signup routes
+	// Signup routes
+	r.POST("/user/signup", func(c *gin.Context) {
+		controllers.SignupWithRole(c, "user")
+	})
+	r.POST("/admin/signup", func(c *gin.Context) {
+		controllers.SignupWithRole(c, "admin")
+	})
+
+	// Login routes
+	r.POST("/user/login", func(c *gin.Context) {
+		controllers.LoginWithRole(c, "user")
+	})
+	r.POST("/admin/login", func(c *gin.Context) {
+		controllers.LoginWithRole(c, "admin")
+	})
 
 	// protected routes
 	protected := r.Group("/")
@@ -34,9 +51,21 @@ func AuthRoutes(r *gin.Engine) {
 	protected.POST("/update-theatre", controllers.UpdateTheatre)
 	protected.POST("/update-showtime", controllers.UpdateShowTime)
 
-	// get data api's
-	protected.GET("/get-movies",controllers.GetMovies)
-	protected.GET("/get-theatres",controllers.GetTheatres)
-	protected.GET("/get-showtime",controllers.GetShowTime)
+	// public api's
+
+	r.GET("/get-movies", controllers.GetMovies)
+	r.GET("/get-theatres", controllers.GetTheatres)
+	r.GET("/get-showtime", controllers.GetShowTime)
+
+	r.POST("/payment-success", controllers.PaymentSuccess)
+	r.POST("/payment-failure", controllers.PaymentFailure)
+
+	
+	// user routes
+	user := r.Group("/")
+	user.Use(middlewares.IsAuthorized(), middlewares.UserAuthorized())
+	user.POST("/add-review", controllers.AddReview)
+	user.GET("/get-review", controllers.GetReviews)
+	user.POST("/api-payu", controllers.Payment)
 
 }

@@ -4,7 +4,7 @@ import axios from "axios"
 
 const axiosInstance=axios.create({
     baseURL:"http://localhost:8080/",
-    timeout:1000,
+    timeout:5000,
     withCredentials:true,
     body:JSON.stringify({}),
     headers: {
@@ -13,18 +13,21 @@ const axiosInstance=axios.create({
 })   
 
 axiosInstance.interceptors.request.use(
-  config=>{
-    if (!['/signup', '/login'].includes(config.url)){
-      const token=localStorage.getItem('token');
-      if(token){
-        config.headers['Authorization']=`Bearer ${token}`;
+ (config) => {
+    // Exclude token from these routes
+    if (
+      !config.url.endsWith("/admin/signup") &&
+      !config.url.endsWith("/admin/login")
+    ) {
+      const token = localStorage.getItem("adminToken");
+      if (token) {
+        config.headers["Authorization"] = `Bearer ${token}`;
       }
-      console.log("Passed");
-     
     }
+    console.log("no error");
     return config;
   },
-  (error)=>Promise.reject(error)
+  (error) => Promise.reject(error)
 );
 
 axiosInstance.interceptors.response.use(

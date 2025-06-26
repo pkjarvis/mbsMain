@@ -22,7 +22,7 @@ const AddNewMovie = () => {
   const [endDate, setEndDate] = useState(new Date());
   const [genre, setGenre] = useState("");
   const [status, setStatus] = useState("");
-  const [file, setFile] = useState("");
+  var [file, setFile] = useState("");
 
   const [selectedCities, setSelectedCities] = useState("");
   const cities = [

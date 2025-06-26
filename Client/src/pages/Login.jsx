@@ -30,7 +30,7 @@ const Login = () => {
 
     try {
       // posting login method to axiosInstance
-      const response = await axiosInstance.post("/login", {
+      const response = await axiosInstance.post("/admin/login", {
         email,
         password,
       });
@@ -38,8 +38,8 @@ const Login = () => {
       // handle successful register
       if (response.data && response.data.token) {
         console.log(response);
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("userName", response.data.username);
+        localStorage.setItem("adminToken", response.data.token);
+        localStorage.setItem("adminName", response.data.username);
         console.log("1");
         navigate("/dashboard");
         console.log("2");

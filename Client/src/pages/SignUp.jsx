@@ -10,7 +10,7 @@ const SignUp = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
 
-  const navigate = useNavigate();
+  const navigate = useNavigate("");
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -38,17 +38,18 @@ const SignUp = () => {
     try {
       // posting login method to axiosInstance
       console.log("No error1");
-      const response = await axiosInstance.post("/signup", {
+      const response = await axiosInstance.post("/admin/signup", {
         name: name? name.toUpperCase():"",
         email: email,
         password: password,
       });
-      console.log(response);
-
+      
+      console.log("REsponse: ",response);
+      console.log("Signup successfull!")
       navigate("/login");
     } catch (error) {
       // handle error while login
-      console.log(error);
+      console.log("Full Error",error);
       if (
         error.response &&
         error.response.data &&

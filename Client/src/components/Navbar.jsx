@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Navbar = (props) => {
-  const username = localStorage.getItem("userName");
+  const username = localStorage.getItem("adminName");
   useEffect(() => {
     console.log(username);
   }, [username]);
@@ -15,8 +15,8 @@ const Navbar = (props) => {
 
   const navigate=useNavigate("");
   const handleLogout=()=>{
-    localStorage.setItem("token","");
-    localStorage.setItem("userName","");
+    localStorage.setItem("adminToken","");
+    localStorage.setItem("adminName","");
     navigate("/");
   }
 
