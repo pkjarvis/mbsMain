@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
+
 	// "strings"
 
 	// "io/ioutil"
@@ -19,6 +21,7 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"gorm.io/datatypes"
 )
 
@@ -81,7 +84,7 @@ func LoginWithRole(c *gin.Context, expectedRole string) {
 		"username": existingUser.Name,
 		"role":     existingUser.Role,
 		"userId":   existingUser.Id,
-		"email":existingUser.Email,
+		"email":    existingUser.Email,
 	})
 }
 
@@ -674,12 +677,16 @@ func generateRandomTnxId() string {
 	return fmt.Sprintf("TXN-%d", time.Now().UnixNano())
 }
 
-
 // ngrok used for using public url instead of local - https://122f-139-5-254-235.ngrok-free.app
 
 func generatePayuPayment(tx models.Transaction) map[string]interface{} {
-	key := "xDpsoc"
-	salt := "HA9gtGE1u8ctxEL9GQIdkZUwdCEUdmlM"
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	key := os.Getenv("KEY")
+	salt := os.Getenv("SALT")
 
 	actionURL := "https://test.payu.in/_payment"
 
@@ -690,7 +697,7 @@ func generatePayuPayment(tx models.Transaction) map[string]interface{} {
 
 	// PayU hash format must be exact
 	hashString := fmt.Sprintf(
-		"%s|%s|%.2f|%s|%s|%s|||||||||||%s", 
+		"%s|%s|%.2f|%s|%s|%s|||||||||||%s",
 		key,
 		tx.TransactionId,
 		tx.Amount,
@@ -772,16 +779,11 @@ func Payment(c *gin.Context) {
 	})
 }
 
-
 func PaymentSuccess(c *gin.Context) {
 	fmt.Println("Check if controller is running or not")
 
-
-
 	txnId := c.PostForm("txnid")
 	status := c.PostForm("status")
-
-
 
 	if status == "success" {
 		if err := models.DB.Model(&models.Transaction{}).Where("transaction_id = ?", txnId).Update("status", "paid").Error; err != nil {
@@ -789,8 +791,6 @@ func PaymentSuccess(c *gin.Context) {
 			c.Abort()
 			return
 		}
-		
-		
 
 	}
 	fmt.Println("redirect message")
@@ -814,7 +814,6 @@ func PaymentFailure(c *gin.Context) {
 
 }
 
-
 //------------------------
 
 func GetReviews(c *gin.Context) {
@@ -826,15 +825,14 @@ func GetReviews(c *gin.Context) {
 	c.JSON(200, gin.H{"reviews": review})
 }
 
-
-func UpdateProfile(c*gin.Context){
-	var input struct{
-		Name string `json:"name"`
+func UpdateProfile(c *gin.Context) {
+	var input struct {
+		Name  string `json:"name"`
 		Email string `json:"email"`
 	}
 
-	if err:=c.ShouldBindJSON(&input);err!=nil{
-		c.JSON(400,gin.H{"message":"Binding failed with input payload"})
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(400, gin.H{"message": "Binding failed with input payload"})
 		return
 	}
 
@@ -851,37 +849,33 @@ func UpdateProfile(c*gin.Context){
 	}
 
 	var user models.User
-	if err:=models.DB.First(&user,userID).Error;err!=nil{
-		c.JSON(404,gin.H{"message":"user not found"})
+	if err := models.DB.First(&user, userID).Error; err != nil {
+		c.JSON(404, gin.H{"message": "user not found"})
 		return
 	}
-	user.Name=input.Name
-	user.Email=input.Email
+	user.Name = input.Name
+	user.Email = input.Email
 
-	if err:=models.DB.Save(&user).Error;err!=nil{
-		c.JSON(500,gin.H{"message":"Failed to update user model"})
+	if err := models.DB.Save(&user).Error; err != nil {
+		c.JSON(500, gin.H{"message": "Failed to update user model"})
 		return
 	}
 
-	c.JSON(200,gin.H{"message":"Successfully updated User","update":user})
+	c.JSON(200, gin.H{"message": "Successfully updated User", "update": user})
 
 }
 
-
-
-func GetBookedSeats(c*gin.Context){
+func GetBookedSeats(c *gin.Context) {
 	var transactions []models.Transaction
-	if err:=models.DB.Where("status = ?","paid").Find(&transactions).Error;err!=nil{
-		c.JSON(500,gin.H{"error":"Failed to fetch transactions"})
+	if err := models.DB.Where("status = ?", "paid").Find(&transactions).Error; err != nil {
+		c.JSON(500, gin.H{"error": "Failed to fetch transactions"})
 		return
 	}
-	c.JSON(200,gin.H{"tickets":transactions})
+	c.JSON(200, gin.H{"tickets": transactions})
 
 }
 
-
-
-func GetPaidTicketUser(c*gin.Context){
+func GetPaidTicketUser(c *gin.Context) {
 	var transactions []models.Transaction
 	userIDVal, exists := c.Get("userId")
 	if !exists {
@@ -895,11 +889,10 @@ func GetPaidTicketUser(c*gin.Context){
 		return
 	}
 
-	if err:=models.DB.Preload("Movie").Where("status = ? AND user_id = ?","paid",userID).Find(&transactions).Error;err!=nil{
-		c.JSON(500,gin.H{"error":"Failed to fetch transactions"})
+	if err := models.DB.Preload("Movie").Where("status = ? AND user_id = ?", "paid", userID).Find(&transactions).Error; err != nil {
+		c.JSON(500, gin.H{"error": "Failed to fetch transactions"})
 		return
 	}
 
-
-	c.JSON(200,gin.H{"tickets":transactions})
+	c.JSON(200, gin.H{"tickets": transactions})
 }
