@@ -10,6 +10,7 @@ import (
 )
 
 func AuthRoutes(r *gin.Engine) {
+	
 
 	// r.POST("/signup", controllers.Signup)
 
@@ -57,8 +58,7 @@ func AuthRoutes(r *gin.Engine) {
 	r.GET("/get-theatres", controllers.GetTheatres)
 	r.GET("/get-showtime", controllers.GetShowTime)
 
-	r.POST("/payment-success", controllers.PaymentSuccess)
-	r.POST("/payment-failure", controllers.PaymentFailure)
+	
 
 	
 	// user routes
@@ -67,5 +67,8 @@ func AuthRoutes(r *gin.Engine) {
 	user.POST("/add-review", controllers.AddReview)
 	user.GET("/get-review", controllers.GetReviews)
 	user.POST("/api-payu", controllers.Payment)
+	user.POST("/update-profile",controllers.UpdateProfile)
+	user.GET("/booked-seats",controllers.GetBookedSeats)
+	user.GET("/get-paid-ticket",controllers.GetPaidTicketUser)
 
 }

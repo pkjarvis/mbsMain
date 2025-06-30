@@ -1,25 +1,26 @@
 package main
 
 import (
-	
 	"go-auth/models"
 	"go-auth/routes"
     "time"
 	"log"
 	"os"
-  
-
+    "go-auth/controllers"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
     "github.com/gin-contrib/cors"
-	
+
 )
 
 func main() {
     // Create a new gin instance
+    
     r := gin.Default()
 
 
+    r.POST("/payment-success", controllers.PaymentSuccess)
+	r.POST("/payment-failure", controllers.PaymentFailure)
 
     r.Use(cors.New(cors.Config{ 
         AllowOrigins:     []string{"http://localhost:5173","http://localhost:3000"},

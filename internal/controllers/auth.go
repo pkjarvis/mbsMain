@@ -81,6 +81,7 @@ func LoginWithRole(c *gin.Context, expectedRole string) {
 		"username": existingUser.Name,
 		"role":     existingUser.Role,
 		"userId":   existingUser.Id,
+		"email":existingUser.Email,
 	})
 }
 
@@ -667,15 +668,18 @@ func AddReview(c *gin.Context) {
 
 }
 
-// Payu integration
+// Payu integration  ---------------------------
 
 func generateRandomTnxId() string {
 	return fmt.Sprintf("TXN-%d", time.Now().UnixNano())
 }
 
+
+// ngrok used for using public url instead of local - https://122f-139-5-254-235.ngrok-free.app
+
 func generatePayuPayment(tx models.Transaction) map[string]interface{} {
 	key := "xDpsoc"
-	salt := "MIIEuwIBADANBgkqhkiG9w0BAQEFAASCBKUwggShAgEAAoIBAQCiIr1XFDEF6LULpaRoTOUjhyKAEOyV4/hybOPm4VuNn3Z5HzJUn/Z428nGkeMKK1UPfIkMOgx3PzqCSVHCaVskg0BjZNz8tF0Z1+wFnpPjQW2oBaCVGO2GhhdRVjo+4BPXWYcUeWAElSEYJgwhJ6XJi7QtXgXif0Xd0xzvpR40PupCpFlOYGXe25AX49Mf2d1M/xWMb1pwBl5V7lVmISBjlP6WnKO8KC3skmXVRxJpRnTDxSLYBbvtpEmsTjQa5h9P/OBl2YSAcgEMd5fXquKXTMfsqMOPWYNzFJqMpx6cuuj2beUTSRpwCGGtjZ2VVm0PV0gzfrCzCohusTEtmGetAgMBAAECgf9lxs9HWkvSHPUip1gM7dG1lTgsknMkCqoEXVZMGCrgbx+itXKV39QlCdLsU0FLoOfd6miDkSAO7iHl2lPFNipNQUoQTcBq4TP2hRQjphr8QC+vL9kdvtT1HQQfvedrw9cXCs9AivBuVmHv4Fi83aaBKrE8lhW1MfxcwtxNkqWv8gG5BR4TTU6F0fJSeg7GBwXwaadi0QSDNZKlcz/nfxBW66R6EhNOhB6ZXmL+n+j1g9OzAy+d8A9DwlSPMKGBX0GoWgFP/Lis4/O2813aLUr9Y4lPbZgLbieMApCpS5+I+TcE2+Ddbmii2MF5GvT35yQwSrUcOwxTQX/hUsQJ/LECgYEAw7fTL1SB2f8GKHM9QDgIjDZ/wys9OMNyE2MvwuOQRHLxfdQbFagpyYSYDSByvcu8Eev9rO465H4K+8LdjgGiwhYijEDyHteNf7oyYlp7eAFVy93FQCIE7XD9WAbTqTu3VcMaxBBetn+gehOnxQCT+7wEpv76IC4tZ03JicEJgQUCgYEA1BL6hMlAOkWV5E9i5u/3PG6I5CTeA4UHff75XJQs3hzzLuHeL6XFAFbzhORInUiXoW0khFzuPoBLu1LdyXiuUTsdS5ld3VsiRWpSJHBfIqJCnKMY34wyVlLBN5OWyeuc53vZbPX/JEURGPQgGmpKJ0NW7+XC6xLL4p/VQs33rIkCgYAvyDFG3NrW3ewi8/+ALi3oDWYjv+qycQTots5yRhxymZ1bmu0B3IxXJof4rHNW4uaHeZX1IjQ+lIcZ7/knMj8KI11L4I87+GQTSuICIRUDt0+69emyPpv1XCB93SzPpESeK4PdWiHFbGNBaosLDZkTXFPGcXmfYaa0EcmiV/56AQKBgQDISsRf9NK8NkxCvNdj1O9kG+Ed19P27wUMcmuAjFFz1VO3y4rU5XMRxw1nTVNneM/8neAHQt2gGftsh+8AAQJhpbsdU1PbY98SQEAkOh0f0K+o0EEFoJtJ/A6QNswLGIOv/MB0sECwOKrVLnvDdu9h9a9+EznsWmxFNT9tQKnSQQKBgGSgK5smH/YRtzPeg7tqQ/JxcYV3QT1T9jV9YNG3FESwKEnX8/ygqaq6iII+28NtGgCVyhGOXJGDTF+WFf/wmK94fABw6Km1Y7iO0clsWUWQuVdqcLjC1jC19JRov6I5Q9wkjmNE07zD6qXfCMbJWUtNXWLya/9bQzyb1vYCM2zB"
+	salt := "HA9gtGE1u8ctxEL9GQIdkZUwdCEUdmlM"
 
 	actionURL := "https://test.payu.in/_payment"
 
@@ -720,22 +724,6 @@ func generatePayuPayment(tx models.Transaction) map[string]interface{} {
 		"actionURL": actionURL,
 	}
 
-	// return map[string]interface{}{
-	// 	"payuFormFields": map[string]string{
-	// 		"key":              key,
-	// 		"txnid":            tx.TransactionId,
-	// 		"amount":           fmt.Sprintf("%.2f", tx.Amount),
-	// 		"productinfo":      productinfo,
-	// 		"firstname":        firstname,
-	// 		"email":            email,
-	// 		"phone":            "9999999999", // can be dynamic later
-	// 		"surl":             "http://localhost:8080/payment-success",
-	// 		"furl":             "http://localhost:8080/payment-failure",
-	// 		"hash":             hashHex,
-	// 		"service_provider": "payu_paisa",
-	// 	},
-	// 	"actionURL": actionURL,
-	// }
 }
 
 func Payment(c *gin.Context) {
@@ -784,30 +772,16 @@ func Payment(c *gin.Context) {
 	})
 }
 
-// type check struct{
-// 	TxnId string `json:"txnid"`
-// 	Status string `json:"status"`
-// }
 
 func PaymentSuccess(c *gin.Context) {
 	fmt.Println("Check if controller is running or not")
 
-	// bytearray,_:=io.ReadAll(c.Request.Body)
 
-	// var data check
-	// err:=json.Unmarshal(bytearray,&data)
-	// if err!=nil{
-	// 	fmt.Println("error in unmarshal")
-	// }
-	// txnId:=data.TxnId
-	// status:=data.Status
 
 	txnId := c.PostForm("txnid")
 	status := c.PostForm("status")
 
-	// fmt.Println("Passed 1")
-	// fmt.Println("TransactionId",txnId)
-	// fmt.Println("Status",status)
+
 
 	if status == "success" {
 		if err := models.DB.Model(&models.Transaction{}).Where("transaction_id = ?", txnId).Update("status", "paid").Error; err != nil {
@@ -815,11 +789,13 @@ func PaymentSuccess(c *gin.Context) {
 			c.Abort()
 			return
 		}
-		fmt.Print("Transaction status updated to paid")
-		c.Redirect(302, "http://localhost:3000/payment-status?success=true")
-		c.JSON(200, gin.H{"message": "successfully paid", "txnId": txnId})
+		
+		
 
 	}
+	fmt.Println("redirect message")
+
+	c.Redirect(302, "http://localhost:3000/payment-status?success=true")
 
 }
 
@@ -838,6 +814,9 @@ func PaymentFailure(c *gin.Context) {
 
 }
 
+
+//------------------------
+
 func GetReviews(c *gin.Context) {
 	var review []models.Review
 	if err := models.DB.Find(&review).Error; err != nil {
@@ -845,4 +824,82 @@ func GetReviews(c *gin.Context) {
 		return
 	}
 	c.JSON(200, gin.H{"reviews": review})
+}
+
+
+func UpdateProfile(c*gin.Context){
+	var input struct{
+		Name string `json:"name"`
+		Email string `json:"email"`
+	}
+
+	if err:=c.ShouldBindJSON(&input);err!=nil{
+		c.JSON(400,gin.H{"message":"Binding failed with input payload"})
+		return
+	}
+
+	userIDVal, exists := c.Get("userId")
+	if !exists {
+		c.JSON(401, gin.H{"message": "Unauthorized"})
+		return
+	}
+
+	userID, ok := userIDVal.(uint)
+	if !ok {
+		c.JSON(400, gin.H{"message": "Invalid userId format"})
+		return
+	}
+
+	var user models.User
+	if err:=models.DB.First(&user,userID).Error;err!=nil{
+		c.JSON(404,gin.H{"message":"user not found"})
+		return
+	}
+	user.Name=input.Name
+	user.Email=input.Email
+
+	if err:=models.DB.Save(&user).Error;err!=nil{
+		c.JSON(500,gin.H{"message":"Failed to update user model"})
+		return
+	}
+
+	c.JSON(200,gin.H{"message":"Successfully updated User","update":user})
+
+}
+
+
+
+func GetBookedSeats(c*gin.Context){
+	var transactions []models.Transaction
+	if err:=models.DB.Where("status = ?","paid").Find(&transactions).Error;err!=nil{
+		c.JSON(500,gin.H{"error":"Failed to fetch transactions"})
+		return
+	}
+	c.JSON(200,gin.H{"tickets":transactions})
+
+}
+
+
+
+func GetPaidTicketUser(c*gin.Context){
+	var transactions []models.Transaction
+	userIDVal, exists := c.Get("userId")
+	if !exists {
+		c.JSON(401, gin.H{"message": "Unauthorized"})
+		return
+	}
+
+	userID, ok := userIDVal.(uint)
+	if !ok {
+		c.JSON(400, gin.H{"message": "Invalid userId format"})
+		return
+	}
+
+	if err:=models.DB.Preload("Movie").Where("status = ? AND user_id = ?","paid",userID).Find(&transactions).Error;err!=nil{
+		c.JSON(500,gin.H{"error":"Failed to fetch transactions"})
+		return
+	}
+
+
+	c.JSON(200,gin.H{"tickets":transactions})
 }

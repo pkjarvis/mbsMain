@@ -13,6 +13,6 @@ type Transaction struct{
 	Status string `json:"status"`
 	UserId uint `json:"userId"`
 	MovieId uint64 `json:"movieId"`
-	Movie Movie `gorm:"foreignKey:MovieId;constraint:OnDelete:CASCADE" json:"-"` 
+	Movie Movie `gorm:"foreignKey:MovieId;constraint:OnDelete:CASCADE" json:"movie"` 
 	User User `gorm:"foreignKey:UserId;constraint:OnDelete:CASCADE;" json:"-"`
 }
