@@ -74,7 +74,3 @@ func UserAuthorized() gin.HandlerFunc{
 
     }
 }
-
-
-
-

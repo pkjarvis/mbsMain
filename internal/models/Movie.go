@@ -30,4 +30,3 @@ type Movie struct {
 	// Reviews   []Review `gorm:"foreignKey:MovieID"`
 }
 
-

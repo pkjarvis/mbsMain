@@ -11,10 +11,12 @@ package models
 //       archived:false,
 
 import (
+	"time"
+
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
-	"time"
 )
+
 
 type Showtime struct {
 	gorm.Model
