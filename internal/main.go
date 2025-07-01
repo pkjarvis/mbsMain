@@ -24,7 +24,7 @@ func main() {
 	r.POST("/payment-failure", controllers.PaymentFailure)
 
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173", "http://localhost:3000","https://incandescent-semolina-95ca12.netlify.app"},
+		AllowOrigins:     []string{"http://localhost:5173", "http://localhost:3000","https://incandescent-semolina-95ca12.netlify.app","https://userside.onrender.com"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
 		AllowCredentials: true,
