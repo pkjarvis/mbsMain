@@ -6,6 +6,8 @@ import (
 	"go-auth/routes"
 	"log"
 	"os"
+
+	// "os"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -35,21 +37,21 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	config := models.Config{
-		Host:     os.Getenv("DB_HOST"),
-		Port:     os.Getenv("DB_PORT"),
-		User:     os.Getenv("DB_USER"),
-		Password: os.Getenv("DB_PASSWORD"),
-		DBName:   os.Getenv("DB_NAME"),
-		SSLMode:  os.Getenv("DB_SSLMODE"),
-	}
+	// config := models.Config{
+	// 	Host:     os.Getenv("DB_HOST"),
+	// 	Port:     os.Getenv("DB_PORT"),
+	// 	User:     os.Getenv("DB_USER"),
+	// 	Password: os.Getenv("DB_PASSWORD"),
+	// 	DBName:   os.Getenv("DB_NAME"),
+	// 	SSLMode:  os.Getenv("DB_SSLMODE"),
+	// }
 
 	// Initialize DB
-	models.InitDB(config)
+	models.InitDB()
 
 	// Load the routes
 	routes.AuthRoutes(r)
 
 	// Run the server
-	r.Run(":8080")
+	r.Run(os.Getenv("PORT"))
 }
