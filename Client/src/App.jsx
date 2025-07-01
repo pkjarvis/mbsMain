@@ -20,11 +20,11 @@ import "primereact/resources/themes/lara-light-cyan/theme.css";
 
 function App() {
 
-const token=localStorage.getItem("adminToken");
-const name=localStorage.getItem("adminName");
- useState(()=>{
-  console.log("Protected route for admin use only")
- },[token,name])
+// const token=localStorage.getItem("adminToken");
+// const name=localStorage.getItem("adminName");
+//  useState(()=>{
+//   console.log("Protected route for admin use only")
+//  },[token,name])
 
 
 
@@ -41,14 +41,14 @@ const name=localStorage.getItem("adminName");
                 <Route path="/" element={<Root />} />
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/login" element={<Login />} />
-                {token && name ? <Route path="/logout" element={<Logout />} />:<Route path="/" element={<Root />}/>}
-                {token && name ? <Route path="/dashboard" element={<Dashboard />} /> : <Route path="/" element={<Root />} />}
-                {token && name ? <Route path="/movie" element={<MovieManagement />} /> :  <Route path="/" element={<Root />} />}
-                {token && name ? <Route path="/theatre" element={<Theatres />} />: <Route path="/" element={<Root />} />}
-                {token && name ? <Route path="/shows" element={<Shows />} />: <Route path="/" element={<Root />} />}
-                {token && name ? <Route path="/addnewmovie" element={<AddNewMovie />} />: <Route path="/" element={<Root />} />}
-                {token && name ? <Route path="/addnewtheatre" element={<AddNewTheatre />} />: <Route path="/" element={<Root />} />}
-                {token && name ? <Route path="/addnewshows" element={<AddNewShowtime />} />:  <Route path="/" element={<Root />} />}
+                <Route path="/logout" element={<Logout />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/movie" element={<MovieManagement />} /> 
+                <Route path="/theatre" element={<Theatres />} />
+                <Route path="/shows" element={<Shows />} />
+                <Route path="/addnewmovie" element={<AddNewMovie />} />
+                <Route path="/addnewtheatre" element={<AddNewTheatre />} />
+                <Route path="/addnewshows" element={<AddNewShowtime />} />
                 
               </Routes>
              </ShowTimeProvider>
