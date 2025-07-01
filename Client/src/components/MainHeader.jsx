@@ -14,9 +14,9 @@ const MainHeader = (props) => {
             </span>
             <span className="flex items-center justify-between mx-6">
                 <h2 className="font-bold text-2xl">{props.title}</h2>
-                <a href={props.btnlink}>
+                <Link to={props.btnlink}>
                     <AddButton title={props.btncontent} /> 
-                </a>
+                </Link>
             </span>
            
             
