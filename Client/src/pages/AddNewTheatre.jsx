@@ -3,7 +3,7 @@ import Navbar from "../components/Navbar";
 
 import { Chips } from "primereact/chips";
 import { FloatLabel } from "primereact/floatlabel";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { TheatreContext } from "../context/TheatreContext";
 
 import axiosInstance from "../utils/axiosInstance";
@@ -152,14 +152,14 @@ const AddNewTheatre = () => {
       <div className="theatre-info">
         <Navbar para="Find showtimes by Movie, Theatre, Date, etc." />
         <span className="flex items-center gap-2 mx-6 ">
-          <a href={baseUrl+"/dashboard"}>
+          <Link to="/dashboard">
             <p className="text-zinc-400 font-light text-md">Home /</p>
-          </a>
-          <a href={baseUrl+"/theatre"}>
+          </Link>
+          <Link to="/theatre">
             <p className="text-zinc-400 font-light text-md">
               Theatre Management /
             </p>
-          </a>
+          </Link>
           <p className="font-light text-sm">Add New Theatre</p>
         </span>
         <div className="info flex flex-col place-items-center mt-[1.8vw]">

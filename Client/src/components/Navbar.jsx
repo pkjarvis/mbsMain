@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const baseUrl=import.meta.env.VITE_ROUTE
 const Navbar = (props) => {
   const username = localStorage.getItem("adminName");
@@ -23,13 +23,13 @@ const Navbar = (props) => {
   return (
     <div>
       <div className="navbar  flex items-center justify-start my-2 ">
-        <a href={baseUrl+"/dashboard"}>
+        <Link to="/dashboard">
           <img
             src="/assets/Logo.png"
             alt="Logo"
             className="w-12 h-12 mx-6 cursor-pointer"
           />
-        </a>
+        </Link>
         
         <input
           type="text"

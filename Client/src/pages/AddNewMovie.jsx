@@ -9,7 +9,7 @@ const baseUrl=import.meta.env.VITE_ROUTE
 
 import "react-datepicker/dist/react-datepicker.css";
 import { MoviesContext } from "../context/MovieContext";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { MultiSelect } from "primereact/multiselect";
 import axiosInstance from "../utils/axiosInstance";
@@ -167,14 +167,14 @@ const AddNewMovie = () => {
       <div className="add-movie flex flex-col">
         <Navbar para="Find showtimes by Movie, Theatre, Date, etc." />
         <span className="flex items-center gap-2 mx-6 ">
-          <a href={baseUrl+"/dashboard"}>
+          <Link to="/dashboard">
             <p className="text-zinc-400 font-light text-md">Home /</p>
-          </a>
-          <a href={baseUrl+"/movie"}>
+          </Link>
+          <Link to="/movie">
             <p className="text-zinc-400 font-light text-md">
               Movie Management /
             </p>
-          </a>
+          </Link>
           <p className="font-light text-sm">Add New Movie</p>
         </span>
         <div className="info flex flex-col place-items-center mt-[1.8vw]">

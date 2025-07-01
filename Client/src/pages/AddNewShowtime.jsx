@@ -5,7 +5,7 @@ import AddButton from "../components/AddButton";
 import { MultiSelect } from "primereact/multiselect";
 import { Calendar } from "primereact/calendar";
 import { ShowTimeContext } from "../context/ShowTimeContext";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import axiosInstance from "../utils/axiosInstance";
 
@@ -173,14 +173,14 @@ const AddNewShowtime = () => {
       <div className="showtime-container">
         <Navbar para="Find showtimes by Movie, Theatre, Date, etc." />
         <span className="flex items-center gap-2 mx-6 ">
-          <a href={baseUrl+"/dashboard"}>
+          <Link to="/dashboard">
             <p className="text-zinc-400 font-light text-md">Home /</p>
-          </a>
-          <a href={baseUrl+"/shows"}>
+          </Link>
+          <Link to="/shows">
             <p className="text-zinc-400 font-light text-md">
               Showtime Scheduling /
             </p>
-          </a>
+          </Link>
           <p className="font-light text-sm">Add New Showtime</p>
         </span>
         <div className="info flex flex-col place-items-center mt-[1.8vw]">
