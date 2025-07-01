@@ -94,7 +94,7 @@ const MovieCard = ({id,movie,description,startDate,endDate,genre,language,status
               }
             <div className="right-right cursor-pointer">
               <img
-                src="../src/assets/3Dot.png"
+                src="/assets/3Dot.png"
                 alt="3Dot"
                 className="w-1.2 h-4"
                 onClick={handleClick}
@@ -106,19 +106,19 @@ const MovieCard = ({id,movie,description,startDate,endDate,genre,language,status
                     className="flex place-items-center gap-4 my-2 items-center cursor-pointer hover:bg-zinc-700 rounded-sm p-0.6 hover:[&>.para]:text-white"
                     onMouseOver={() => {
                       if (pencilIconRef.current) {
-                        pencilIconRef.current.src = "../src/assets/Pencil.png";
+                        pencilIconRef.current.src = "/assets/Pencil.png";
                       }
                     }}
                     onMouseLeave={() => {
                       if (pencilIconRef.current) {
                         pencilIconRef.current.src =
-                          "../src/assets/DarkPencil.png";
+                          "/assets/DarkPencil.png";
                       }
                     }}
                     onClick={handleUpdate}
                   >
                     <img
-                      src="../src/assets/DarkPencil.png"
+                      src="/assets/DarkPencil.png"
                       alt="PencilIcon"
                       className="w-[0.9vw] h-[0.9vw] pencil"
                       ref={pencilIconRef}
@@ -133,19 +133,19 @@ const MovieCard = ({id,movie,description,startDate,endDate,genre,language,status
                     onMouseOver={() => {
                       if (deleteIconRef.current) {
                         deleteIconRef.current.src =
-                          "../src/assets/DeleteIcon.png";
+                          "/assets/DeleteIcon.png";
                       }
                     }}
                     onMouseLeave={() => {
                       if (deleteIconRef.current) {
                         deleteIconRef.current.src =
-                          "../src/assets/DeleteDarkIcon.png";
+                          "/assets/DeleteDarkIcon.png";
                       }
                     }}
                     onClick={()=>handleDelete(id)}
                   >
                     <img
-                      src="../src/assets/DeleteDarkIcon.png"
+                      src="/assets/DeleteDarkIcon.png"
                       alt="DeleteIcon"
                       className="w-[0.9vw] h-[0.9vw]"
                       ref={deleteIconRef}
@@ -161,19 +161,19 @@ const MovieCard = ({id,movie,description,startDate,endDate,genre,language,status
                     className="flex place-items-center gap-4 my-2 items-center cursor-pointer hover:bg-zinc-700 rounded-sm p-0.6 hover:[&>.para]:text-white"
                     onMouseOver={() => {
                       if (pencilIconRef.current) {
-                        pencilIconRef.current.src = "../src/assets/Pencil.png";
+                        pencilIconRef.current.src = "/assets/Pencil.png";
                       }
                     }}
                     onMouseLeave={() => {
                       if (pencilIconRef.current) {
                         pencilIconRef.current.src =
-                          "../src/assets/DarkPencil.png";
+                          "/assets/DarkPencil.png";
                       }
                     }}
                     onClick={handleUpdate}
                   >
                     <img
-                      src="../src/assets/DarkPencil.png"
+                      src="/assets/DarkPencil.png"
                       alt="PencilIcon"
                       className="w-[0.9vw] h-[0.9vw] pencil"
                       ref={pencilIconRef}
@@ -188,19 +188,19 @@ const MovieCard = ({id,movie,description,startDate,endDate,genre,language,status
                     onMouseOver={() => {
                       if (deleteIconRef.current) {
                         deleteIconRef.current.src =
-                          "../src/assets/DeleteIcon.png";
+                          "/assets/DeleteIcon.png";
                       }
                     }}
                     onMouseLeave={() => {
                       if (deleteIconRef.current) {
                         deleteIconRef.current.src =
-                          "../src/assets/DeleteDarkIcon.png";
+                          "/assets/DeleteDarkIcon.png";
                       }
                     }}
                     onClick={()=>handleDelete(id)}
                   >
                     <img
-                      src="../src/assets/DeleteDarkIcon.png"
+                      src="/assets/DeleteDarkIcon.png"
                       alt="DeleteIcon"
                       className="w-[0.9vw] h-[0.9vw]"
                       ref={deleteIconRef}

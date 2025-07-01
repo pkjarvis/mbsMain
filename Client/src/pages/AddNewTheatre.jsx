@@ -543,7 +543,7 @@ const AddNewTheatre = () => {
               {theatrefile ? (
                 <div>
                   <img
-                    src="../src/assets/Upload.png"
+                    src="/assets/Upload.png"
                     alt="Upload.png"
                     className="w-[1.4vw] h-[1.4vw] hidden"
                   />
@@ -557,7 +557,7 @@ const AddNewTheatre = () => {
               ) : (
                 <div className="item-center mx-auto">
                   <img
-                    src="../src/assets/Upload.png"
+                    src="/assets/Upload.png"
                     alt="Upload.png"
                     className="w-[1.4vw] h-[1.4vw] mx-auto"
                   />

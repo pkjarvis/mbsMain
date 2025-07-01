@@ -66,7 +66,7 @@ const TheatreCard = ({id,theatrename,address,cityName,stateName,status,totalscre
               </span>
 
               <span className="flex items-center gap-2">
-                <img src="../src/assets/Locate.png" alt="LocateIcon" className="w-[0.8vw] h-[0.9vw]" />
+                <img src="/assets/Locate.png" alt="LocateIcon" className="w-[0.8vw] h-[0.9vw]" />
                 <p className="font-semibold">{cityName}, {stateName}</p>
               </span>
 
@@ -86,7 +86,7 @@ const TheatreCard = ({id,theatrename,address,cityName,stateName,status,totalscre
             </div>
             <div className="right-right left-4 cursor-pointer">
               <img
-                src="../src/assets/3Dot.png"
+                src="/assets/3Dot.png"
                 alt="3Dot"
                 className="w-1 h-4"
                 onClick={()=>handleClick(id)}
@@ -100,17 +100,17 @@ const TheatreCard = ({id,theatrename,address,cityName,stateName,status,totalscre
                   <span className="flex place-items-center gap-4 my-2 items-center hover:bg-zinc-700 rounded-sm p-0.6 hover:[&>.para]:text-white" 
                    onMouseOver={()=>{
                     if(pencilIconRef.current){
-                      pencilIconRef.current.src="../src/assets/Pencil.png"
+                      pencilIconRef.current.src="/assets/Pencil.png"
                     }
                    }}
                    onMouseLeave={()=>{
                     if(pencilIconRef.current){
-                      pencilIconRef.current.src="../src/assets/DarkPencil.png"
+                      pencilIconRef.current.src="/assets/DarkPencil.png"
                     }
                    }}
                    onClick={handleUpdate}
                   >
-                    <img src="../src/assets/DarkPencil.png" alt="PencilIcon" className="w-[0.9vw] h-[0.9vw] pencil" ref={pencilIconRef} />
+                    <img src="/assets/DarkPencil.png" alt="PencilIcon" className="w-[0.9vw] h-[0.9vw] pencil" ref={pencilIconRef} />
                     <p className='text-md font-medium text-zinc-500 hover:text-white para' >Edit</p>
                   </span>
 
@@ -119,17 +119,17 @@ const TheatreCard = ({id,theatrename,address,cityName,stateName,status,totalscre
                    <span className='flex place-items-center gap-4 my-1 items-centerm hover:bg-zinc-700 rounded-sm p-0.6 text-white hover:[&>.para]:text-white' 
                     onMouseOver={()=>{
                       if(deleteIconRef.current){
-                        deleteIconRef.current.src="../src/assets/DeleteIcon.png"
+                        deleteIconRef.current.src="/assets/DeleteIcon.png"
                       }
                     }}
                      onMouseLeave={()=>{
                       if(deleteIconRef.current){
-                        deleteIconRef.current.src="../src/assets/DeleteDarkIcon.png"
+                        deleteIconRef.current.src="/assets/DeleteDarkIcon.png"
                       }
                     }}
                     onClick={()=>handleDelete(id)}
                    >
-                    <img src="../src/assets/DeleteDarkIcon.png" alt="DeleteIcon" className="w-[0.9vw] h-[0.9vw]" ref={deleteIconRef} />
+                    <img src="/assets/DeleteDarkIcon.png" alt="DeleteIcon" className="w-[0.9vw] h-[0.9vw]" ref={deleteIconRef} />
                     <p className='text-md font-medium text-zinc-500 para '>Delete</p>
                   </span>
 
@@ -140,17 +140,17 @@ const TheatreCard = ({id,theatrename,address,cityName,stateName,status,totalscre
                   <span className="flex place-items-center gap-4 my-2 items-center hover:bg-zinc-700 rounded-sm p-0.6 hover:[&>.para]:text-white" 
                    onMouseOver={()=>{
                     if(pencilIconRef.current){
-                      pencilIconRef.current.src="../src/assets/Pencil.png"
+                      pencilIconRef.current.src="/assets/Pencil.png"
                     }
                    }}
                    onMouseLeave={()=>{
                     if(pencilIconRef.current){
-                      pencilIconRef.current.src="../src/assets/DarkPencil.png"
+                      pencilIconRef.current.src="/assets/DarkPencil.png"
                     }
                    }}
                    onClick={handleUpdate}
                   >
-                    <img src="../src/assets/DarkPencil.png" alt="PencilIcon" className="w-[0.9vw] h-[0.9vw] pencil" ref={pencilIconRef} />
+                    <img src="/assets/DarkPencil.png" alt="PencilIcon" className="w-[0.9vw] h-[0.9vw] pencil" ref={pencilIconRef} />
                     <p className='text-md font-medium text-zinc-500 hover:text-white para' >Edit</p>
                   </span>
 
@@ -159,17 +159,17 @@ const TheatreCard = ({id,theatrename,address,cityName,stateName,status,totalscre
                    <span className='flex place-items-center gap-4 my-1 items-centerm hover:bg-zinc-700 rounded-sm p-0.6 text-white hover:[&>.para]:text-white' 
                     onMouseOver={()=>{
                       if(deleteIconRef.current){
-                        deleteIconRef.current.src="../src/assets/DeleteIcon.png"
+                        deleteIconRef.current.src="/assets/DeleteIcon.png"
                       }
                     }}
                      onMouseLeave={()=>{
                       if(deleteIconRef.current){
-                        deleteIconRef.current.src="../src/assets/DeleteDarkIcon.png"
+                        deleteIconRef.current.src="/assets/DeleteDarkIcon.png"
                       }
                     }}
                     onClick={()=>handleDelete(id)}
                    >
-                    <img src="../src/assets/DeleteDarkIcon.png" alt="DeleteIcon" className="w-[0.9vw] h-[0.9vw]" ref={deleteIconRef} />
+                    <img src="/assets/DeleteDarkIcon.png" alt="DeleteIcon" className="w-[0.9vw] h-[0.9vw]" ref={deleteIconRef} />
                     <p className='text-md font-medium text-zinc-500 para '>Delete</p>
                   </span>
 

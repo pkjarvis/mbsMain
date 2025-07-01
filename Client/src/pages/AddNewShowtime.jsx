@@ -384,7 +384,7 @@ const AddNewShowtime = () => {
                 onClick={handleTime}
               >
                 <img
-                  src="../src/assets/addButton.png"
+                  src="/assets/addButton.png"
                   alt="AddIcon"
                   className="w-[1vw] h-[1vw]"
                 />

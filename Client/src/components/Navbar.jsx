@@ -25,7 +25,7 @@ const Navbar = (props) => {
       <div className="navbar  flex items-center justify-start my-2 ">
         <a href="http://localhost:5173/dashboard">
           <img
-            src="../src/assets/Logo.png"
+            src="/assets/Logo.png"
             alt="Logo"
             className="w-12 h-12 mx-6 cursor-pointer"
           />
@@ -37,7 +37,7 @@ const Navbar = (props) => {
           className="border-1 rounded-3xl w-[60vw] px-3 py-2 border-gray-400 outline-none"
         ></input>
         <img
-          src="../src/assets/searchIcon.png"
+          src="/assets/searchIcon.png"
           alt="Icon"
           className="w-[1.2vw] h-[1.2vw] relative ml-[-2rem]"
         />
@@ -46,13 +46,13 @@ const Navbar = (props) => {
             New Delhi
           </p>
           <img
-            src="../src/assets/dropDownIcon.png"
+            src="/assets/dropDownIcon.png"
             alt="DropDown"
             className="w-3 h-2 ml-1"
           />
           <span className="flex items-center cursor-pointer" onClick={handleClick}>
             <img
-              src="../src/assets/ei_user.png"
+              src="/assets/ei_user.png"
               alt="User"
               className="w-8 h-8 ml-3"
             />

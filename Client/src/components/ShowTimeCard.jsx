@@ -62,7 +62,7 @@ const ShowTimeCard = ({
         <div className="content flex items-center justify-start border-1 rounded-xl border-zinc-300 ">
           <div className="left w-[6.2%]">
             <img
-              src="../src/assets/Inception.png"
+              src="/assets/Inception.png"
               alt="MovieBg"
               className="w-26 h-25 rounded-l-md"
             />
@@ -111,13 +111,13 @@ const ShowTimeCard = ({
             <div className="right-right">
               {archived ? (
                 <img
-                  src="../src/assets/3Dot.png"
+                  src="/assets/3Dot.png"
                   alt="3Dot"
                   className="w-1.2 h-4  opacity-10"
                 />
               ) : (
                 <img
-                  src="../src/assets/3Dot.png"
+                  src="/assets/3Dot.png"
                   alt="3Dot"
                   className="w-1.2 h-4 cursor-pointer"
                   onClick={handleClick}
@@ -130,19 +130,19 @@ const ShowTimeCard = ({
                     className="flex place-items-center gap-4 my-2 items-center hover:bg-zinc-700 rounded-sm p-0.6 hover:[&>.para]:text-white cursor-pointer"
                     onMouseOver={() => {
                       if (pencilIconRef.current) {
-                        pencilIconRef.current.src = "../src/assets/Pencil.png";
+                        pencilIconRef.current.src = "/assets/Pencil.png";
                       }
                     }}
                     onMouseLeave={() => {
                       if (pencilIconRef.current) {
                         pencilIconRef.current.src =
-                          "../src/assets/DarkPencil.png";
+                          "/assets/DarkPencil.png";
                       }
                     }}
                     onClick={handleUpdate}
                   >
                     <img
-                      src="../src/assets/DarkPencil.png"
+                      src="/assets/DarkPencil.png"
                       alt="PencilIcon"
                       className="w-[0.9vw] h-[0.9vw] pencil"
                       ref={pencilIconRef}
@@ -157,19 +157,19 @@ const ShowTimeCard = ({
                     onMouseOver={() => {
                       if (deleteIconRef.current) {
                         deleteIconRef.current.src =
-                          "../src/assets/ArchiveLight.png";
+                          "/assets/ArchiveLight.png";
                       }
                     }}
                     onMouseLeave={() => {
                       if (deleteIconRef.current) {
                         deleteIconRef.current.src =
-                          "../src/assets/ArchiveDark.png";
+                          "/assets/ArchiveDark.png";
                       }
                     }}
                     onClick={() => handleArchive(id)}
                   >
                     <img
-                      src="../src/assets/DeleteDarkIcon.png"
+                      src="/assets/DeleteDarkIcon.png"
                       alt="DeleteIcon"
                       className="w-[0.9vw] h-[0.9vw]"
                       ref={deleteIconRef}
@@ -185,19 +185,19 @@ const ShowTimeCard = ({
                     className="flex place-items-center gap-4 my-2 items-center hover:bg-zinc-700 rounded-sm p-0.6 hover:[&>.para]:text-white cursor-pointer"
                     onMouseOver={() => {
                       if (pencilIconRef.current) {
-                        pencilIconRef.current.src = "../src/assets/Pencil.png";
+                        pencilIconRef.current.src = "/assets/Pencil.png";
                       }
                     }}
                     onMouseLeave={() => {
                       if (pencilIconRef.current) {
                         pencilIconRef.current.src =
-                          "../src/assets/DarkPencil.png";
+                          "/assets/DarkPencil.png";
                       }
                     }}
                     onClick={handleUpdate}
                   >
                     <img
-                      src="../src/assets/DarkPencil.png"
+                      src="/assets/DarkPencil.png"
                       alt="PencilIcon"
                       className="w-[0.9vw] h-[0.9vw] pencil"
                       ref={pencilIconRef}
@@ -212,19 +212,19 @@ const ShowTimeCard = ({
                     onMouseOver={() => {
                       if (deleteIconRef.current) {
                         deleteIconRef.current.src =
-                          "../src/assets/DeleteIcon.png";
+                          "/assets/DeleteIcon.png";
                       }
                     }}
                     onMouseLeave={() => {
                       if (deleteIconRef.current) {
                         deleteIconRef.current.src =
-                          "../src/assets/DeleteDarkIcon.png";
+                          "/assets/DeleteDarkIcon.png";
                       }
                     }}
                     onClick={() => handleArchive(id)}
                   >
                     <img
-                      src="../src/assets/DeleteDarkIcon.png"
+                      src="/assets/DeleteDarkIcon.png"
                       alt="DeleteIcon"
                       className="w-[0.9vw] h-[0.9vw]"
                       ref={deleteIconRef}

@@ -371,7 +371,7 @@ const AddNewMovie = () => {
               {file ? (
                 <div>
                   <img
-                    src="../src/assets/Upload.png"
+                    src="/assets/Upload.png"
                     alt="Upload.png"
                     className="w-[1.4vw] h-[1.4vw] hidden mx-auto"
                   />
@@ -385,7 +385,7 @@ const AddNewMovie = () => {
               ) : (
                 <div>
                   <img
-                    src="../src/assets/Upload.png"
+                    src="/assets/Upload.png"
                     alt="Upload.png"
                     className="w-[1.4vw] h-[1.4vw] mx-auto"
                   />
