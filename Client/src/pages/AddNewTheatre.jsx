@@ -10,6 +10,7 @@ import axiosInstance from "../utils/axiosInstance";
 
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
+const baseUrl=import.meta.env.VITE_ROUTE;
 
 const AddNewTheatre = () => {
   const [theatrename, setTheatreName] = useState("");
@@ -151,10 +152,10 @@ const AddNewTheatre = () => {
       <div className="theatre-info">
         <Navbar para="Find showtimes by Movie, Theatre, Date, etc." />
         <span className="flex items-center gap-2 mx-6 ">
-          <a href="http://localhost:5173/dashboard">
+          <a href={baseUrl+"/dashboard"}>
             <p className="text-zinc-400 font-light text-md">Home /</p>
           </a>
-          <a href="http://localhost:5173/theatre">
+          <a href={baseUrl+"/theatre"}>
             <p className="text-zinc-400 font-light text-md">
               Theatre Management /
             </p>

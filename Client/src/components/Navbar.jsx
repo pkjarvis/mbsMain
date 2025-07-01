@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+const baseUrl=import.meta.env.VITE_ROUTE
 const Navbar = (props) => {
   const username = localStorage.getItem("adminName");
   useEffect(() => {
@@ -23,7 +23,7 @@ const Navbar = (props) => {
   return (
     <div>
       <div className="navbar  flex items-center justify-start my-2 ">
-        <a href="http://localhost:5173/dashboard">
+        <a href={baseUrl+"/dashboard"}>
           <img
             src="/assets/Logo.png"
             alt="Logo"

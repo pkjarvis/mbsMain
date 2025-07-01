@@ -8,6 +8,8 @@ import axiosInstance from "../utils/axiosInstance";
 import { toast, ToastContainer } from "react-toastify";
 import { replace, useLocation, useNavigate } from "react-router-dom";
 
+const baseUrl=import.meta.env.VITE_ROUTE;
+
 const MovieManagement = () => {
   // const {movies}=useContext(MoviesContext);
   // if(!movies.length) return <p>No movies added yet.</p>
@@ -60,7 +62,7 @@ const MovieManagement = () => {
           title="Manage Movies"
           btncontent="+Add New Movie"
           headerlink="Movie Management"
-          btnlink="http://localhost:5173/addnewmovie"
+          btnlink={baseUrl+"/addnewmovie"}
         />
          
         

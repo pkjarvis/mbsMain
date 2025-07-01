@@ -5,6 +5,8 @@ import AddButton from "../components/AddButton";
 
 // import DatePicker from "react-datepicker";
 
+const baseUrl=import.meta.env.VITE_ROUTE
+
 import "react-datepicker/dist/react-datepicker.css";
 import { MoviesContext } from "../context/MovieContext";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -165,10 +167,10 @@ const AddNewMovie = () => {
       <div className="add-movie flex flex-col">
         <Navbar para="Find showtimes by Movie, Theatre, Date, etc." />
         <span className="flex items-center gap-2 mx-6 ">
-          <a href="http://localhost:5173/dashboard">
+          <a href={baseUrl+"/dashboard"}>
             <p className="text-zinc-400 font-light text-md">Home /</p>
           </a>
-          <a href="http://localhost:5173/movie">
+          <a href={baseUrl+"/movie"}>
             <p className="text-zinc-400 font-light text-md">
               Movie Management /
             </p>
