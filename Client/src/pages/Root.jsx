@@ -2,9 +2,11 @@ import React from "react";
 import Blocks from "../components/Blocks";
 import GoogleLogo from "../assets/GoogleLogo.png";
 import EmailLogo from "../assets/email.png"
+import { Link } from "react-router-dom";
 const baseUrl=import.meta.env.VITE_ROUTE;
 
 const Root = () => {
+  console.log(baseUrl);
   return (
      <div className="container h-[100vh] max-w-[100%] bg-white place-items-center">
         
@@ -13,7 +15,7 @@ const Root = () => {
             <img src="/assets/Logo.png" alt="Logo" className="w-[4rem]"/>
             <img src="/assets/Welcome.png" alt="Welcome" className="w-[16rem] mx-auto mt-22 mb-6" />
             <Blocks icon={GoogleLogo} name="Google" />
-            <a href={baseUrl+"/signup"}><Blocks icon={EmailLogo} name="Email" /></a>
+            <Link to="/signup"><Blocks icon={EmailLogo} name="Email" /></Link>
             <p className="text-gray-600 mt-[19rem] mx-auto">I agree to the Terms & Conditions & Privacy Policy</p>
           </div>
           <div className="right w-[50%]">
