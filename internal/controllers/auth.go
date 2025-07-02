@@ -101,10 +101,10 @@ func LoginWithRole(c *gin.Context, expectedRole string) {
 	}
 	secure := true
 
-	if gin.Mode() == gin.DebugMode {
-		domain = "localhost"
-		secure = false
-	}
+	// if gin.Mode() == gin.DebugMode {
+	// 	domain = "localhost"
+	// 	secure = false
+	// }
 
 
 	log.Println("CP-1", domain)
@@ -115,7 +115,7 @@ func LoginWithRole(c *gin.Context, expectedRole string) {
 
 	c.Set("userId", claims.UserId)
 	c.Set("userToken", tokenString)
-	c.Next()
+
 
 	fmt.Print("existingUser.Id", existingUser.Id)
 	c.JSON(200, gin.H{
