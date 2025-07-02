@@ -55,6 +55,8 @@ func LoginWithRole(c *gin.Context, expectedRole string) {
 
 	claims := &models.Claims{
 		UserId: existingUser.Id,
+		Name:   existingUser.Name,
+		Email:  existingUser.Email,
 		Role:   existingUser.Role,
 		StandardClaims: jwt.StandardClaims{
 			Subject:   existingUser.Email,
@@ -81,10 +83,25 @@ func LoginWithRole(c *gin.Context, expectedRole string) {
 	// }
 
 	// c.SetCookie("token", tokenString, 365*24*60*60, "/", domain, secure, true)
-	c.Header("Set-Cookie", fmt.Sprintf(
-		"token=%s; Path=/; Domain=mbsmain-hksv.onrender.com; Max-Age=%d; Secure; HttpOnly; SameSite=None",
-		tokenString, 365*24*60*60,
-	))
+	// c.Header("Set-Cookie", fmt.Sprintf(
+	// 	"token=%s; Path=/; Domain=mbsmain-hksv.onrender.com; Max-Age=%d; Secure; HttpOnly; SameSite=None",
+	// 	tokenString, 365*24*60*60,
+	// ))
+	domain:=""
+	if expectedRole=="admin"{
+		domain= os.Getenv("FRONTEND_DOMAIN")
+	}else {
+		domain = os.Getenv("FRONTEND_DOMAIN1")
+	}
+	secure := true
+
+	if gin.Mode() == gin.DebugMode {
+		domain = "localhost"
+		secure = false
+	}
+
+	c.SetCookie("token", tokenString, 365*24*60*60, "/", domain, secure, true)
+
 	c.Set("userId", claims.UserId)
 	c.Set("userToken", tokenString)
 
