@@ -11,47 +11,78 @@ import AddNewTheatre from "./pages/AddNewTheatre";
 import AddNewShowtime from "./pages/AddNewShowtime";
 import SignUp from "./pages/SignUp";
 import Root from "./pages/Root";
-import {MoviesProvider} from "./context/MovieContext";
+import LoggedDashboard from "./pages/LoggedDashboard";
+
+import { MoviesProvider } from "./context/MovieContext";
 import { PrimeReactProvider } from "primereact/api";
 import { TheatreProvider } from "./context/TheatreContext";
 import { ShowTimeProvider } from "./context/ShowTimeContext";
 
 import "primereact/resources/themes/lara-light-cyan/theme.css";
+import Dashboard1 from "./pages/Dashboard1";
+import AllMovies from "./pages/AllMovies";
+import Movie from "./pages/Movie";
+import Showtime from "./pages/ Showtime";
+import ShowBooking from "./pages/ShowBooking";
+import Profile from "./pages/Profile";
+import SignUp1 from "./pages/SignUp1";
+import Login1 from "./pages/Login1";
+import Booking from "./pages/Booking";
+import History from "./pages/History";
+import PaymentStatus from "./pages/PaymentStatus";
 
 function App() {
-
-// const token=localStorage.getItem("adminToken");
-// const name=localStorage.getItem("adminName");
-//  useState(()=>{
-//   console.log("Protected route for admin use only")
-//  },[token,name])
-
-
+  // const token=localStorage.getItem("adminToken");
+  // const name=localStorage.getItem("adminName");
+  //  useState(()=>{
+  //   console.log("Protected route for admin use only")
+  //  },[token,name])
 
   return (
     <>
       <PrimeReactProvider>
         <BrowserRouter>
           <MoviesProvider>
-           <TheatreProvider>
-            <ShowTimeProvider>
-              <Routes>
-                
-                <Route path="*" element={<Navigate to="/admin"/>} />
-                <Route path="/admin" element={<Root />} />
-                <Route path="/admin-signup" element={<SignUp />} />
-                <Route path="/admin-login" element={<Login />} />
-                <Route path="/admin-logout" element={<Logout />} />
-                <Route path="/admin-dashboard" element={<Dashboard />} />
-                <Route path="/admin-movie" element={<MovieManagement />} /> 
-                <Route path="/admin-theatre" element={<Theatres />} />
-                <Route path="/admin-shows" element={<Shows />} />
-                <Route path="/admin-addnewmovie" element={<AddNewMovie />} />
-                <Route path="/admin-addnewtheatre" element={<AddNewTheatre />} />
-                <Route path="/admin-addnewshows" element={<AddNewShowtime />} />
-                
-              </Routes>
-             </ShowTimeProvider>
+            <TheatreProvider>
+              <ShowTimeProvider>
+                <Routes>
+                  <Route path="*" element={<Navigate to="/admin" />} />
+                  <Route path="/admin" element={<Root />} />
+                  <Route path="/admin-signup" element={<SignUp />} />
+                  <Route path="/admin-login" element={<Login />} />
+                  <Route path="/admin-logout" element={<Logout />} />
+                  <Route path="/admin-dashboard" element={<Dashboard />} />
+                  <Route path="/admin-movie" element={<MovieManagement />} />
+                  <Route path="/admin-theatre" element={<Theatres />} />
+                  <Route path="/admin-shows" element={<Shows />} />
+                  <Route path="/admin-addnewmovie" element={<AddNewMovie />} />
+                  <Route
+                    path="/admin-addnewtheatre"
+                    element={<AddNewTheatre />}
+                  />
+                  <Route
+                    path="/admin-addnewshows"
+                    element={<AddNewShowtime />}
+                  />
+
+                  {/* user routes starts here */}
+
+                  <Route path="/root" element={<Dashboard1/>} />
+                  <Route path="/dashboard" element={<LoggedDashboard />} />
+                  <Route path="/movies" element={<AllMovies/>} />
+                  <Route path="/movie" element={<Movie />} />
+                  <Route path="/showtime" element={<Showtime />} />
+                  <Route path="/showbooking" element={<ShowBooking />} />
+                  <Route path="/profile" element={<Profile/>} />
+                  <Route path="/signup" element={<SignUp1/>} />
+                  <Route path="/login" element={<Login1 />} />
+                  <Route path="/booking" element={<Booking/>} />
+                  <Route path="/history" element={<History />} />
+                  <Route path="/payment-status" element={<PaymentStatus />} />
+
+
+                </Routes>
+              </ShowTimeProvider>
             </TheatreProvider>
           </MoviesProvider>
         </BrowserRouter>
