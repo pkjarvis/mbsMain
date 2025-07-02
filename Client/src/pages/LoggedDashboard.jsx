@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import NavBar1 from "../component/NavBar";
+import NavBar1 from "../component/NavBar1";
 import ImageContainer from "../component/ImageContainer";
 import MovieCardSection from "../component/MovieCardSection";
 import NowShowingTheatre from "../component/NowShowingTheatre";
@@ -7,6 +7,8 @@ import Bollywood from "../component/Bollywood";
 import Footer from "../component/Footer";
 import axiosInstance from "../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
+
+
 
 const Dashboard = () => {
   const [movies, setMovies] = useState([]);

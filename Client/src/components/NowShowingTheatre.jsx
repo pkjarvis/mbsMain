@@ -1,5 +1,5 @@
 import React from 'react'
-import TheatreCard from './TheatreCard'
+import TheatreCard1 from './TheatreCard1'
 
 const NowShowingTheatre = () => {
   return (
@@ -10,9 +10,9 @@ const NowShowingTheatre = () => {
                 <a href="#" className='underline text-gray-500'>see all </a>
             </span>
             <div className='flex items-center justify-between'>
-                <TheatreCard/>
-                <TheatreCard/>
-                <TheatreCard/>
+                <TheatreCard1/>
+                <TheatreCard1/>
+                <TheatreCard1/>
             </div>
         </div>
     </div>

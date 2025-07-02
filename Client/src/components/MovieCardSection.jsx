@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import MovieCard from "./MovieCard";
+import MovieCard1 from "./MovieCard1";
 import axiosInstance from "../utils/axiosInstance";
 import { Link } from "react-router-dom";
 const baseUrl = import.meta.env.VITE_ROUTE;
@@ -40,7 +40,7 @@ const MovieCardSection = ({ title, movies = [] }) => {
         <div className="grid grid-cols-4 gap-[3vw]">
           
           {movies.map((movie) => (
-            <MovieCard key={movie.id} movie={movie} />
+            <MovieCard1 key={movie.id} movie={movie} />
           ))}
         </div>
       </div>

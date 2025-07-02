@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import NavBar from "../component/NavBar";
+import NavBar1 from "../component/NavBar1";
 import BookingCard from "../component/BookingCard";
 import Footer from "../component/Footer";
 import axiosInstance from "../utils/axiosInstance";
@@ -36,7 +36,7 @@ const History = () => {
   return (
     <div>
       <div className="profile-container">
-        <NavBar title={username} />
+        <NavBar1 title={username} />
         <div className="bg-[#E2E0E0] p-2">
           <div className="flex items-center gap-[3vw] mx-[2.4vw]">
             <Link to="/profile">Profile</Link>

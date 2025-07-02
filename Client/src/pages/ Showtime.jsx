@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import NavBar from "../component/NavBar";
+import NavBar1 from "../component/NavBar1";
 import { Dropdown } from "primereact/dropdown";
 import Footer from "../component/Footer";
-import MainHeader from "../component/MainHeader";
+import MainHeader1 from "../component/MainHeader1";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Theatres from "../component/Theatres";
 import axiosInstance from "../utils/axiosInstance";
@@ -109,7 +109,7 @@ const Showtime = () => {
     <div>
       <div className="showtime-container">
         <div className="theatre-container font-[Inter]">
-          <NavBar title={username} />
+          <NavBar1 title={username} />
           <span className="flex items-center justify-start mx-[3vw] gap-1 mt-2">
             <Link
               to="/"

@@ -10,7 +10,7 @@ const BookingCard = (props) => {
     props.func(!props.val);
   }
 
-  console.log(props.ticketData)
+  console.log(props.ticketData);
   const {amount,tickets,transactionId,movie,movieId}=props.ticketData || {};
   console.log("amount",amount);
   

@@ -1,5 +1,5 @@
 import React from 'react'
-import MovieCard from './MovieCard'
+import MovieCard1 from './MovieCard1'
 
 
 const Bollywood = ({movies=[]}) => {
@@ -16,7 +16,7 @@ const Bollywood = ({movies=[]}) => {
                 <MovieCard imgURL={"../src/assets/aliceWonderland.png"}/>
                 <MovieCard imgURL={"../src/assets/aliceWonderland.png"}/> */}
                 {movies.map((movie) => (
-                  <MovieCard key={movie.id} movie={movie} />
+                  <MovieCard1 key={movie.id} movie={movie} />
                 ))}
                
             </div>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import NavBar from "../component/NavBar";
-import MainHeader from "../component/MainHeader";
+import NavBar1 from "../component/NavBar1";
+import MainHeader1 from "../component/MainHeader1";
 import MovieCardSection from "../component/MovieCardSection";
 import Footer from "../component/Footer";
 import { Rating } from "primereact/rating";
@@ -141,7 +141,7 @@ const Movie = () => {
           </div>
         </div>
         <div className="theatre-container font-[Inter]">
-          <NavBar title={username} />
+          <NavBar1 title={username} />
           <span className="flex items-center justify-start mx-[3vw] gap-1 mt-2">
             {/* <a href="http://localhost:3000/dashboard" className='cursor-pointer font-light text-zinc-500 '>Home / </a> */}
             <Link
