@@ -71,6 +71,7 @@ const MovieManagement = () => {
           headerlink="Movie Management"
           btnlink={baseUrl + "/admin-addnewmovie"}
           onSearch={setSearchQuery}
+          searchValue={searchQuery}
         />
 
         {loading ? (
