@@ -79,7 +79,7 @@ const Shows = () => {
           }
         />
        
-        <MainHeader title="Schedule Showtimes" btncontent="+Add New Showtime" headerlink="Showtime Scheduling" btnlink={baseUrl+"/addnewshows"}/>
+        <MainHeader title="Schedule Showtimes" btncontent="+Add New Showtime" headerlink="Showtime Scheduling" btnlink={baseUrl+"/admin-addnewshows"}/>
         { loading?(<p className="text-center mt-8">Loading Showtime ...</p>)
           :
           showtime.length>0

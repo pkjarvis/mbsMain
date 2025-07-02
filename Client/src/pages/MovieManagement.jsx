@@ -62,7 +62,7 @@ const MovieManagement = () => {
           title="Manage Movies"
           btncontent="+Add New Movie"
           headerlink="Movie Management"
-          btnlink={baseUrl+"/addnewmovie"}
+          btnlink={baseUrl+"/admin-addnewmovie"}
         />
          
         
