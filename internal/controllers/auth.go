@@ -87,18 +87,16 @@ func LoginWithRole(c *gin.Context, expectedRole string) {
 	// 	"token=%s; Path=/; Domain=mbsmain-hksv.onrender.com; Max-Age=%d; Secure; HttpOnly; SameSite=None",
 	// 	tokenString, 365*24*60*60,
 	// ))
-	err1 := godotenv.Load()
-	if err1 != nil {
-		log.Fatal("Error loading .env file")
-	}
+	
 
 
 	domain:=""
 	if expectedRole=="admin"{
-		domain= os.Getenv("FRONTEND_DOMAIN")
+		domain="mbsmain-hksv.onrender.com"
 	}else {
-		domain = os.Getenv("FRONTEND_DOMAIN1")
+		domain = "userside.onrender.com"
 	}
+
 	secure := true
 
 	// if gin.Mode() == gin.DebugMode {
