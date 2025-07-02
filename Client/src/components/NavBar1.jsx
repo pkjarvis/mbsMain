@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Dropdown } from 'primereact/dropdown';
 import { useNavigate } from 'react-router-dom';
 
-const Navbar1 = (props) => {
+const NavBar1 = (props) => {
   const [flag,setFlag]=useState(false);
 
   const [selectedCity, setSelectedCity] = useState(null);
@@ -13,7 +13,7 @@ const Navbar1 = (props) => {
         { name: 'Hyderabad', code: 'HYD' },
         { name: 'Mumbai', code: 'MB' }
     ];
-  const navigate=useNavigate("");
+  const navigate=useNavigate(""); 
 
 
   const handleClick=()=>{
@@ -81,4 +81,4 @@ const Navbar1 = (props) => {
 
 }
 
-export default Navbar1
+export default NavBar1
