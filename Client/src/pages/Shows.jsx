@@ -68,8 +68,10 @@ const Shows = () => {
   const [searchQuery, setSearchQuery] = useState("");
   
     // Filter logic
-    const filteredShowtime = showtime.filter((show) =>
+    const filteredShowtime = showtime.filter((show) =>(
       show.moviename.toLowerCase().includes(searchQuery.toLowerCase())
+      || show.theatrename.toLowerCase().includes(searchQuery.toLowerCase())
+    )
     );
 
 
