@@ -3,7 +3,7 @@ import axios from "axios"
 
 
 const axiosInstance=axios.create({
-    baseURL:"",
+    baseURL:"https://cbb3-14-195-186-86.ngrok-free.app/",
     timeout:5000,
     withCredentials:true,
     body:JSON.stringify({}),
