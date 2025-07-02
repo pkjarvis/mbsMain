@@ -814,7 +814,7 @@ func PaymentSuccess(c *gin.Context) {
 	}
 	fmt.Println("redirect message")
 
-	c.Redirect(302, "http://localhost:3000/payment-status?success=true")
+	c.Redirect(302, "https://mbsmain-hksv.onrender.com/payment-status?success=true")
 
 }
 
@@ -829,7 +829,7 @@ func PaymentFailure(c *gin.Context) {
 
 	fmt.Println("Passed 2")
 
-	c.Redirect(302, "http://localhost:3000/payment-status?success=false")
+	c.Redirect(302, "https://mbsmain-hksv.onrender.com/payment-status?success=false")
 
 }
 
