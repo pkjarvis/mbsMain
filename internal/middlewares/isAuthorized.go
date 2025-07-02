@@ -49,6 +49,7 @@ func UserAuthorized() gin.HandlerFunc{
 
         // 1. Extract token from cookie
         token, err := c.Cookie("token")
+        fmt.Println("token from middleware",token)
         if err != nil || token == "" {
             fmt.Println("Token not found in cookie:", err)
             c.JSON(401, gin.H{"error": "Unauthorized: Token not found"})
