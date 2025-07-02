@@ -100,10 +100,14 @@ func LoginWithRole(c *gin.Context, expectedRole string) {
 		secure = false
 	}
 
-	c.SetCookie("token", tokenString, 365*24*60*60, "/", domain, secure, true)
+	log.Println("CP-1", domain)
+	c.SetCookie("token", tokenString, 365*24*60*60, "", domain, secure, false)
+	log.Println("CP2", tokenString)
+	
 
 	c.Set("userId", claims.UserId)
 	c.Set("userToken", tokenString)
+	c.Next()
 
 	fmt.Print("existingUser.Id", existingUser.Id)
 	c.JSON(200, gin.H{
