@@ -20,7 +20,7 @@ const Profile = () => {
 
   const handleLogout = () => {
     localStorage.clear();
-    navigate("/");
+    navigate("/root");
   };
 
   const handleSave = ()=>{
