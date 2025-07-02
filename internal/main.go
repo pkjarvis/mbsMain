@@ -24,7 +24,7 @@ func main() {
 	r.POST("/payment-failure", controllers.PaymentFailure)
 
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173", "http://localhost:3000","https://mbsmain-hksv.onrender.com","https://userside.onrender.com"},
+		AllowOrigins:     []string{"http://localhost:5173", "http://localhost:3000","https://mbsmain-hksv.onrender.com","https://userside.onrender.com","https://moviebookingsystem-ta6i.onrender.com"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length", "Set-Cookie"},

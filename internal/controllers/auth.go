@@ -74,16 +74,13 @@ func LoginWithRole(c *gin.Context, expectedRole string) {
 		return
 	}
 
-	
-
 	log.Println("CP-1")
-	c.SetCookie("token", tokenString, 365*24*60*60, "/", "", true, false)
-	// c.Header("Set-Cookie", fmt.Sprintf(
-	// 	"token=%s; Path=/; Domain=%s; Max-Age=%d; Secure; HttpOnly; SameSite=None",
-	// 	tokenString,
-	// 	domain,
-	// 	365*24*60*60,
-	// ))
+	c.SetCookie("token", tokenString, 365*24*60*60, "/", "mbsmain-hksv.onrender.com", true, true)
+	c.Header("Set-Cookie", fmt.Sprintf(
+		"token=%s; Path=/; Domain=mbsmain-hksv.onrender.com; Max-Age=%d; Secure; HttpOnly; SameSite=None",
+		tokenString,
+		365*24*60*60,
+	))
 	log.Println("CP-2", tokenString)
 
 	c.Set("userId", claims.UserId)
