@@ -3,7 +3,7 @@ import axios from "axios"
 
 
 const axiosInstance=axios.create({
-    baseURL:"https://cbb3-14-195-186-86.ngrok-free.app",
+    baseURL:"https://moviebookingsystem-ta6i.onrender.com",
     timeout:5000,
     withCredentials:true,
     body:JSON.stringify({}),
