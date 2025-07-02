@@ -76,9 +76,9 @@ func LoginWithRole(c *gin.Context, expectedRole string) {
 
 	domain:="mbsmain-hksv.onrender.com"
 	if expectedRole=="admin"{
-		domain="mbsmain-hksv.onrender.com/admin-login"
+		domain="mbsmain-hksv.onrender.com/admin/login"
 	} else {
-		domain="mbsmain-hksv.onrender.com/user-login"
+		domain="mbsmain-hksv.onrender.com/user/login"
 	}
 
 	log.Println("CP-1",domain)
