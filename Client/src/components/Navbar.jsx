@@ -16,8 +16,7 @@ const Navbar = (props) => {
 
   const navigate=useNavigate("");
   const handleLogout=()=>{
-    localStorage.setItem("adminToken","");
-    localStorage.setItem("adminName","");
+    localStorage.clear();
     navigate("/admin");
   }
 
