@@ -60,7 +60,7 @@ func main() {
     // Start server on the correct port
     err1 := r.Run(":" + port)
     if err1 != nil {
-        log.Fatal("Server failed to start:", err)
+        log.Fatal("Server failed to start:", err1)
     }
 	
 	
