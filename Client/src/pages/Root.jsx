@@ -15,7 +15,7 @@ const Root = () => {
             <img src="/assets/Logo.png" alt="Logo" className="w-[4rem]"/>
             <img src="/assets/Welcome.png" alt="Welcome" className="w-[16rem] mx-auto mt-22 mb-6" />
             <Blocks icon={GoogleLogo} name="Google" />
-            <Link to="/signup"><Blocks icon={EmailLogo} name="Email" /></Link>
+            <Link to="/admin-signup"><Blocks icon={EmailLogo} name="Email" /></Link>
             <p className="text-gray-600 mt-[19rem] mx-auto">I agree to the Terms & Conditions & Privacy Policy</p>
           </div>
           <div className="right w-[50%]">

@@ -34,7 +34,7 @@ const MovieCard = ({id,movie,description,startDate,endDate,genre,language,status
 
 
   const handleUpdate=()=>{
-    navigate("/addnewmovie",{state:{movie:{id,movie,description,startDate,endDate,genre,language,status,file}}});
+    navigate("/admin-addnewmovie",{state:{movie:{id,movie,description,startDate,endDate,genre,language,status,file}}});
   }
 
 

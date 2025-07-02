@@ -50,7 +50,7 @@ const SignUp = () => {
       
       console.log("REsponse: ",response);
       console.log("Signup successfull!")
-      navigate("/login");
+      navigate("/admin-login");
     } catch (error) {
       // handle error while login
       console.log("Full Error",error);
@@ -102,7 +102,7 @@ const SignUp = () => {
           </button>
           <p className="text-sm text-center mt-4">
             Already have an account?{" "}
-            <Link to="/login" className="font-medium text-primary underline">
+            <Link to="/admin-login" className="font-medium text-primary underline">
               Login
             </Link>
           </p>

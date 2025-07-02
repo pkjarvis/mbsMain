@@ -138,7 +138,7 @@ const AddNewTheatre = () => {
         .catch((err) => console.log(err));
     }
 
-    navigate("/theatre", {
+    navigate("/admin-theatre", {
       state: {
         toastMessage: editingTheatre
           ? "Theatre has been updated successfully"
@@ -152,10 +152,10 @@ const AddNewTheatre = () => {
       <div className="theatre-info">
         <Navbar para="Find showtimes by Movie, Theatre, Date, etc." />
         <span className="flex items-center gap-2 mx-6 ">
-          <Link to="/dashboard">
+          <Link to="/admin-dashboard">
             <p className="text-zinc-400 font-light text-md">Home /</p>
           </Link>
-          <Link to="/theatre">
+          <Link to="/admin-theatre">
             <p className="text-zinc-400 font-light text-md">
               Theatre Management /
             </p>

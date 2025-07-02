@@ -56,7 +56,7 @@ const Theatres = () => {
           }
         />
        
-        <MainHeader title="Manage Theatres" btncontent="+Add New Theatres" headerlink="Theatre Management" btnlink={baseUrl+"/addnewtheatre"} />
+        <MainHeader title="Manage Theatres" btncontent="+Add New Theatres" headerlink="Theatre Management" btnlink={baseUrl+"/admin-addnewtheatre"} />
         { loading?(<p className="text-center mt-8">Loading Theatres ...</p>)
           :theatres.length>0
           ?(theatres.map((t)=>(

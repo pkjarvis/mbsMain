@@ -17,13 +17,13 @@ const Navbar = (props) => {
   const handleLogout=()=>{
     localStorage.setItem("adminToken","");
     localStorage.setItem("adminName","");
-    navigate("/");
+    navigate("/admin");
   }
 
   return (
     <div>
       <div className="navbar  flex items-center justify-start my-2 ">
-        <Link to="/dashboard">
+        <Link to="/admin-dashboard">
           <img
             src="/assets/Logo.png"
             alt="Logo"

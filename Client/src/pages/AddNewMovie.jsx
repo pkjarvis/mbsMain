@@ -153,7 +153,7 @@ const AddNewMovie = () => {
         .catch((err) => console.log(err));
     }
 
-    navigate("/movie", {
+    navigate("/admin-movie", {
       state: {
         toastMessage: editingMovie
           ? "Movie has been updated successfully"
@@ -167,10 +167,10 @@ const AddNewMovie = () => {
       <div className="add-movie flex flex-col">
         <Navbar para="Find showtimes by Movie, Theatre, Date, etc." />
         <span className="flex items-center gap-2 mx-6 ">
-          <Link to="/dashboard">
+          <Link to="/admin-dashboard">
             <p className="text-zinc-400 font-light text-md">Home /</p>
           </Link>
-          <Link to="/movie">
+          <Link to="/admin-movie">
             <p className="text-zinc-400 font-light text-md">
               Movie Management /
             </p>

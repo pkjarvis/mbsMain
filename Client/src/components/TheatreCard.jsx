@@ -26,7 +26,7 @@ const TheatreCard = ({id,theatrename,address,cityName,stateName,status,totalscre
     };
 
     const handleUpdate=()=>{
-      navigate("/addnewtheatre",{state:{theatre:{id,theatrename,address,cityName,stateName,status,totalscreens,theatrefile,value}}})
+      navigate("/admin-addnewtheatre",{state:{theatre:{id,theatrename,address,cityName,stateName,status,totalscreens,theatrefile,value}}})
     }
 
   return (

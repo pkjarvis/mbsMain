@@ -130,7 +130,7 @@ const AddNewShowtime = () => {
     }
 
    
-    navigate("/shows",{
+    navigate("/admin-shows",{
       state: {
         toastMessage: editingNewShowTime
           ? "Showtime has been updated successfully"
@@ -173,10 +173,10 @@ const AddNewShowtime = () => {
       <div className="showtime-container">
         <Navbar para="Find showtimes by Movie, Theatre, Date, etc." />
         <span className="flex items-center gap-2 mx-6 ">
-          <Link to="/dashboard">
+          <Link to="/admin-dashboard">
             <p className="text-zinc-400 font-light text-md">Home /</p>
           </Link>
-          <Link to="/shows">
+          <Link to="/admin-shows">
             <p className="text-zinc-400 font-light text-md">
               Showtime Scheduling /
             </p>

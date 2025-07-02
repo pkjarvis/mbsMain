@@ -43,7 +43,7 @@ const Login = () => {
         localStorage.setItem("adminToken", response.data.token);
         localStorage.setItem("adminName", response.data.username);
         console.log("1");
-        navigate("/dashboard");
+        navigate("/admin-dashboard");
         console.log("2");
         return;
       }
@@ -104,7 +104,7 @@ const Login = () => {
           </button>
           <p className="text-sm text-center mt-4">
             Already have an account?{" "}
-            <Link to="/signup" className="font-medium text-primary underline">
+            <Link to="/admin-signup" className="font-medium text-primary underline">
               SignUp
             </Link>
           </p>

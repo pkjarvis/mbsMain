@@ -37,18 +37,18 @@ function App() {
             <ShowTimeProvider>
               <Routes>
                 
-                <Route path="*" element={<Navigate to="/"/>} />
-                <Route path="/" element={<Root />} />
-                <Route path="/signup" element={<SignUp />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/logout" element={<Logout />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/movie" element={<MovieManagement />} /> 
-                <Route path="/theatre" element={<Theatres />} />
-                <Route path="/shows" element={<Shows />} />
-                <Route path="/addnewmovie" element={<AddNewMovie />} />
-                <Route path="/addnewtheatre" element={<AddNewTheatre />} />
-                <Route path="/addnewshows" element={<AddNewShowtime />} />
+                <Route path="*" element={<Navigate to="/admin"/>} />
+                <Route path="/admin" element={<Root />} />
+                <Route path="/admin-signup" element={<SignUp />} />
+                <Route path="/admin-login" element={<Login />} />
+                <Route path="/admin-logout" element={<Logout />} />
+                <Route path="/admin-dashboard" element={<Dashboard />} />
+                <Route path="/admin-movie" element={<MovieManagement />} /> 
+                <Route path="/admin-theatre" element={<Theatres />} />
+                <Route path="/admin-shows" element={<Shows />} />
+                <Route path="/admin-addnewmovie" element={<AddNewMovie />} />
+                <Route path="/admin-addnewtheatre" element={<AddNewTheatre />} />
+                <Route path="/admin-addnewshows" element={<AddNewShowtime />} />
                 
               </Routes>
              </ShowTimeProvider>

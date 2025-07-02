@@ -28,7 +28,7 @@ const ShowTimeCard = ({
 
   const navigate = useNavigate("");
   const handleUpdate = () => {
-    navigate("/addnewshows", {
+    navigate("/admin-addnewshows", {
       state: {
         showtime: {
           id,
