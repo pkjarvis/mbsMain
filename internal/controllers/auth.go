@@ -108,7 +108,7 @@ func LoginWithRole(c *gin.Context, expectedRole string) {
 
 
 	log.Println("CP-1", domain)
-	c.SetCookie("token", tokenString, 365*24*60*60, "", domain, secure, false)
+	c.SetCookie("token", tokenString, 365*24*60*60, "/", domain, secure, false)
 	log.Println("CP-2", tokenString)
 	
 
