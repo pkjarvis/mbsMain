@@ -74,42 +74,16 @@ func LoginWithRole(c *gin.Context, expectedRole string) {
 		return
 	}
 
-	// domain := os.Getenv("FRONTEND_DOMAIN")
-	// // secure := true
+	
 
-	// if gin.Mode() == gin.DebugMode {
-	// 	domain = "localhost"
-	// 	// secure = false
-	// }
-
-	// c.SetCookie("token", tokenString, 365*24*60*60, "/", domain, secure, true)
+	log.Println("CP-1")
+	c.SetCookie("token", tokenString, 365*24*60*60, "/", "", true, false)
 	// c.Header("Set-Cookie", fmt.Sprintf(
-	// 	"token=%s; Path=/; Domain=mbsmain-hksv.onrender.com; Max-Age=%d; Secure; HttpOnly; SameSite=None",
-	// 	tokenString, 365*24*60*60,
+	// 	"token=%s; Path=/; Domain=%s; Max-Age=%d; Secure; HttpOnly; SameSite=None",
+	// 	tokenString,
+	// 	domain,
+	// 	365*24*60*60,
 	// ))
-
-	domain := ""
-	if expectedRole == "admin" {
-		domain = "mbsmain-hksv.onrender.com"
-	} else {
-		domain = "userside.onrender.com"
-	}
-
-	// secure := true
-
-	// if gin.Mode() == gin.DebugMode {
-	// 	domain = "localhost"
-	// 	secure = false
-	// }
-
-	log.Println("CP-1", domain)
-	// c.SetCookie("token", tokenString, 365*24*60*60, "/", domain, secure, false)
-	c.Header("Set-Cookie", fmt.Sprintf(
-		"token=%s; Path=/; Domain=%s; Max-Age=%d; Secure; HttpOnly; SameSite=None",
-		tokenString,
-		domain,
-		365*24*60*60,
-	))
 	log.Println("CP-2", tokenString)
 
 	c.Set("userId", claims.UserId)
