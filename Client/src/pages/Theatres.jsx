@@ -7,7 +7,7 @@ import { TheatreContext } from '../context/TheatreContext'
 import axiosInstance from '../utils/axiosInstance'
 import { toast, ToastContainer } from 'react-toastify'
 import { useLocation, useNavigate } from 'react-router-dom'
-
+const baseUrl=import.meta.env.VITE_ROUTE;
 const Theatres = () => {
 
   // const {theatres}=useContext(TheatreContext)
@@ -56,7 +56,7 @@ const Theatres = () => {
           }
         />
        
-        <MainHeader title="Manage Theatres" btncontent="+Add New Theatres" headerlink="Theatre Management" btnlink="http://localhost:5173/addnewtheatre" />
+        <MainHeader title="Manage Theatres" btncontent="+Add New Theatres" headerlink="Theatre Management" btnlink={baseUrl+"/addnewtheatre"} />
         { loading?(<p className="text-center mt-8">Loading Theatres ...</p>)
           :theatres.length>0
           ?(theatres.map((t)=>(

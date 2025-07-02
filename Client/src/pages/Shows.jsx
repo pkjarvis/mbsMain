@@ -6,7 +6,7 @@ import { ShowTimeContext } from '../context/ShowTimeContext'
 import axiosInstance from '../utils/axiosInstance'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { toast, ToastContainer } from 'react-toastify'
-
+const baseUrl=import.meta.env.VITE_ROUTE;
 // id:Date.now(),
 //       theatrename:theatrename,
 //       startDate:startDate,
@@ -79,7 +79,7 @@ const Shows = () => {
           }
         />
        
-        <MainHeader title="Schedule Showtimes" btncontent="+Add New Showtime" headerlink="Showtime Scheduling" btnlink="http://localhost:5173/addnewshows"/>
+        <MainHeader title="Schedule Showtimes" btncontent="+Add New Showtime" headerlink="Showtime Scheduling" btnlink={baseUrl+"/addnewshows"}/>
         { loading?(<p className="text-center mt-8">Loading Showtime ...</p>)
           :
           showtime.length>0
