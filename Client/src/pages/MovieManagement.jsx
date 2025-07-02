@@ -8,7 +8,7 @@ import axiosInstance from "../utils/axiosInstance";
 import { toast, ToastContainer } from "react-toastify";
 import { replace, useLocation, useNavigate } from "react-router-dom";
 
-const baseUrl=import.meta.env.VITE_ROUTE;
+const baseUrl = import.meta.env.VITE_ROUTE;
 
 const MovieManagement = () => {
   // const {movies}=useContext(MoviesContext);
@@ -20,11 +20,9 @@ const MovieManagement = () => {
   useEffect(() => {
     if (location.state?.toastMessage) {
       toast.success(location.state.toastMessage);
-      navigate(location.pathname,{replace:true,state:{}});
-      
+      navigate(location.pathname, { replace: true, state: {} });
     }
-  }, [location,navigate]);
-
+  }, [location, navigate]);
 
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -43,11 +41,20 @@ const MovieManagement = () => {
       .finally(() => setLoading(false));
   }, []);
 
+
+
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Filter logic
+  const filteredMovies = movies.filter((movie) =>
+    movie.movie.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+
   return (
     <div>
       <div>
-       
-       <ToastContainer
+        <ToastContainer
           position="top-center"
           autoClose={2000}
           theme="colored"
@@ -62,14 +69,14 @@ const MovieManagement = () => {
           title="Manage Movies"
           btncontent="+Add New Movie"
           headerlink="Movie Management"
-          btnlink={baseUrl+"/admin-addnewmovie"}
+          btnlink={baseUrl + "/admin-addnewmovie"}
+          onSearch={setSearchQuery}
         />
-         
-        
+
         {loading ? (
           <p className="text-center mt-8">Loading Movies ...</p>
-        ) : movies.length > 0 ? (
-          movies.map((m) => (
+        ) : filteredMovies.length > 0 ? (
+          filteredMovies.map((m) => (
             <MovieCard
               key={m.id}
               id={m.id}
