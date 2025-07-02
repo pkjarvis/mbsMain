@@ -43,6 +43,12 @@ const Theatres = () => {
       .finally(() => setLoading(false));
   }, []);
 
+  // filter logic
+  const [searchQuery, setSearchQuery] = useState("");
+  const filterTheatres = theatres.filter((theatre)=>
+    theatre.theatrename.toLowerCase().includes(searchQuery.toLocaleLowerCase())
+  );
+
   return (
    <div>
       <ToastContainer
@@ -56,10 +62,10 @@ const Theatres = () => {
           }
         />
        
-        <MainHeader title="Manage Theatres" btncontent="+Add New Theatres" headerlink="Theatre Management" btnlink={baseUrl+"/admin-addnewtheatre"} />
+        <MainHeader title="Manage Theatres" btncontent="+Add New Theatres" headerlink="Theatre Management" btnlink={baseUrl+"/admin-addnewtheatre"} onSearch={setSearchQuery} searchValue={searchQuery} />
         { loading?(<p className="text-center mt-8">Loading Theatres ...</p>)
-          :theatres.length>0
-          ?(theatres.map((t)=>(
+          :filterTheatres.length>0
+          ?(filterTheatres.map((t)=>(
             <TheatreCard
               key={t.id}
               id={t.id}

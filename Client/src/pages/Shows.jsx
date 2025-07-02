@@ -65,6 +65,14 @@ const Shows = () => {
   }, []);
 
 
+  const [searchQuery, setSearchQuery] = useState("");
+  
+    // Filter logic
+    const filteredShowtime = showtime.filter((show) =>
+      show.moviename.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+
 
   return (
     <div>
@@ -79,12 +87,12 @@ const Shows = () => {
           }
         />
        
-        <MainHeader title="Schedule Showtimes" btncontent="+Add New Showtime" headerlink="Showtime Scheduling" btnlink={baseUrl+"/admin-addnewshows"}/>
+        <MainHeader title="Schedule Showtimes" btncontent="+Add New Showtime" headerlink="Showtime Scheduling" btnlink={baseUrl+"/admin-addnewshows"} onSearch={setSearchQuery} searchValue={searchQuery}  />
         { loading?(<p className="text-center mt-8">Loading Showtime ...</p>)
           :
-          showtime.length>0
+          filteredShowtime.length>0
           ?
-          (showtime.map((s)=>(
+          (filteredShowtime.map((s)=>(
             <ShowTimeCard
                key={s.id}
                id={s.id}
