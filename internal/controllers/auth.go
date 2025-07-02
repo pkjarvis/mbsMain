@@ -73,14 +73,18 @@ func LoginWithRole(c *gin.Context, expectedRole string) {
 	}
 
 	domain := os.Getenv("FRONTEND_DOMAIN") 
-	secure := true
+	// secure := true
 
 	if gin.Mode() == gin.DebugMode {
 		domain = "localhost"
-		secure = false
+		// secure = false
 	}
-
-	c.SetCookie("token", tokenString, 365*24*60*60, "/", domain, secure, true)
+	
+	// c.SetCookie("token", tokenString, 365*24*60*60, "/", domain, secure, true)
+	c.Header("Set-Cookie", fmt.Sprintf(
+  "token=%s; Path=/; Domain=%s; Max-Age=%d; Secure; HttpOnly; SameSite=None",
+  tokenString, domain, 365*24*60*60,
+))
 	c.Set("userId", existingUser.Id)
 	c.Set("userToken", tokenString)
 

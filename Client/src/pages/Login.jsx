@@ -33,7 +33,9 @@ const Login = () => {
       const response = await axiosInstance.post("/admin/login", {
         email,
         password,
-      });
+      },{
+        withCredentials: true
+     });
 
       // handle successful register
       if (response.data && response.data.token) {
