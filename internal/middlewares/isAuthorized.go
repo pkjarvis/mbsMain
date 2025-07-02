@@ -3,7 +3,7 @@
 package middlewares
 
 import (
-    "go-auth/utils"
+    // "go-auth/utils"
     "github.com/gin-gonic/gin"
     "fmt"
 )
@@ -13,24 +13,24 @@ func IsAuthorized() gin.HandlerFunc {
 
         fmt.Println("Check in middleware isAuthorized")
 
-        cookie, err := c.Cookie("token")
-        fmt.Println("cookie is:", cookie)
+        // cookie, err := c.Cookie("token")
+        // fmt.Println("cookie is:", cookie)
 
-        if err != nil || cookie == "" {
-            c.JSON(401, gin.H{"error": "unauthorized"})
-            c.Abort()
-            return
-        }
+        // if err != nil || cookie == "" {
+        //     c.JSON(401, gin.H{"error": "unauthorized"})
+        //     c.Abort()
+        //     return
+        // }
 
-        claims, err := utils.ParseToken(cookie)
-        if err != nil {
-            c.JSON(401, gin.H{"error": "unauthorized"})
-            c.Abort()
-            return
-        }
+        // claims, err := utils.ParseToken(cookie)
+        // if err != nil {
+        //     c.JSON(401, gin.H{"error": "unauthorized"})
+        //     c.Abort()
+        //     return
+        // }
 
-        c.Set("role", claims.Role)
-        c.Set("userId", claims.UserId)
+        // c.Set("role", claims.Role)
+        // c.Set("userId", claims.UserId)
         c.Next()
     }
 }
@@ -40,24 +40,24 @@ func UserAuthorized() gin.HandlerFunc{
 
         fmt.Println("Check in middleware isAuthorized")
 
-        cookie, err := c.Cookie("token")
-        fmt.Println("cookie is:", cookie)
+        // cookie, err := c.Cookie("token")
+        // fmt.Println("cookie is:", cookie)
 
-        if err != nil || cookie == "" {
-            c.JSON(401, gin.H{"error": "unauthorized"})
-            c.Abort()
-            return
-        }
+        // if err != nil || cookie == "" {
+        //     c.JSON(401, gin.H{"error": "unauthorized"})
+        //     c.Abort()
+        //     return
+        // }
 
-        claims, err := utils.ParseToken(cookie)
-        if err != nil {
-            c.JSON(401, gin.H{"error": "unauthorized"})
-            c.Abort()
-            return
-        }
+        // claims, err := utils.ParseToken(cookie)
+        // if err != nil {
+        //     c.JSON(401, gin.H{"error": "unauthorized"})
+        //     c.Abort()
+        //     return
+        // }
 
-        c.Set("role", claims.Role)
-        c.Set("userId", claims.UserId)
+        // c.Set("role", claims.Role)
+        // c.Set("userId", claims.UserId)
         c.Next()
 
     }
