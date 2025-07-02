@@ -87,6 +87,12 @@ func LoginWithRole(c *gin.Context, expectedRole string) {
 	// 	"token=%s; Path=/; Domain=mbsmain-hksv.onrender.com; Max-Age=%d; Secure; HttpOnly; SameSite=None",
 	// 	tokenString, 365*24*60*60,
 	// ))
+	err1 := godotenv.Load()
+	if err1 != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+
 	domain:=""
 	if expectedRole=="admin"{
 		domain= os.Getenv("FRONTEND_DOMAIN")
@@ -100,10 +106,12 @@ func LoginWithRole(c *gin.Context, expectedRole string) {
 		secure = false
 	}
 
+
 	log.Println("CP-1", domain)
 	c.SetCookie("token", tokenString, 365*24*60*60, "", domain, secure, false)
-	log.Println("CP2", tokenString)
+	log.Println("CP-2", tokenString)
 	
+
 
 	c.Set("userId", claims.UserId)
 	c.Set("userToken", tokenString)
