@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import NavBar1 from "../component/NavBar1";
+import NavBar1 from "../components/NavBar1";
 import { Dropdown } from "primereact/dropdown";
-import Footer from "../component/Footer";
-import MainHeader1 from "../component/MainHeader1";
+import Footer from "../components/Footer";
+import MainHeader1 from "../components/MainHeader1";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import Theatres from "../component/Theatres";
+import Theatres from "../components/Theatres";
 import axiosInstance from "../utils/axiosInstance";
 
 // theatre-> id,theatrename,address,cityName,stateName,status,totalscreens,theatrefile,value

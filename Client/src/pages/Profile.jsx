@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import NavBar1 from "../component/NavBar1";
-import Footer from "../component/Footer";
+import NavBar1 from "../components/NavBar1";
+import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
 const baseUrl = import.meta.env.VITE_ROUTE;

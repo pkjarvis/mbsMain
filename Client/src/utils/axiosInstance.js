@@ -16,7 +16,7 @@ axiosInstance.interceptors.request.use(
     // Exclude token from these routes
     if (
       !config.url.endsWith("/admin/signup") &&
-      !config.url.endsWith("/admin/login")
+      !config.url.endsWith("/admin/login") && !config.url.endsWith("/user/signup") && !config.url.endsWith("/user/login")
     ) {
       const token = localStorage.getItem("adminToken");
       if (token) {

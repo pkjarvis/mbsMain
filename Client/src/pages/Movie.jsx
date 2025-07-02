@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import NavBar1 from "../component/NavBar1";
-import MainHeader1 from "../component/MainHeader1";
-import MovieCardSection from "../component/MovieCardSection";
-import Footer from "../component/Footer";
+import NavBar1 from "../components/NavBar1";
+import MainHeader1 from "../components/MainHeader1";
+import MovieCardSection from "../components/MovieCardSection";
+import Footer from "../components/Footer";
 import { Rating } from "primereact/rating";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Link, useLocation, useNavigate } from "react-router-dom";

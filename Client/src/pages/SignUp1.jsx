@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { isEmailValid } from "../utils/helper.js";
-import PasswordInput from "../component/PasswordInput.jsx";
+import PasswordInput from "../components/PasswordInput.jsx";
 import axiosInstance from "../utils/axiosInstance.js";
 
 

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import NavBar1 from "../component/NavBar1";
-import ImageContainer from "../component/ImageContainer";
+import NavBar1 from "../components/NavBar1";
+import ImageContainer from "../components/ImageContainer";
 
-import MovieCard1 from "../component/MovieCard1";
+import MovieCard1 from "../components/MovieCard1";
 import { Dropdown } from "primereact/dropdown";
-import Footer from "../component/Footer";
+import Footer from "../components/Footer";
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
 

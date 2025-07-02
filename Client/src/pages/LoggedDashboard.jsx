@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import NavBar1 from "../component/NavBar1";
-import ImageContainer from "../component/ImageContainer";
-import MovieCardSection from "../component/MovieCardSection";
-import NowShowingTheatre from "../component/NowShowingTheatre";
-import Bollywood from "../component/Bollywood";
-import Footer from "../component/Footer";
+import NavBar1 from "../components/NavBar1";
+import ImageContainer from "../components/ImageContainer";
+import MovieCardSection from "../components/MovieCardSection";
+import NowShowingTheatre from "../components/NowShowingTheatre";
+import Bollywood from "../components/Bollywood";
+import Footer from "../components/Footer";
 import axiosInstance from "../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
 

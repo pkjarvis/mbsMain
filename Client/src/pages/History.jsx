@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import NavBar1 from "../component/NavBar1";
-import BookingCard from "../component/BookingCard";
-import Footer from "../component/Footer";
+import NavBar1 from "../components/NavBar1";
+import BookingCard from "../components/BookingCard";
+import Footer from "../components/Footer";
 import axiosInstance from "../utils/axiosInstance";
 import { Link } from "react-router-dom";
 const baseUrl = import.meta.env.VITE_ROUTE;
