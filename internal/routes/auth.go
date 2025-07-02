@@ -63,7 +63,7 @@ func AuthRoutes(r *gin.Engine) {
 	
 	// user routes
 	user := r.Group("/")
-	user.Use(middlewares.IsAuthorized(), middlewares.UserAuthorized())
+	user.Use( middlewares.UserAuthorized())
 	user.POST("/add-review", controllers.AddReview)
 	user.GET("/get-review", controllers.GetReviews)
 	user.POST("/api-payu", controllers.Payment)

@@ -72,20 +72,20 @@ func LoginWithRole(c *gin.Context, expectedRole string) {
 		return
 	}
 
-	domain := os.Getenv("FRONTEND_DOMAIN") 
-	// secure := true
+	// domain := os.Getenv("FRONTEND_DOMAIN")
+	// // secure := true
 
-	if gin.Mode() == gin.DebugMode {
-		domain = "localhost"
-		// secure = false
-	}
-	
+	// if gin.Mode() == gin.DebugMode {
+	// 	domain = "localhost"
+	// 	// secure = false
+	// }
+
 	// c.SetCookie("token", tokenString, 365*24*60*60, "/", domain, secure, true)
 	c.Header("Set-Cookie", fmt.Sprintf(
-  "token=%s; Path=/; Domain=%s; Max-Age=%d; Secure; HttpOnly; SameSite=None",
-  tokenString, domain, 365*24*60*60,
-))
-	c.Set("userId", existingUser.Id)
+		"token=%s; Path=/; Domain=mbsmain-hksv.onrender.com; Max-Age=%d; Secure; HttpOnly; SameSite=None",
+		tokenString, 365*24*60*60,
+	))
+	c.Set("userId", claims.UserId)
 	c.Set("userToken", tokenString)
 
 	fmt.Print("existingUser.Id", existingUser.Id)
