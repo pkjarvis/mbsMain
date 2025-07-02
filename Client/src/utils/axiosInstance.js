@@ -3,7 +3,7 @@ import axios from "axios"
 
 
 const axiosInstance=axios.create({
-    baseURL:"http://localhost:8080/",
+    baseURL:"",
     timeout:5000,
     withCredentials:true,
     body:JSON.stringify({}),

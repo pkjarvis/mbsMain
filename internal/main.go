@@ -51,13 +51,17 @@ func main() {
 
 	// Load the routes
 	routes.AuthRoutes(r)
+
     port := os.Getenv("PORT")
     if port == "" {
         port = "8080" // fallback for local dev
     }
 
-    // Important: Use dynamic port
-    r.Run(":" + port)
+    // Start server on the correct port
+    err1 := r.Run(":" + port)
+    if err1 != nil {
+        log.Fatal("Server failed to start:", err)
+    }
 	
 	
 }

@@ -72,8 +72,15 @@ func LoginWithRole(c *gin.Context, expectedRole string) {
 		return
 	}
 
-	// Store in cookie
-	c.SetCookie("token", tokenString, 365*24*60*60, "/", "localhost", false, true)
+	domain := os.Getenv("FRONTEND_DOMAIN") 
+	secure := true
+
+	if gin.Mode() == gin.DebugMode {
+		domain = "localhost"
+		secure = false
+	}
+
+	c.SetCookie("token", tokenString, 365*24*60*60, "/", domain, secure, true)
 	c.Set("userId", existingUser.Id)
 	c.Set("userToken", tokenString)
 
