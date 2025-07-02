@@ -42,7 +42,11 @@ const SignUp = () => {
         name: name? name.toUpperCase():"",
         email: email,
         password: password,
-      });
+
+      },{
+        withCredentials: true
+     }
+    );
       
       console.log("REsponse: ",response);
       console.log("Signup successfull!")

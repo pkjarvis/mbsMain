@@ -6,7 +6,6 @@ const axiosInstance=axios.create({
     baseURL:"https://moviebookingsystem-ta6i.onrender.com",
     timeout:5000,
     withCredentials:true,
-    body:JSON.stringify({}),
     headers: {
     "Content-Type": "application/json",
   },
