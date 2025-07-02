@@ -24,7 +24,7 @@ const AddNewTheatre = () => {
 
   const [value, setValue] = useState([]); // multi input state
 
-  const navigate = useNavigate("");
+  const navigate = useNavigate();
   const { addTheatre, updateTheatre } = useContext(TheatreContext);
 
   const { state } = useLocation();
