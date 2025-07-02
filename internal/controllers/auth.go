@@ -733,9 +733,9 @@ func generatePayuPayment(tx models.Transaction) map[string]interface{} {
 		"payuFormFields": map[string]string{
 			"key":         key,
 			"city":        "city",
-			"furl":        "http://localhost:8080/payment-failure",
+			"furl":        "https://moviebookingsystem-ta6i.onrender.com/payment-failure",
 			"hash":        hashHex,
-			"surl":        "http://localhost:8080/payment-success",
+			"surl":        "https://moviebookingsystem-ta6i.onrender.com/payment-success",
 			"email":       email,
 			"phone":       "phone number",
 			"state":       "state",
