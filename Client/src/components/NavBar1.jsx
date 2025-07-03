@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Dropdown } from 'primereact/dropdown';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const NavBar1 = (props) => {
   const [flag,setFlag]=useState(false);
@@ -63,7 +63,7 @@ const NavBar1 = (props) => {
 
 
         <div className="nav-container  w-[95%] flex items-center justify-between p-2">
-            <a href="/"><img src="/assets/Logo.png" alt="WebLogo" className='w-[2.6vw] h-[2.6vw]' /></a>
+            <Link to="/dashboard"><img src="/assets/Logo.png" alt="WebLogo" className='w-[2.6vw] h-[2.6vw]' /></Link>
             <span className='container-right flex items-center justify-center gap-4'>
                 <span className='flex items-center gap-2 cursor-pointer' onClick={handleClick}>
                     <p className='text-[#373737] font-normal'>New Delhi</p>
