@@ -16,6 +16,7 @@ import (
 //       status: status,
 //       file: file || editingMovie?.file,
 
+
 type Movie struct {
 	gorm.Model
 	Id          uint           `json:"id" gorm:"primaryKey"`
