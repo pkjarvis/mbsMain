@@ -9,7 +9,7 @@ import PasswordInput from "../components/PasswordInput.jsx";
 
 
 const Login1 = () => {
-     const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
 
