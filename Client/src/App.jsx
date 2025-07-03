@@ -48,8 +48,29 @@ function App() {
             <TheatreProvider>
               <ShowTimeProvider>
                 <Routes>
-                  <Route path="/goto" element={<GoToOptions/>}/>
-                  <Route path="*" element={<Navigate to="/goto" />} />
+                  
+                  <Route path="*" element={<Navigate to="/root" />} />
+                  {/* user route */}
+                   {/* user routes starts here */}
+
+                  <Route path="/root" element={<Dashboard1/>} />
+                  <Route path="/dashboard" element={<LoggedDashboard />} />
+                  {userToken?<Route path="/movies" element={<AllMovies/>} />:<Route path="/root" element={<Dashboard1/>} />}
+                  {userToken?<Route path="/movie" element={<Movie />} />:<Route path="/root" element={<Dashboard1/>} />}
+                  {userToken?<Route path="/showtime" element={<Showtime />} />:<Route path="/root" element={<Dashboard1/>} />}
+                  {userToken?<Route path="/showbooking" element={<ShowBooking />} />:<Route path="/root" element={<Dashboard1/>} />}
+                  {userToken?<Route path="/profile" element={<Profile/>} />:<Route path="/root" element={<Dashboard1/>} />}
+                  {userToken?<Route path="/signup" element={<SignUp1/>} />:<Route path="/root" element={<Dashboard1/>} />}
+                  {userToken?<Route path="/login" element={<Login1 />} />:<Route path="/root" element={<Dashboard1/>} />}
+                  {userToken?<Route path="/booking" element={<Booking/>} />:<Route path="/root" element={<Dashboard1/>} />}
+                  {userToken?<Route path="/history" element={<History />} />:<Route path="/root" element={<Dashboard1/>} />}
+                  {userToken?<Route path="/payment-status" element={<PaymentStatus />} />:<Route path="/root" element={<Dashboard1/>} />}
+
+
+
+
+
+                {/* admin route */}
                   <Route path="/admin" element={<Root />} />
                   <Route path="/admin-signup" element={<SignUp />} />
                   <Route path="/admin-login" element={<Login />} />
@@ -68,22 +89,7 @@ function App() {
                     element={<AddNewShowtime />}
                   />:<Route path="/admin" element={<Root />} />}
 
-                  {/* user routes starts here */}
-
-                  <Route path="/root" element={<Dashboard1/>} />
-                  <Route path="/dashboard" element={<LoggedDashboard />} />
-                  {userToken?<Route path="/movies" element={<AllMovies/>} />:<Route path="/root" element={<Dashboard1/>} />}
-                  {userToken?<Route path="/movie" element={<Movie />} />:<Route path="/root" element={<Dashboard1/>} />}
-                  {userToken?<Route path="/showtime" element={<Showtime />} />:<Route path="/root" element={<Dashboard1/>} />}
-                  {userToken?<Route path="/showbooking" element={<ShowBooking />} />:<Route path="/root" element={<Dashboard1/>} />}
-                  {userToken?<Route path="/profile" element={<Profile/>} />:<Route path="/root" element={<Dashboard1/>} />}
-                  {userToken?<Route path="/signup" element={<SignUp1/>} />:<Route path="/root" element={<Dashboard1/>} />}
-                  {userToken?<Route path="/login" element={<Login1 />} />:<Route path="/root" element={<Dashboard1/>} />}
-                  {userToken?<Route path="/booking" element={<Booking/>} />:<Route path="/root" element={<Dashboard1/>} />}
-                  {userToken?<Route path="/history" element={<History />} />:<Route path="/root" element={<Dashboard1/>} />}
-                  {userToken?<Route path="/payment-status" element={<PaymentStatus />} />:<Route path="/root" element={<Dashboard1/>} />}
-
-
+                 
                 </Routes>
               </ShowTimeProvider>
             </TheatreProvider>
