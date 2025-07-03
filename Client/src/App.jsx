@@ -30,6 +30,7 @@ import Login1 from "./pages/Login1";
 import Booking from "./pages/Booking";
 import History from "./pages/History";
 import PaymentStatus from "./pages/PaymentStatus";
+import GoToOptions from "./pages/GoToOptions";
 
 function App() {
   // const token=localStorage.getItem("adminToken");
@@ -46,7 +47,8 @@ function App() {
             <TheatreProvider>
               <ShowTimeProvider>
                 <Routes>
-                  <Route path="*" element={<Navigate to="/admin" />} />
+                  <Route path="/goto" element={<GoToOptions/>}/>
+                  <Route path="*" element={<Navigate to="/goto" />} />
                   <Route path="/admin" element={<Root />} />
                   <Route path="/admin-signup" element={<SignUp />} />
                   <Route path="/admin-login" element={<Login />} />

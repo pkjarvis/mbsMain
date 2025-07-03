@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 const baseUrl=import.meta.env.VITE_ROUTE
+import Cookies from 'js-cookie';
 
 const Navbar = (props) => {
   const username = localStorage.getItem("adminName");
@@ -17,6 +18,7 @@ const Navbar = (props) => {
   const navigate=useNavigate("");
   const handleLogout=()=>{
     localStorage.clear();
+    Cookies.remove('token');
     navigate("/admin");
   }
 

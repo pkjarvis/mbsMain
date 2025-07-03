@@ -3,6 +3,9 @@ import NavBar1 from "../components/NavBar1";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
+import Cookies from 'js-cookie';
+
+
 const baseUrl = import.meta.env.VITE_ROUTE;
 const Profile = () => {
   const username = localStorage.getItem("userName");
@@ -20,6 +23,7 @@ const Profile = () => {
 
   const handleLogout = () => {
     localStorage.clear();
+    Cookies.remove('token');
     navigate("/root");
   };
 
