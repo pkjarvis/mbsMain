@@ -87,6 +87,8 @@ const Showtime = () => {
     const startDate = new Date(start);
     const endDate = new Date(end);
     const dateList = [];
+    
+    if(startDate>endDate) return;
 
     while (startDate <= endDate) {
       const month = startDate
@@ -103,6 +105,7 @@ const Showtime = () => {
     return dateList;
   };
 
+  
   const datelist = getDatesBetween(startDate, endDate);
 
   return (
