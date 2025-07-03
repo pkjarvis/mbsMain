@@ -55,16 +55,16 @@ function App() {
 
                   <Route path="/root" element={<Dashboard1/>} />
                   <Route path="/dashboard" element={<LoggedDashboard />} />
-                  {userToken?<Route path="/movies" element={<AllMovies/>} />:<Route path="/root" element={<Dashboard1/>} />}
-                  {userToken?<Route path="/movie" element={<Movie />} />:<Route path="/root" element={<Dashboard1/>} />}
-                  {userToken?<Route path="/showtime" element={<Showtime />} />:<Route path="/root" element={<Dashboard1/>} />}
-                  {userToken?<Route path="/showbooking" element={<ShowBooking />} />:<Route path="/root" element={<Dashboard1/>} />}
-                  {userToken?<Route path="/profile" element={<Profile/>} />:<Route path="/root" element={<Dashboard1/>} />}
+                  <Route path="/movies" element={<AllMovies/>} />
+                  <Route path="/movie" element={<Movie />} />
+                  <Route path="/showtime" element={<Showtime />} />
+                  <Route path="/showbooking" element={<ShowBooking />} />
+                  <Route path="/profile" element={<Profile/>} />
                   <Route path="/signup" element={<SignUp1/>} />
                   <Route path="/login" element={<Login1 />} />
-                  {userToken?<Route path="/booking" element={<Booking/>} />:<Route path="/root" element={<Dashboard1/>} />}
-                  {userToken?<Route path="/history" element={<History />} />:<Route path="/root" element={<Dashboard1/>} />}
-                  {userToken?<Route path="/payment-status" element={<PaymentStatus />} />:<Route path="/root" element={<Dashboard1/>} />}
+                  <Route path="/booking" element={<Booking/>} />
+                  <Route path="/history" element={<History />} />
+                  <Route path="/payment-status" element={<PaymentStatus />} />
 
 
 
@@ -75,20 +75,19 @@ function App() {
                   <Route path="/admin-signup" element={<SignUp />} />
                   <Route path="/admin-login" element={<Login />} />
                   <Route path="/admin-logout" element={<Logout />} />
-                  {adminToken?<Route path="/admin-dashboard" element={<Dashboard />} />:<Route path="/admin" element={<Root />} />}
-                  {adminToken?<Route path="/admin-movie" element={<MovieManagement />} />:<Route path="/admin" element={<Root />} />}
-                  {adminToken?<Route path="/admin-theatre" element={<Theatres />} />:<Route path="/admin" element={<Root />} />}
-                  {adminToken?<Route path="/admin-shows" element={<Shows />} />:<Route path="/admin" element={<Root />} />}
-                  {adminToken?<Route path="/admin-addnewmovie" element={<AddNewMovie />} />:<Route path="/admin" element={<Root />} />}
-                  {adminToken?<Route
+                  <Route path="/admin-dashboard" element={<Dashboard />} />
+                  <Route path="/admin-movie" element={<MovieManagement />} />
+                  <Route path="/admin-theatre" element={<Theatres />} />
+                  <Route path="/admin-shows" element={<Shows />} />
+                  <Route path="/admin-addnewmovie" element={<AddNewMovie />} />
+                  <Route
                     path="/admin-addnewtheatre"
                     element={<AddNewTheatre />}
-                  />:<Route path="/admin" element={<Root />} />}
-                  {adminToken?<Route
+                  />
+                  <Route
                     path="/admin-addnewshows"
                     element={<AddNewShowtime />}
-                  />:<Route path="/admin" element={<Root />} />}
-
+                  />
                  
                 </Routes>
               </ShowTimeProvider>
