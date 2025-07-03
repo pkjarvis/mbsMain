@@ -30,7 +30,7 @@ import Login1 from "./pages/Login1";
 import Booking from "./pages/Booking";
 import History from "./pages/History";
 import PaymentStatus from "./pages/PaymentStatus";
-import GoToOptions from "./pages/GoToOptions";
+
 
 function App() {
   const adminToken=localStorage.getItem("adminToken");
