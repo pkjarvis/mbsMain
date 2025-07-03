@@ -51,7 +51,7 @@ function App() {
                   
                   <Route path="*" element={<Navigate to="/root" />} />
                   {/* user route */}
-                   {/* user routes starts here */}
+                  
 
                   <Route path="/root" element={<Dashboard1/>} />
                   <Route path="/dashboard" element={<LoggedDashboard />} />
@@ -60,8 +60,8 @@ function App() {
                   {userToken?<Route path="/showtime" element={<Showtime />} />:<Route path="/root" element={<Dashboard1/>} />}
                   {userToken?<Route path="/showbooking" element={<ShowBooking />} />:<Route path="/root" element={<Dashboard1/>} />}
                   {userToken?<Route path="/profile" element={<Profile/>} />:<Route path="/root" element={<Dashboard1/>} />}
-                  {userToken?<Route path="/signup" element={<SignUp1/>} />:<Route path="/root" element={<Dashboard1/>} />}
-                  {userToken?<Route path="/login" element={<Login1 />} />:<Route path="/root" element={<Dashboard1/>} />}
+                  <Route path="/signup" element={<SignUp1/>} />
+                  <Route path="/login" element={<Login1 />} />
                   {userToken?<Route path="/booking" element={<Booking/>} />:<Route path="/root" element={<Dashboard1/>} />}
                   {userToken?<Route path="/history" element={<History />} />:<Route path="/root" element={<Dashboard1/>} />}
                   {userToken?<Route path="/payment-status" element={<PaymentStatus />} />:<Route path="/root" element={<Dashboard1/>} />}
