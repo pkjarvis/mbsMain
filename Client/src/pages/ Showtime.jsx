@@ -82,13 +82,40 @@ const Showtime = () => {
   const endDate = movie.endDate;
 
 
+   //showing  current day only
+
+    const curDate=new Date();
+    const curweekday=curDate.toLocaleString("en-US",{weekday:"short"});
+    let day=curDate.getDate();
+    let month=curDate.getMonth()+1;
+
+
+    
+    console.log("Today's date",day);
+    console.log("month",month);
+    console.log("weekday",curweekday);
+    
+
+    // ------------------
+
+
 
   const getDatesBetween = (start, end) => {
-    const startDate = new Date(start);
-    const endDate = new Date(end);
+    var startDate = new Date(start);
+    var endDate = new Date(end);
     const dateList = [];
-    
-    if(startDate>endDate) return;
+
+    const paramStartDate=startDate.getDate();
+    const paramEndDate=endDate.getDate();
+
+    if(day>=paramStartDate && day<=paramEndDate){
+      startDate=new Date()  
+    }
+    console.log("function date",startDate)
+
+   
+
+    if(paramStartDate>endDate) return;
 
     while (startDate <= endDate) {
       const month = startDate
@@ -108,6 +135,17 @@ const Showtime = () => {
   
   const datelist = getDatesBetween(startDate, endDate);
 
+  const [curdate,setCurDate]=useState()
+  const handleDateSelection=(val)=>{
+    setCurDate(val);
+  };
+  console.log("curdate is ",curdate);
+
+
+
+
+
+
   return (
     <div>
       <div className="showtime-container">
@@ -115,7 +153,7 @@ const Showtime = () => {
           <NavBar1 title={username} />
           <span className="flex items-center justify-start mx-[3vw] gap-1 mt-2">
             <Link
-              to="/"
+              to="/dashboard"
               // href="http://localhost:3000/dashboard"
               className="cursor-pointer font-light text-zinc-500 "
             >
@@ -160,12 +198,13 @@ const Showtime = () => {
                 </p>
               ))}
             </p>
-            <div className="date-container w-[auto] h-[28%]  rounded-xl border-1 border-[#EBEBEB] flex items-center justify-start mt-4">
-              <div className="flex items-center justify-between gap-4  w-[auto] p-[1vw]">
+            <div className="date-container max-w-[60%] h-[28%]  rounded-xl border-1 border-[#EBEBEB] flex items-center justify-start mt-4 ">
+              <div className="flex items-center justify-between gap-4  w-[auto] p-[1vw] overflow-x-scroll ">
                 {datelist.map((dateInfo, index) => (
                   <span
                     key={index}
-                    className="bg-[#F5F5F5] flex flex-col w-[4.2vw] h-[5.2vw] p-2  items-center justify-center rounded-2xl hover:border-1 hover:border-[#FF5295] hover:scale-115 ease-in-out duration-150"
+                    className="bg-[#F5F5F5] flex flex-col w-[4vw] h-[5.2vw] p-2  items-center justify-center rounded-2xl hover:border-1 hover:border-[#FF5295] hover:scale-115 ease-in-out duration-150 "
+                    onClick={()=>handleDateSelection(dateInfo.day)}
                   >
                     <p className="text-xl font-light text-black">
                       {dateInfo.month}

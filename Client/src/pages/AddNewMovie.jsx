@@ -114,6 +114,8 @@ const AddNewMovie = () => {
 
   const navigate = useNavigate();
 
+  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -130,6 +132,11 @@ const AddNewMovie = () => {
     };
 
     console.log(newMovie);
+
+    if(startDate>endDate){
+      alert("StartDate should be less than EndDate");
+      return;
+    }
 
     if (editingMovie) {
       // update api call
