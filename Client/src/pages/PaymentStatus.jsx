@@ -13,7 +13,7 @@ const PaymentStatus = () => {
       )}
       {success === "true" && (
         <span className="w-[auto] p-2 mt-[0.5vw] flex flex-col items-center justify-center">
-          <Link to="history" className="text-md font-normal bg-pink-500 p-3 rounded-md text-white mt-[2vw]">
+          <Link to="/history" className="text-md font-normal bg-pink-500 p-3 rounded-md text-white mt-[2vw]">
             Press to view ticket
           </Link>
         </span>
