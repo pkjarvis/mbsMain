@@ -39,6 +39,9 @@ useEffect(() => {
   const { state } = useLocation();
   const movie = state?.movie;
   const theatre=state?.theatreval;
+  const date=state?.date;
+  const from=state?.from;
+  const to=state?.to;
   console.log("theatre from location.state",theatre);
 
   
@@ -113,7 +116,7 @@ useEffect(() => {
       alert("All seats booked can't proceed to pay!")
       return;
     }
-    navigate("/booking",{state:{storeId,totalprice,movie,theatre}});
+    navigate("/booking",{state:{storeId,totalprice,movie,theatre,date,from,to}});
   };
 
   // const handlePopUP = () => {
@@ -170,7 +173,7 @@ useEffect(() => {
           <span className="flex flex-col items-start justify-center">
             <h1 className="text-3xl font-bold">{movie.movie}</h1>
             <p className="font-normal text-[#5E5E5E]">
-              {theatre.theatrename} | {theatre.address}| {theatre.cityName} | {theatre.stateName} | {movie.startDate}
+              {theatre.theatrename} | {theatre.address}| {theatre.cityName} | {theatre.stateName} | {date}
             </p>
           </span>
         </div>
@@ -608,7 +611,7 @@ useEffect(() => {
               </div>
               <div className="flex items-center gap-4 justify-start my-[1.3vw]">
                 <p className="text-[#949494] font-normal">C</p>
-                <div id="C1" className="h-[2.4vw] w-[2.4vw] bg-[#E5E5E5] border-1 border-[#D6D6D6] rounded-sm flex items-center justify-center ml-[4vw] cursor-pointer" onClick={()=>handleMiddleRow("C",1)}>
+                <div id="C1" className="h-[2.4vw] w-[2.4vw] bg-[#E5E5E5] border-1 border-[#D6D6D6] rounded-sm flex items-center justify-center ml-[3.9vw] cursor-pointer" onClick={()=>handleMiddleRow("C",1)}>
                   <p className="text-center text-base  text-white">1</p>
                 </div>
                 <div id="C2" className="h-[2.4vw] w-[2.4vw] bg-[#E5E5E5] border-1 border-[#D6D6D6] rounded-sm flex items-center justify-center cursor-pointer " onClick={()=>handleMiddleRow("C",2)}>
@@ -644,7 +647,7 @@ useEffect(() => {
               </div>
               <div className="flex items-center gap-4 justify-start my-[1.3vw]">
                 <p className="text-[#949494] font-normal">D</p>
-                <div id="D1" className="h-[2.4vw] w-[2.4vw] bg-[#E5E5E5] border-1 border-[#D6D6D6] rounded-sm flex items-center justify-center ml-[4vw] cursor-pointer" onClick={()=>handleMiddleRow("D",1)}>
+                <div id="D1" className="h-[2.4vw] w-[2.4vw] bg-[#E5E5E5] border-1 border-[#D6D6D6] rounded-sm flex items-center justify-center ml-[3.9vw] cursor-pointer" onClick={()=>handleMiddleRow("D",1)}>
                   <p className="text-center text-base  text-white">1</p>
                 </div>
                 <div  id="D2" className="h-[2.4vw] w-[2.4vw] bg-[#E5E5E5] border-1 border-[#D6D6D6] rounded-sm flex items-center justify-center cursor-pointer" onClick={()=>handleMiddleRow("D",2)}>
@@ -680,7 +683,7 @@ useEffect(() => {
               </div>
               <div className="flex items-center gap-4 justify-start my-[1.3vw]">
                 <p className="text-[#949494] font-normal">E</p>
-                <div id="E1" className="h-[2.4vw] w-[2.4vw] bg-[#E5E5E5] border-1 border-[#D6D6D6] rounded-sm flex items-center justify-center ml-[3.8vw]" onClick={()=>handleMiddleRow("E",1)}>
+                <div id="E1" className="h-[2.4vw] w-[2.4vw] bg-[#E5E5E5] border-1 border-[#D6D6D6] rounded-sm flex items-center justify-center ml-[4vw]" onClick={()=>handleMiddleRow("E",1)}>
                   <p className="text-center text-base  text-white">1</p>
                 </div>
                 <div id="E2"  className="h-[2.4vw] w-[2.4vw] bg-[#E5E5E5] border-1 border-[#D6D6D6] rounded-sm flex items-center justify-center "  onClick={()=>handleMiddleRow("E",2)}>
@@ -716,7 +719,7 @@ useEffect(() => {
               </div>
               <div className="flex items-center gap-4 justify-start my-[1.3vw]">
                 <p className="text-[#949494] font-normal">F</p>
-                <div id="F1" className="h-[2.4vw] w-[2.4vw] bg-[#E5E5E5] border-1 border-[#D6D6D6] rounded-sm flex items-center justify-center ml-[3.8vw]" onClick={()=>handleMiddleRow("F",1)}>
+                <div id="F1" className="h-[2.4vw] w-[2.4vw] bg-[#E5E5E5] border-1 border-[#D6D6D6] rounded-sm flex items-center justify-center ml-[4vw]" onClick={()=>handleMiddleRow("F",1)}>
                   <p className="text-center text-base  text-white">1</p>
                 </div>
                 <div id="F2" className="h-[2.4vw] w-[2.4vw] bg-[#E5E5E5] border-1 border-[#D6D6D6] rounded-sm flex items-center justify-center "  onClick={()=>handleMiddleRow("F",2)}>

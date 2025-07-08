@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"strings"
 
 	// "strings"
 
@@ -21,7 +22,8 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
+
+	// "github.com/joho/godotenv"
 	"gorm.io/datatypes"
 )
 
@@ -223,6 +225,15 @@ func AddMovie(c *gin.Context) {
 		return
 	}
 
+	// if already existed 
+	var existingMovie models.Movie
+	val1:=strings.ToLower(existingMovie.Title)
+	val2:=strings.ToLower(input.Movie)
+	if val1==val2 {
+		c.JSON(400,gin.H{"error":"movie already existed!"})
+		return
+	}
+
 	languagebytes, err := json.Marshal(input.Language)
 
 	if err != nil {
@@ -276,7 +287,7 @@ func AddTheatre(c *gin.Context) {
 		Status       string   `json:"status"`
 		TotalScreens string   `json:"totalscreens"`
 		TheatreURL   string   `json:"theatrefile"`
-		Value        []string `json:"value"`
+		// Value        []string `json:"value"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -290,12 +301,23 @@ func AddTheatre(c *gin.Context) {
 		return
 	}
 
-	valuebytes, err := json.Marshal(input.Value)
+	// valuebytes, err := json.Marshal(input.Value)
 
-	if err != nil {
-		c.JSON(500, gin.H{"error": "failed to marshal value"})
+	// if err != nil {
+	// 	c.JSON(500, gin.H{"error": "failed to marshal value"})
+	// 	return
+	// }
+
+	var existingTheatre models.Theatre
+	val1:=strings.ToLower(existingTheatre.TheatreName)
+	val2:=strings.ToLower(input.Theatre)
+
+	if val1==val2 {
+		c.JSON(400,gin.H{"error":"theatre already existed!"})
 		return
 	}
+
+
 
 	theatre := models.Theatre{
 		Id:           input.Id,
@@ -306,7 +328,7 @@ func AddTheatre(c *gin.Context) {
 		Status:       input.Status,
 		TotalScreens: uint(totalScreensInt),
 		TheatreURL:   input.TheatreURL,
-		Value:        valuebytes,
+		// Value:        valuebytes,
 	}
 
 	if err := models.DB.Create(&theatre).Error; err != nil {
@@ -332,9 +354,9 @@ func AddShowTime(c *gin.Context) {
 		Id          uint        `json:"id"`
 		TheatreName string      `json:"theatrename"`
 		StartDate   string      `json:"startDate"`
-		MovieName   string      `josn:"moviename"`
+		MovieName   string      `json:"moviename"`
 		TimeArray   []Timearray `json:"timearray"`
-		Language    []Language  `json:"language"`
+		Language    Language  `json:"language"`
 		Archived    bool        `json:"archived"`
 	}
 
@@ -369,6 +391,34 @@ func AddShowTime(c *gin.Context) {
 		return
 	}
 
+	
+
+	// Fetch Movie and Theatre IDs
+	var movie models.Movie
+	if err := models.DB.Where("title = ?", input.MovieName).First(&movie).Error; err != nil {
+		c.JSON(404, gin.H{"error": "Movie not found"})
+		return
+	}
+
+	var theatre models.Theatre
+	if err := models.DB.Where("theatre_name = ?", input.TheatreName).First(&theatre).Error; err != nil {
+		c.JSON(404, gin.H{"error": "Theatre not found"})
+		return
+	}
+
+    val1:=strings.ToLower(movie.Title)
+	val2:=strings.ToLower(theatre.TheatreName)
+
+	var existingShowtime models.Showtime
+
+	val3:=strings.ToLower(existingShowtime.TheatreName)
+	val4:=strings.ToLower(existingShowtime.MovieName)
+
+	if val1==val3 && val2==val4 {
+		c.JSON(400,gin.H{"error":"showtime already existed!"})
+		return
+	}
+
 	showtime := models.Showtime{
 		Id:          input.Id,
 		TheatreName: input.TheatreName,
@@ -377,10 +427,13 @@ func AddShowTime(c *gin.Context) {
 		TimeArray:   timearraybytes,
 		Language:    languagebytes,
 		Archived:    input.Archived,
+		MovieID: movie.Id,
+		TheatreID: theatre.Id,
 	}
 
 	if err := models.DB.Create(&showtime).Error; err != nil {
 		c.JSON(500, gin.H{"error": "failed to add showtime"})
+		return
 	}
 
 	c.JSON(200, gin.H{"message": "showtime added", "showtime": showtime})
@@ -414,10 +467,11 @@ func DeleteMovie(c *gin.Context) {
 	}
 
 	// Delete movie
-	models.DB.Delete(&movie)
+	models.DB.Unscoped().Delete(&movie)
 	c.JSON(200, gin.H{"message": "succesfully deleted", "id": id})
 
 }
+
 
 func DeleteTheatre(c *gin.Context) {
 	data, err := io.ReadAll(c.Request.Body)
@@ -441,7 +495,7 @@ func DeleteTheatre(c *gin.Context) {
 		return
 	}
 
-	models.DB.Delete(&theatre)
+	models.DB.Unscoped().Delete(&theatre)
 	c.JSON(200, gin.H{"message": "successfully deleted theatre", "id": id})
 
 }
@@ -541,7 +595,7 @@ func UpdateTheatre(c *gin.Context) {
 		TheatreName  string          `json:"theatrename"`
 		TheatreFile  string          `json:"theatrefile"`
 		TotalScreens uint            `json:"totalscreens"`
-		Value        json.RawMessage `json:"value"`
+		// Value        json.RawMessage `json:"value"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -557,7 +611,7 @@ func UpdateTheatre(c *gin.Context) {
 		Status:       input.Status,
 		TheatreURL:   input.TheatreFile,
 		TotalScreens: input.TotalScreens,
-		Value:        datatypes.JSON(input.Value),
+		// Value:        datatypes.JSON(input.Value),
 		TheatreName:  input.TheatreName,
 	}
 
@@ -613,6 +667,7 @@ func UpdateShowTime(c *gin.Context) {
 
 }
 
+
 func GetMovies(c *gin.Context) {
 	var movies []models.Movie
 	if err := models.DB.Find(&movies).Error; err != nil {
@@ -624,6 +679,7 @@ func GetMovies(c *gin.Context) {
 
 }
 
+
 func GetTheatres(c *gin.Context) {
 	var theatres []models.Theatre
 	if err := models.DB.Find(&theatres).Error; err != nil {
@@ -633,7 +689,8 @@ func GetTheatres(c *gin.Context) {
 	c.JSON(200, theatres)
 }
 
-func GetShowTime(c *gin.Context) {
+
+func GetShowTimes(c *gin.Context) {
 	var showtime []models.Showtime
 	if err := models.DB.Find(&showtime).Error; err != nil {
 		c.JSON(400, gin.H{"message": "Failed to fetch showtime"})
@@ -641,6 +698,20 @@ func GetShowTime(c *gin.Context) {
 	}
 	c.JSON(200, showtime)
 }
+
+
+func GetShow(c*gin.Context){
+	movieId:=c.Query("movieId")
+	var showtime []models.Showtime
+	if movieId!=""{
+		if err := models.DB.Where("movie_id = ?",movieId).Preload("Movie").Preload("Theatre").Find(&showtime).Error;err!=nil{
+			c.JSON(400,gin.H{"message":"Failed to fetch showtime"})
+			return
+		}
+	} 
+	c.JSON(200,gin.H{"showtime":showtime})
+}
+
 
 func AddReview(c *gin.Context) {
 
@@ -699,10 +770,10 @@ func generateRandomTnxId() string {
 // ngrok used for using public url instead of local - https://122f-139-5-254-235.ngrok-free.app
 
 func generatePayuPayment(tx models.Transaction) map[string]interface{} {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+	// err := godotenv.Load()
+	// if err != nil {
+	// 	log.Fatal("Error loading .env file")
+	// }
 
 	key := os.Getenv("KEY")
 	salt := os.Getenv("SALT")
@@ -733,9 +804,9 @@ func generatePayuPayment(tx models.Transaction) map[string]interface{} {
 		"payuFormFields": map[string]string{
 			"key":         key,
 			"city":        "city",
-			"furl":        "https://moviebookingsystem-ta6i.onrender.com/payment-failure",
+			"furl":        "http://localhost:8080/payment-failure",
 			"hash":        hashHex,
-			"surl":        "https://moviebookingsystem-ta6i.onrender.com/payment-success",
+			"surl":        "http://localhost:8080/payment-success",
 			"email":       email,
 			"phone":       "phone number",
 			"state":       "state",
@@ -754,19 +825,27 @@ func generatePayuPayment(tx models.Transaction) map[string]interface{} {
 
 func Payment(c *gin.Context) {
 	var input struct {
-		Price   float64         `json:"price"`
-		Store   json.RawMessage `json:"store"`
-		MovieId uint64          `json:"movieId"`
+		Price          float64         `json:"price"`
+		Store          json.RawMessage `json:"store"` // raw seat array like ["L3", "L4"]
+		MovieName      string          `json:"moviename"`
+		MovieFile      string          `json:"moviefile"`
+		TheatreName    string          `json:"theatrename"`
+		TheatreAddress string          `json:"theatreaddress"`
+		Date           string          `json:"date"`
+		From           string          `json:"from"`
+		To             string          `json:"to"`
 	}
 
+	// Validate request body
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(400, gin.H{"error": "Binding failed in payment"})
 		return
 	}
 
+	// Extract userId from context
 	userIdVal, exists := c.Get("userId")
 	if !exists {
-		c.JSON(400, gin.H{"error": "User Id not found in context"})
+		c.JSON(401, gin.H{"error": "User Id not found in context"})
 		return
 	}
 	userId, ok := userIdVal.(uint)
@@ -775,24 +854,34 @@ func Payment(c *gin.Context) {
 		return
 	}
 
+	// Create transaction
 	payment := models.Transaction{
-		Amount:        input.Price,
-		Ticket:        datatypes.JSON(input.Store),
-		Status:        "pending",
-		UserId:        userId,
-		MovieId:       input.MovieId,
-		TransactionId: generateRandomTnxId(),
+		Amount:         input.Price,
+		Ticket:         datatypes.JSON(input.Store),
+		Status:         "pending",
+		UserId:         &userId,
+		TransactionId:  generateRandomTnxId(),
+		MovieName:      input.MovieName,
+		MovieFile:      input.MovieFile,
+		TheatreName:    input.TheatreName,
+		TheatreAddress: input.TheatreAddress,
+		Date:           input.Date,
+		StartTime:      input.From,
+		EndTime:        input.To,
 	}
 
+	// Save to DB
 	if err := models.DB.Create(&payment).Error; err != nil {
-		c.JSON(400, gin.H{"error": "Could not create transaction"})
+		c.JSON(500, gin.H{"error": "Could not create transaction"})
 		return
 	}
 
+	// Generate PayU payment data
 	payUData := generatePayuPayment(payment)
 
+	// Send response
 	c.JSON(200, gin.H{
-		"message":     "transaction added redirected to PayU",
+		"message":     "Transaction created and redirected to PayU",
 		"transaction": payment,
 		"payUData":    payUData,
 	})
@@ -814,7 +903,7 @@ func PaymentSuccess(c *gin.Context) {
 	}
 	fmt.Println("redirect message")
 
-	c.Redirect(302, "https://mbsmain-hksv.onrender.com/payment-status?success=true")
+	c.Redirect(302, "http://localhost:5173/payment-status?success=true")
 
 }
 
@@ -908,10 +997,24 @@ func GetPaidTicketUser(c *gin.Context) {
 		return
 	}
 
-	if err := models.DB.Preload("Movie").Where("status = ? AND user_id = ?", "paid", userID).Find(&transactions).Error; err != nil {
+	if err := models.DB.Where("status = ? AND user_id = ?", "paid", userID).Find(&transactions).Error; err != nil {
 		c.JSON(500, gin.H{"error": "Failed to fetch transactions"})
 		return
 	}
 
 	c.JSON(200, gin.H{"tickets": transactions})
 }
+
+
+func GetMovieByName(c*gin.Context){
+	moviename:=c.Query("moviename")
+	var movie []models.Movie 
+	if moviename!=""{
+		if err:=models.DB.Where("title = ?",moviename).Find(&movie).Error;err!=nil{
+			c.JSON(400,gin.H{"message":"Failed to fetch moviename"})
+		}
+	}
+	c.JSON(200,gin.H{"movie":movie})
+}
+
+

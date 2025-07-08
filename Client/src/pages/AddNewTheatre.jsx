@@ -8,9 +8,18 @@ import { TheatreContext } from "../context/TheatreContext";
 
 import axiosInstance from "../utils/axiosInstance";
 
-import Box from "@mui/material/Box";
+
 import TextField from "@mui/material/TextField";
-const baseUrl=import.meta.env.VITE_ROUTE;
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+
+
+const baseUrl = import.meta.env.VITE_ROUTE;
+
+
 
 const AddNewTheatre = () => {
   const [theatrename, setTheatreName] = useState("");
@@ -95,13 +104,10 @@ const AddNewTheatre = () => {
     bg.style.background = "";
   };
 
-  const handleRemoveFile=()=>{
-    file="";
+  const handleRemoveFile = () => {
+    theatrefile = "";
     setFile(file);
-   
-    
-  }
-  
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -114,7 +120,7 @@ const AddNewTheatre = () => {
       status,
       totalscreens,
       theatrefile: theatrefile || editingTheatre?.theatrefile,
-      value: value,
+      // value: value,
     };
 
     if (editingTheatre) {
@@ -125,10 +131,9 @@ const AddNewTheatre = () => {
         })
         .then((res) => console.log(res.data))
         .catch((err) => console.log(err));
-      updateTheatre(newTheatre);
-    } else {
-      addTheatre(newTheatre);
 
+      // updateTheatre(newTheatre);
+    } else {
       // backend call to put data to db when user clicks on add new theatre button
       await axiosInstance
         .post("/add-theatre", newTheatre, {
@@ -136,6 +141,8 @@ const AddNewTheatre = () => {
         })
         .then((res) => console.log(res.data))
         .catch((err) => console.log(err));
+
+      // addTheatre(newTheatre);
     }
 
     navigate("/admin-theatre", {
@@ -146,6 +153,15 @@ const AddNewTheatre = () => {
       },
     });
   };
+
+ 
+
+  const handleStatusChange = (event) => {
+    setStatus(event.target.value);
+  };
+  const handleTotalScrrenChange = (e)=>{
+    setTotalScreens(e.target.value)
+  }
 
   return (
     <div>
@@ -301,37 +317,37 @@ const AddNewTheatre = () => {
                   value={cityName}
                   onChange={(e) => setCityName(e.target.value)}
                   sx={{
-                  "& .MuiOutlinedInput-root": {
-                    // Default border color for outlined input
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#A1A2A4", // Grey border by default
-                      borderWidth: "1px",
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#A1A2A4", // Keep grey on hover if not focused
-                    },
-                    // Styles when the input itself is focused
-                    "&.Mui-focused": {
+                    "& .MuiOutlinedInput-root": {
+                      // Default border color for outlined input
                       "& .MuiOutlinedInput-notchedOutline": {
-                        borderColor: "#000", // Black border when focused
-                        borderWidth: "1px", // Keep border width consistent
+                        borderColor: "#A1A2A4", // Grey border by default
+                        borderWidth: "1px",
+                      },
+                      "&:hover .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#A1A2A4", // Keep grey on hover if not focused
+                      },
+                      // Styles when the input itself is focused
+                      "&.Mui-focused": {
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          borderColor: "#000", // Black border when focused
+                          borderWidth: "1px", // Keep border width consistent
+                        },
                       },
                     },
-                  },
-                  // Target the label component directly
-                  "& .MuiInputLabel-root": {
-                    color: "#A1A2A4", // Default label color (grey)
-                    fontWeight: "normal", // Assuming default is normal, if you want bold when focused
-                    "&.Mui-focused": {
-                      color: "#000", // Black label when focused
-                      fontWeight: "light", // Bold label when focused
+                    // Target the label component directly
+                    "& .MuiInputLabel-root": {
+                      color: "#A1A2A4", // Default label color (grey)
+                      fontWeight: "normal", // Assuming default is normal, if you want bold when focused
+                      "&.Mui-focused": {
+                        color: "#000", // Black label when focused
+                        fontWeight: "light", // Bold label when focused
+                      },
+                      // Optional: Keep label black when it has a value (shrunk) and is not focused
+                      "&.MuiInputLabel-shrink": {
+                        color: "#000", // Black label when shrunk (has value)
+                      },
                     },
-                    // Optional: Keep label black when it has a value (shrunk) and is not focused
-                    "&.MuiInputLabel-shrink": {
-                      color: "#000", // Black label when shrunk (has value)
-                    },
-                  },
-                }}
+                  }}
                 />
               </Box>
               {/* <input
@@ -353,37 +369,37 @@ const AddNewTheatre = () => {
                   value={stateName}
                   onChange={(e) => setStateName(e.target.value)}
                   sx={{
-                  "& .MuiOutlinedInput-root": {
-                    // Default border color for outlined input
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#A1A2A4", // Grey border by default
-                      borderWidth: "1px",
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#A1A2A4", // Keep grey on hover if not focused
-                    },
-                    // Styles when the input itself is focused
-                    "&.Mui-focused": {
+                    "& .MuiOutlinedInput-root": {
+                      // Default border color for outlined input
                       "& .MuiOutlinedInput-notchedOutline": {
-                        borderColor: "#000", // Black border when focused
-                        borderWidth: "1px", // Keep border width consistent
+                        borderColor: "#A1A2A4", // Grey border by default
+                        borderWidth: "1px",
+                      },
+                      "&:hover .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#A1A2A4", // Keep grey on hover if not focused
+                      },
+                      // Styles when the input itself is focused
+                      "&.Mui-focused": {
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          borderColor: "#000", // Black border when focused
+                          borderWidth: "1px", // Keep border width consistent
+                        },
                       },
                     },
-                  },
-                  // Target the label component directly
-                  "& .MuiInputLabel-root": {
-                    color: "#A1A2A4", // Default label color (grey)
-                    fontWeight: "normal", // Assuming default is normal, if you want bold when focused
-                    "&.Mui-focused": {
-                      color: "#000", // Black label when focused
-                      fontWeight: "light", // Bold label when focused
+                    // Target the label component directly
+                    "& .MuiInputLabel-root": {
+                      color: "#A1A2A4", // Default label color (grey)
+                      fontWeight: "normal", // Assuming default is normal, if you want bold when focused
+                      "&.Mui-focused": {
+                        color: "#000", // Black label when focused
+                        fontWeight: "light", // Bold label when focused
+                      },
+                      // Optional: Keep label black when it has a value (shrunk) and is not focused
+                      "&.MuiInputLabel-shrink": {
+                        color: "#000", // Black label when shrunk (has value)
+                      },
                     },
-                    // Optional: Keep label black when it has a value (shrunk) and is not focused
-                    "&.MuiInputLabel-shrink": {
-                      color: "#000", // Black label when shrunk (has value)
-                    },
-                  },
-                }}
+                  }}
                 />
               </Box>
             </div>
@@ -395,7 +411,8 @@ const AddNewTheatre = () => {
                 onChange={(e) => setStatus(e.target.value)}
                 className="w-[47%] text-sm text-zinc-400 border-1 border-gray-300 rounded-sm p-2 flex items-center justify-between outline-none"
               /> */}
-              <Box
+
+              {/* <Box
                 component="form"
                 sx={{ "& > :not(style)": { width: "14vw", margin: "0 0" } }}
                 noValidate
@@ -440,32 +457,24 @@ const AddNewTheatre = () => {
                   },
                 }}
                 />
-              </Box>
-              {/* <input
-                type="number"
-                placeholder="Total Screen"
-                value={totalscreens}
-                onChange={(e) => setTotalScreens(e.target.value)}
-                className="w-[47%] text-sm text-zinc-400  border-1 border-gray-300 rounded-sm p-2 flex items-center justify-between outline-none"
-              /> */}
-              <Box
-                component="form"
-                sx={{ "& > :not(style)": { width: "14vw", margin: "0 0" } }}
+              </Box> */}
+
+              <Box 
+                sx={{ "& > :not(style)": { width: "14vw", margin: "0 0" ,} }}
                 noValidate
                 autoComplete="off"
+                
               >
-                <TextField
-                  id="outlined-basic"
-                  label="Total Screen"
-                  variant="outlined"
-                  value={totalscreens}
-                  onChange={(e) => setTotalScreens(e.target.value)}
-                  sx={{
+                <FormControl 
+               
+                 sx={{
                   "& .MuiOutlinedInput-root": {
                     // Default border color for outlined input
                     "& .MuiOutlinedInput-notchedOutline": {
                       borderColor: "#A1A2A4", // Grey border by default
                       borderWidth: "1px",
+                      height:"3rem",
+                      alignItems:"center",
                     },
                     "&:hover .MuiOutlinedInput-notchedOutline": {
                       borderColor: "#A1A2A4", // Keep grey on hover if not focused
@@ -481,7 +490,7 @@ const AddNewTheatre = () => {
                   // Target the label component directly
                   "& .MuiInputLabel-root": {
                     color: "#A1A2A4", // Default label color (grey)
-                    fontWeight: "normal", // Assuming default is normal, if you want bold when focused
+                    fontWeight: "normal",// Assuming default is normal, if you want bold when focused
                     "&.Mui-focused": {
                       color: "#000", // Black label when focused
                       fontWeight: "light", // Bold label when focused
@@ -492,11 +501,144 @@ const AddNewTheatre = () => {
                     },
                   },
                 }}
-                />
+                >
+                  <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={status}
+                    label="Status"
+                    onChange={handleStatusChange}
+                    
+                  >
+                    <MenuItem value={"Active"}>Active</MenuItem>
+                    <MenuItem value={"Inactive"}>Inactive</MenuItem>
+                    
+                  </Select>
+                </FormControl>
               </Box>
+
+              {/* <input
+                type="number"
+                placeholder="Total Screen"
+                value={totalscreens}
+                onChange={(e) => setTotalScreens(e.target.value)}
+                className="w-[47%] text-sm text-zinc-400  border-1 border-gray-300 rounded-sm p-2 flex items-center justify-between outline-none"
+              /> */}
+
+
+              {/* <Box
+                component="form"
+                sx={{ "& > :not(style)": { width: "14vw", margin: "0 0" } }}
+                noValidate
+                autoComplete="off"
+              >
+                <TextField
+                  id="outlined-basic"
+                  label="Total Screen"
+                  variant="outlined"
+                  value={totalscreens}
+                  onChange={(e) => setTotalScreens(e.target.value)}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      // Default border color for outlined input
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#A1A2A4", // Grey border by default
+                        borderWidth: "1px",
+                      },
+                      "&:hover .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#A1A2A4", // Keep grey on hover if not focused
+                      },
+                      // Styles when the input itself is focused
+                      "&.Mui-focused": {
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          borderColor: "#000", // Black border when focused
+                          borderWidth: "1px", // Keep border width consistent
+                        },
+                      },
+                    },
+                    // Target the label component directly
+                    "& .MuiInputLabel-root": {
+                      color: "#A1A2A4", // Default label color (grey)
+                      fontWeight: "normal", // Assuming default is normal, if you want bold when focused
+                      "&.Mui-focused": {
+                        color: "#000", // Black label when focused
+                        fontWeight: "light", // Bold label when focused
+                      },
+                      // Optional: Keep label black when it has a value (shrunk) and is not focused
+                      "&.MuiInputLabel-shrink": {
+                        color: "#000", // Black label when shrunk (has value)
+                      },
+                    },
+                  }}
+                />
+              </Box> */}
+
+              <Box 
+                sx={{ "& > :not(style)": { width: "14vw", margin: "0 0" ,} }}
+                noValidate
+                autoComplete="off"
+                
+              >
+                <FormControl 
+               
+                 sx={{
+                  "& .MuiOutlinedInput-root": {
+                    // Default border color for outlined input
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#A1A2A4", // Grey border by default
+                      borderWidth: "1px",
+                      height:"3rem",
+                      alignItems:"center",
+                    },
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#A1A2A4", // Keep grey on hover if not focused
+                    },
+                    // Styles when the input itself is focused
+                    "&.Mui-focused": {
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#000", // Black border when focused
+                        borderWidth: "1px", // Keep border width consistent
+                      },
+                    },
+                  },
+                  // Target the label component directly
+                  "& .MuiInputLabel-root": {
+                    color: "#A1A2A4", // Default label color (grey)
+                    fontWeight: "normal",// Assuming default is normal, if you want bold when focused
+                    "&.Mui-focused": {
+                      color: "#000", // Black label when focused
+                      fontWeight: "light", // Bold label when focused
+                    },
+                    // Optional: Keep label black when it has a value (shrunk) and is not focused
+                    "&.MuiInputLabel-shrink": {
+                      color: "#000", // Black label when shrunk (has value)
+                    },
+                  },
+                }}
+                >
+                  <InputLabel id="demo-simple-select-label">TotalScreens</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={totalscreens}
+                    label="TotalScreens"
+                    onChange={handleTotalScrrenChange}
+                    
+                  >
+                    <MenuItem value={"1"}>1</MenuItem>
+                    
+                    
+                  </Select>
+                </FormControl>
+              </Box>
+
+
+
+
             </div>
 
-            <div className="border-1 border-zinc-400 rounded-md card p-fluid mt-2 ">
+            {/* <div className="border-1 border-zinc-400 rounded-md card p-fluid mt-2 ">
               <FloatLabel>
                 <Chips
                   id="username"
@@ -531,7 +673,7 @@ const AddNewTheatre = () => {
                   Current Movies
                 </label>
               </FloatLabel>
-            </div>
+            </div> */}
             <p className="font-semibold text-zinc-600 text-base my-2">
               Upload Theatre Icon
             </p>
@@ -551,8 +693,10 @@ const AddNewTheatre = () => {
                   <p className=" text-gray-500 text-sm hidden">
                     Upload file here
                   </p>
-                   <span onClick={handleRemoveFile} className="cursor-pointer">
-                    <p className="ml-[6vw] mb-[5.8vw] w-[1vw] h-[1vw] bg-black text-white flex items-center justify-center text-center rounded-xl text-xs font-semibold">x</p>
+                  <span onClick={handleRemoveFile} className="cursor-pointer">
+                    <p className="ml-[6vw] mb-[5.8vw] w-[1vw] h-[1vw] bg-black text-white flex items-center justify-center text-center rounded-xl text-xs font-semibold">
+                      x
+                    </p>
                   </span>
                 </div>
               ) : (
@@ -577,14 +721,15 @@ const AddNewTheatre = () => {
               />
             </div>
 
-            {theatrename &&
-            address &&
-            cityName &&
-            stateName &&
-            status &&
-            totalscreens &&
-            value &&
-            theatrefile ? (
+            {(theatrename &&
+              address &&
+              cityName &&
+              stateName &&
+              status &&
+              totalscreens &&
+              value &&
+              theatrefile) ||
+            editingTheatre ? (
               <div className="buttons flex items-center justify-start gap-5 my-2 ">
                 <button
                   className="bg-pink-500 cursor-pointer w-[6vw] h-[2vw] text-md text-white font-semibold p-1 rounded-xl"

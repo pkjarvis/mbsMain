@@ -55,6 +55,8 @@ const AllMovies = () => {
     // return ()=>clearInterval(interval);
   }, []);
 
+  const [searchTerm,setSearchTerm]=useState("");
+
   return (
     <div>
       <div className="all-movies">
@@ -75,7 +77,7 @@ const AllMovies = () => {
           </span>
         </div>
         <section >
-        <ImageContainer />
+        <ImageContainer  setSearchTerm={setSearchTerm}/>
 
         </section>
 
@@ -124,7 +126,9 @@ const AllMovies = () => {
                 const languageMatch = language
                   ? m.language?.some((lang) => lang.name === language.name)
                   : true;
-                return genreMatch && languageMatch;
+                const searchMatch=searchTerm?m.movie.toLowerCase().includes(searchTerm.toLowerCase()):true;
+
+                return genreMatch && languageMatch && searchMatch;
               })
               .map((m) => (
                 <MovieCard1 key={m.id} movie={m} />

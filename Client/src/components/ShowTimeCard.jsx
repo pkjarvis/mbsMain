@@ -69,7 +69,12 @@ const ShowTimeCard = ({
           </div>
           <div className="right flex items-center justify-between w-[92%] my-1">
             <div className="right-left flex flex-col">
-              <p className="font-semibold text-xl leading-0.2">{moviename}</p>
+              <span className="flex items-center gap-2">
+                <p className="font-semibold text-xl leading-0.2">{moviename}</p>
+                <p className="text-xs font-light border-1 rounded-xl p-0.5 border-[grey]">
+                  Show Added:{timearray.length}
+                </p>
+              </span>
               <span className="flex gap-1">
                 <p className="text-xs font-semibold text-zinc-700">
                   {theatrename}{" "}
@@ -90,11 +95,11 @@ const ShowTimeCard = ({
                 ))}
               </span>
               <span className="flex gap-1">
-                {language?.map((item, index) => (
-                  <p key={index} className="text-xs font-light text-zinc-700">
-                    {item.name},
+                {language.name && (
+                  <p className="text-xs font-light text-zinc-700">
+                    {language.name}
                   </p>
-                ))}
+                )}
               </span>
               {check ? (
                 <DeleteBox
@@ -135,8 +140,7 @@ const ShowTimeCard = ({
                     }}
                     onMouseLeave={() => {
                       if (pencilIconRef.current) {
-                        pencilIconRef.current.src =
-                          "/assets/DarkPencil.png";
+                        pencilIconRef.current.src = "/assets/DarkPencil.png";
                       }
                     }}
                     onClick={handleUpdate}
@@ -156,14 +160,12 @@ const ShowTimeCard = ({
                     className="flex place-items-center gap-4 my-1 items-centerm hover:bg-zinc-700 rounded-sm p-0.6 text-white hover:[&>.para]:text-white cursor-pointer"
                     onMouseOver={() => {
                       if (deleteIconRef.current) {
-                        deleteIconRef.current.src =
-                          "/assets/ArchiveLight.png";
+                        deleteIconRef.current.src = "/assets/ArchiveLight.png";
                       }
                     }}
                     onMouseLeave={() => {
                       if (deleteIconRef.current) {
-                        deleteIconRef.current.src =
-                          "/assets/ArchiveDark.png";
+                        deleteIconRef.current.src = "/assets/ArchiveDark.png";
                       }
                     }}
                     onClick={() => handleArchive(id)}
@@ -190,8 +192,7 @@ const ShowTimeCard = ({
                     }}
                     onMouseLeave={() => {
                       if (pencilIconRef.current) {
-                        pencilIconRef.current.src =
-                          "/assets/DarkPencil.png";
+                        pencilIconRef.current.src = "/assets/DarkPencil.png";
                       }
                     }}
                     onClick={handleUpdate}
@@ -211,8 +212,7 @@ const ShowTimeCard = ({
                     className="flex place-items-center gap-4 my-1 items-centerm hover:bg-zinc-700 rounded-sm p-0.6 text-white hover:[&>.para]:text-white cursor-pointer"
                     onMouseOver={() => {
                       if (deleteIconRef.current) {
-                        deleteIconRef.current.src =
-                          "/assets/DeleteIcon.png";
+                        deleteIconRef.current.src = "/assets/DeleteIcon.png";
                       }
                     }}
                     onMouseLeave={() => {

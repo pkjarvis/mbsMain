@@ -15,11 +15,18 @@ const Booking = () => {
   const price = state?.totalprice;
   const movie = state?.movie;
   const theatreval=state?.theatre;
+  const date=state?.date;
+  const from=state?.from;
+  const to=state?.to;
 
   console.log("seats", store);
   console.log("totalprice", price);
 
   const movieId = movie.id;
+  const moviename=movie.movie;
+  const moviefile=movie.file;
+  const theatrename=theatreval.theatrename;
+  const theatreaddress=theatreval.address;
 
 
 
@@ -51,7 +58,7 @@ const Booking = () => {
     try{
       const res = await axiosInstance.post(
       "/api-payu",
-      { store, price, movieId },
+      { store, price, movieId,moviename,moviefile,theatrename,theatreaddress,date,from,to },
       { withCredentials: true }
     );
       const  payUData  = res.data?.payUData;
@@ -115,7 +122,7 @@ const Booking = () => {
             </span>
           </span>
           <span className="border-1 border-[#A7A7A7] rounded-2xl p-2 mt-[1.2vw]">
-            <h1 className="my-1 text-sm ml-1">Monday,May 26,2025, 07:05 PM</h1>
+            <h1 className="my-1 text-sm ml-1">Date:{date},From:{from},To:{to} </h1>
             <hr className="1px solid text-[#A7A7A7] my-1 w-[98%] mx-[0.4vw]" />
             <span>
               <h1 className="text-sm ml-1 my-1">{store.length} Tickets</h1>

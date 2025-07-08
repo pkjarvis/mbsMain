@@ -147,17 +147,18 @@ const AddNewMovie = () => {
         .then((res) => console.log(res.data))
         .catch((err) => console.log(err));
 
-      updateMovie(newMovie);
+      // updateMovie(newMovie);
     } else {
-      addMovie(newMovie);
-
+      
       // add api call
       await axiosInstance
-        .post("/add-movie", newMovie, {
-          withCredentials: true,
-        })
-        .then((res) => console.log(res.data))
-        .catch((err) => console.log(err));
+      .post("/add-movie", newMovie, {
+        withCredentials: true,
+      })
+      .then((res) => console.log(res.data))
+      .catch((err) => console.log(err));
+      
+      // addMovie(newMovie);
     }
 
     navigate("/admin-movie", {

@@ -22,25 +22,20 @@ const MovieCard = ({id,movie,description,startDate,endDate,genre,language,status
  
   
   const handleDelete = (id) => {
-
+    if(status=="Now Showing"){
+      alert("Can't delete now shoing movie!");
+      setVisible(!visible);
+      return;
+    }
     setCheck(!check);
     setVisible(!visible);
     
-    
-   
-   
   }
-
 
 
   const handleUpdate=()=>{
     navigate("/admin-addnewmovie",{state:{movie:{id,movie,description,startDate,endDate,genre,language,status,file}}});
   }
-
-
-
-
-
 
 
   return (

@@ -1,12 +1,12 @@
-import React, { useContext, useEffect, useState } from 'react'
-import Navbar from '../components/Navbar'
-import MainHeader from '../components/MainHeader'
-import ShowTimeCard from '../components/ShowTimeCard'
-import { ShowTimeContext } from '../context/ShowTimeContext'
-import axiosInstance from '../utils/axiosInstance'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { toast, ToastContainer } from 'react-toastify'
-const baseUrl=import.meta.env.VITE_ROUTE;
+import React, { useContext, useEffect, useState } from "react";
+import Navbar from "../components/Navbar";
+import MainHeader from "../components/MainHeader";
+import ShowTimeCard from "../components/ShowTimeCard";
+import { ShowTimeContext } from "../context/ShowTimeContext";
+import axiosInstance from "../utils/axiosInstance";
+import { useLocation, useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+const baseUrl = import.meta.env.VITE_ROUTE;
 // id:Date.now(),
 //       theatrename:theatrename,
 //       startDate:startDate,
@@ -17,11 +17,9 @@ const baseUrl=import.meta.env.VITE_ROUTE;
 //       selectedCities:selectedCities,
 
 const Shows = () => {
-  
   // const {showtimes}=useContext(ShowTimeContext);
   // const [showtime, setShowTime] = useState([]);
   // const [loading,setLoading]=useState(true);
-
 
   // Get movies api call
   // useEffect(() => {
@@ -35,89 +33,97 @@ const Shows = () => {
   //     .finally(()=>setLoading(false))
   // }, []);
 
-   const location = useLocation();
+  const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (location.state?.toastMessage) {
       toast.success(location.state.toastMessage);
-      navigate(location.pathname,{replace:true,state:{}});
-      
+      navigate(location.pathname, { replace: true, state: {} });
     }
-  }, [location,navigate]);
-
+  }, [location, navigate]);
 
   const [showtime, setShowTime] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Get movies api call
   useEffect(() => {
-    axiosInstance
-      .get("/get-showtime", { withCredentials: true })
-      .then((res) => {
-        console.log(res.data);
-        setShowTime(res.data);
-      })
-      .catch((err) =>
-        console.log("Error fetching movies", err.response?.data || err.message)
-      )
-      .finally(() => setLoading(false));
+      
+      setTimeout(()=>{
+        console.log("Fetched api data!")
+      },500)
+
+      axiosInstance
+        .get("/get-showtime", { withCredentials: true })
+        .then((res) => {
+          console.log("Api response", res.data);
+          setShowTime(res.data || []);
+          
+        })
+        .catch((err) =>
+          console.log(
+            "Error fetching movies",err
+          )
+        )
+        .finally(() => setLoading(false));
+          
   }, []);
 
-
   const [searchQuery, setSearchQuery] = useState("");
-  
-    // Filter logic
-    const filteredShowtime = showtime.filter((show) =>(
-      show.moviename.toLowerCase().includes(searchQuery.toLowerCase())
-      || show.theatrename.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-    );
 
-
+  // Filter logic
+  const filteredShowtime = Array.isArray(showtime)
+    ? showtime.filter(
+        (show) =>
+          show.moviename.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          show.theatrename.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : [];
 
   return (
     <div>
-       <ToastContainer
-          position="top-center"
-          autoClose={2000}
-          theme="colored"
-          newestOnTop
-          hideProgressBar={true}
-          toastClassName={() =>
-            "relative flex p-3 rounded-md justify-between items-center text-white bg-[rgba(31,132,90,1)] shadow-lg mt-12"
-          }
-        />
-       
-        <MainHeader title="Schedule Showtimes" btncontent="+Add New Showtime" headerlink="Showtime Scheduling" btnlink={baseUrl+"/admin-addnewshows"} onSearch={setSearchQuery} searchValue={searchQuery}  />
-        { loading?(<p className="text-center mt-8">Loading Showtime ...</p>)
-          :
-          filteredShowtime.length>0
-          ?
-          (filteredShowtime.map((s)=>(
-            <ShowTimeCard
-               key={s.id}
-               id={s.id}
-               startDate={s.startDate}
-               theatrename={s.theatrename}
-               moviename={s.moviename}
-              //  datetime12h={s.datetime12h}
-              //  datetime={s.datetime}
-               timearray={s.timearray}
-               language={s.language}
-               status={s.status}
-               archived={s.archived}
-             
-              
-
-            />
-          ))): 
-          <p className="text-center text-gray-500 mt-8">No showtime added yet</p>
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        theme="colored"
+        newestOnTop
+        hideProgressBar={true}
+        toastClassName={() =>
+          "relative flex p-3 rounded-md justify-between items-center text-white bg-[rgba(31,132,90,1)] shadow-lg mt-12"
         }
-        
-        
-    </div>
-  )
-}
+      />
 
-export default Shows
+      <MainHeader
+        title="Schedule Showtimes"
+        btncontent="+Add New Showtime"
+        headerlink="Showtime Scheduling"
+        btnlink={baseUrl + "/admin-addnewshows"}
+        onSearch={setSearchQuery}
+        searchValue={searchQuery}
+      />
+      {loading ? (
+        <p className="text-center mt-8">Loading Showtime ...</p>
+      ) : filteredShowtime.length > 0 ? (
+        filteredShowtime.map((s) => (
+          <ShowTimeCard
+            key={s.id}
+            id={s.id}
+            startDate={s.startDate}
+            theatrename={s.theatrename}
+            moviename={s.moviename}
+            //  datetime12h={s.datetime12h}
+            //  datetime={s.datetime}
+            timearray={s.timearray}
+            language={s.language}
+            status={s.status}
+            archived={s.archived}
+          />
+        ))
+      ) : (
+        <p className="text-center text-gray-500 mt-8">No showtime added yet</p>
+      )}
+    </div>
+  );
+};
+
+export default Shows;

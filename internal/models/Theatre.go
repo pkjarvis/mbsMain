@@ -1,7 +1,7 @@
 package models
 
 import (
-	"gorm.io/datatypes"
+	// "gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -28,5 +28,5 @@ type Theatre struct {
 	Status       string         `json:"status"`
 	TotalScreens uint           `json:"totalscreens"`
 	TheatreURL   string         `json:"theatrefile"`
-	Value        datatypes.JSON `json:"value"`
+	// Value        datatypes.JSON `json:"value"`
 }

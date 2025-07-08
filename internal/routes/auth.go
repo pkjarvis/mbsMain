@@ -52,13 +52,15 @@ func AuthRoutes(r *gin.Engine) {
 	protected.POST("/update-theatre", controllers.UpdateTheatre)
 	protected.POST("/update-showtime", controllers.UpdateShowTime)
 
+
 	// public api's
 
 	r.GET("/get-movies", controllers.GetMovies)
 	r.GET("/get-theatres", controllers.GetTheatres)
-	r.GET("/get-showtime", controllers.GetShowTime)
+	r.GET("/get-showtime", controllers.GetShowTimes)
+	r.GET("/get-show",controllers.GetShow)
+	r.GET("/get-movie-byname",controllers.GetMovieByName)
 
-	
 
 	
 	// user routes

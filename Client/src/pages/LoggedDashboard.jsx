@@ -8,20 +8,18 @@ import Footer from "../components/Footer";
 import axiosInstance from "../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
 
-
-
 const Dashboard = () => {
   const [movies, setMovies] = useState([]);
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
   const username = localStorage.getItem("userName");
-  const token=localStorage.getItem("userToken");
+  const token = localStorage.getItem("userToken");
 
-  useEffect(()=>{
-    if(!username && !token){
-        navigate("/root");
+  useEffect(() => {
+    if (!username && !token) {
+      navigate("/root");
     }
-  })
+  });
 
   useEffect(() => {
     axiosInstance
@@ -35,19 +33,23 @@ const Dashboard = () => {
       );
   }, []);
 
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredMovies = movies.filter((movie) =>
+    movie.movie?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div>
       <div>
-        <NavBar1
-         title={username } 
-         />
+        <NavBar1 title={username} />
         <section>
-          <ImageContainer />
+          <ImageContainer setSearchTerm={setSearchTerm} />
         </section>
         <section>
           <MovieCardSection
             title="Watch latest movie"
-            movies={movies.slice(0, 4)}
+            movies={filteredMovies.slice(0, 4)}
             // imgTitle={"../src/assets/aliceWonderland.png"}
           />
         </section>

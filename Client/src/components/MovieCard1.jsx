@@ -8,10 +8,7 @@ const MovieCard1 = ({movie}) => {
     if(!movie || !movie.file) return null;
  
   const navigate=useNavigate("");
-    useEffect(() => {
-      window.scrollTo(0,0);
-      
-    }, []);
+    
 
   const handleClick=()=>{
     navigate("/movie",{state:{movie}});

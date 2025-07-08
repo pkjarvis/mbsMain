@@ -17,15 +17,19 @@ import (
 	"gorm.io/gorm"
 )
 
-
 type Showtime struct {
 	gorm.Model
 	Id          uint           `json:"id" gorm:"primaryKey"`
+	MovieID     uint           `json:"movieId"`
+	TheatreID   uint           `json:"theatreId"`
 	TheatreName string         `json:"theatrename"`
 	StartDate   time.Time      `json:"startDate"`
 	MovieName   string         `json:"moviename"`
 	TimeArray   datatypes.JSON `json:"timearray"`
 	Language    datatypes.JSON `json:"language"`
 	Archived    bool           `json:"archived"`
-	
+	Movie       Movie          `gorm:"foreignKey:MovieID;constraint:OnDelete:CASCADE;"`
+	Theatre     Theatre        `gorm:"foreignKey:TheatreID;constraint:OnDelete:CASCADE;"`
 }
+
+

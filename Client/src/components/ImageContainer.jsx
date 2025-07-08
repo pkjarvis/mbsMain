@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { IoIosSearch } from "react-icons/io";
 
-const ImageContainer = () => {
+const ImageContainer = ({setSearchTerm}) => {
   const [bgimage, setBgImage] = useState("/assets/Bg-1.png");
   const handleClick = (path) => {
     setBgImage(path);
@@ -42,6 +42,7 @@ const ImageContainer = () => {
             <input
               type="text"
               placeholder="Search"
+              onChange={(e)=>setSearchTerm(e.target.value)}
               className="outline-none w-[94%]"
             />
             <IoIosSearch className="w-[0.8vw] h-[1.2vw]" />

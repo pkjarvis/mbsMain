@@ -43,40 +43,46 @@ const Showtime = () => {
 
   const { state } = useLocation();
   const movie = state?.movie;
-  console.log("movies", movie);
+  // console.log("movies", movie);
+  // console.log("movieId:",movie.id)
 
-  const NavigateDashboard = () => {
-    navigate("/");
-  };
+  // const NavigateDashboard = () => {
+  //   navigate("/");
+  // };
 
   // api call for get theatre & showtime
 
   const [theatres, setTheatres] = useState([]);
   const [showtime, setShowTime] = useState([]);
 
-  useEffect(() => {
-    axiosInstance
-      .get("/get-theatres", { withCredentials: true })
-      .then((res) => {
-        console.log(res.data);
-        setTheatres(res.data);
-      })
-      .catch((err) =>
-        console.log("Error fetching movies", err.response?.data || err.message)
-      );
-  }, []);
+  // useEffect(() => {
+  //   axiosInstance
+  //     .get("/get-theatres", { withCredentials: true })
+  //     .then((res) => {
+  //       console.log(res.data);
+  //       setTheatres(res.data);
+  //     })
+  //     .catch((err) =>
+  //       console.log("Error fetching movies", err.response?.data || err.message)
+  //     );
+  // }, []);
 
   useEffect(() => {
+    if(!movie.id) return;
     axiosInstance
-      .get("/get-showtime", { withCredentials: true })
+      .get("/get-show", {params:{movieId:movie.id} ,withCredentials: true })
       .then((res) => {
-        console.log(res.data);
-        setShowTime(res.data);
+        console.log("Current movie showtime",res.data.showtime);
+        setShowTime(res.data.showtime);
       })
       .catch((err) =>
         console.log("Error fetching movies", err.response?.data || err.message)
       );
+
+      // alert("First Select The Date You Want To Watch Show, then showtime  would fetch")
   }, []);
+
+
 
   const startDate = movie.startDate;
   const endDate = movie.endDate;
@@ -91,9 +97,9 @@ const Showtime = () => {
 
 
     
-    console.log("Today's date",day);
-    console.log("month",month);
-    console.log("weekday",curweekday);
+    // console.log("Today's date",day);
+    // console.log("month",month);
+    // console.log("weekday",curweekday);
     
 
     // ------------------
@@ -111,7 +117,7 @@ const Showtime = () => {
     if(day>=paramStartDate && day<=paramEndDate){
       startDate=new Date()  
     }
-    console.log("function date",startDate)
+    // console.log("function date",startDate)
 
    
 
@@ -135,11 +141,17 @@ const Showtime = () => {
   
   const datelist = getDatesBetween(startDate, endDate);
 
-  const [curdate,setCurDate]=useState()
-  const handleDateSelection=(val)=>{
+  const [curdate,setCurDate]=useState("")
+  const handleDateSelection=(par1,par2,par3)=>{
+    let val=par1+" "+par2+" "+par3
     setCurDate(val);
+
+
   };
-  console.log("curdate is ",curdate);
+  // console.log("curdate is ",curdate);
+
+
+  console.log('showtime details',showtime)
 
 
 
@@ -203,8 +215,8 @@ const Showtime = () => {
                 {datelist.map((dateInfo, index) => (
                   <span
                     key={index}
-                    className="bg-[#F5F5F5] flex flex-col w-[4vw] h-[5.2vw] p-2  items-center justify-center rounded-2xl hover:border-1 hover:border-[#FF5295] hover:scale-115 ease-in-out duration-150 "
-                    onClick={()=>handleDateSelection(dateInfo.day)}
+                    className={`bg-[#F5F5F5] flex flex-col w-[4vw] h-[5.2vw] p-2  items-center justify-center rounded-2xl hover:border-1 hover:border-[#FF5295] hover:scale-115 ease-in-out duration-150 ${curdate===dateInfo.weekday+" "+dateInfo.day+" "+dateInfo.month ?"bg-[#FF5295] hover:border-none":""} `}
+                    onClick={()=>handleDateSelection(dateInfo.weekday,dateInfo.day,dateInfo.month)}
                   >
                     <p className="text-xl font-light text-black">
                       {dateInfo.month}
@@ -247,13 +259,20 @@ const Showtime = () => {
         </div>
         {/* Time Slots Section */}
         <div className="time-slots bg-[#F9F9F9] mx-[3vw] flex flex-col mt-[-6vw]">
-          {theatres.length > 0 ? (
-            theatres.map((t) => (
-              <Theatres key={t.id} theatre={t} state={movie} />
-            ))
-          ) : (
-            <p className="text-md">No Theatres Added</p>
-          )}
+          {
+          // theatres.length > 0 ? (
+          //   theatres.map((t) => (
+          //     <Theatres key={t.id} theatre={t} state={movie} />
+          //   ))
+          // )
+          
+          showtime.map((show)=>(
+            <Theatres key={show.id} theatre={show.Theatre} movies={show.Movie} timearray={show.timearray} date={curdate}/>
+          ))
+          //  : (
+          //   <p className="text-md">No Theatres Added</p>
+          // )
+          }
         </div>
 
         {/* Footer Section */}

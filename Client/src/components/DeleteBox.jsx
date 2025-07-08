@@ -85,7 +85,7 @@ const DeleteBox = (props) => {
       <p className="text-md font-medium text-center">
         Are you sure you want to delete this{" "}
         <span className="font-bold font-md flex-wrap">
-          Theatre:{props.name} ?
+          {props.type==="theatre"?"Theatre":props.type==="movie"?"Movie":"Showtime"}:{props.name} ?
         </span>
       </p>
       <span className="flex items-center gap-3 mt-1">

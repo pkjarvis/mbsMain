@@ -19,7 +19,11 @@ const TheatreCard = ({id,theatrename,address,cityName,stateName,status,totalscre
     // const {deleteTheatre}=useContext(TheatreContext);
 
     const handleDelete=(id)=>{
-
+      // if(status.toLowerCase()==="active"){
+      //   alert("Can't delete active theatre");
+      //   setVisible(!visible);
+      //   return;
+      // }
       setCheck(!check);
       setVisible(!visible);
      
@@ -32,7 +36,7 @@ const TheatreCard = ({id,theatrename,address,cityName,stateName,status,totalscre
   return (
     <div>
       <div className="card-container h-25 w-[100%]  px-6 pt-7  mb-5">
-        <div className="content flex items-center justify-start border-1 rounded-xl border-zinc-300 py-2">
+        <div className="content flex items-center justify-start border-1 rounded-xl border-zinc-300 py-1 h-[4.6vw]">
           <div className="left w-[4%] ml-2">
             <img
               src={theatrefile}

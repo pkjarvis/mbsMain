@@ -28,7 +28,7 @@ type Movie struct {
 	Languages   datatypes.JSON `json:"language"`
 	Status      string         `json:"status"`
 	MovieURL    string         `json:"file"`
+	Duration    int             `json:"duration"`
 	
-	// Reviews   []Review `gorm:"foreignKey:MovieID"`
 }
 
