@@ -13,6 +13,8 @@ const ShowTimeCard = ({
   timearray,
   language,
   archived,
+  file,
+ 
 }) => {
   const [visible, setVisible] = useState(false);
   const pencilIconRef = useRef(null);
@@ -62,7 +64,7 @@ const ShowTimeCard = ({
         <div className="content flex items-center justify-start border-1 rounded-xl border-zinc-300 ">
           <div className="left w-[6.2%]">
             <img
-              src="/assets/Inception.png"
+              src={file || "/assets/Inception.png"}  
               alt="MovieBg"
               className="w-26 h-25 rounded-l-md"
             />
@@ -71,7 +73,7 @@ const ShowTimeCard = ({
             <div className="right-left flex flex-col">
               <span className="flex items-center gap-2">
                 <p className="font-semibold text-xl leading-0.2">{moviename}</p>
-                <p className="text-xs font-light border-1 rounded-xl p-0.5 border-[grey]">
+                <p className="text-xs font-light border-1 rounded-xl p-0.5 border-[#E7E6EA]">
                   Show Added:{timearray.length}
                 </p>
               </span>

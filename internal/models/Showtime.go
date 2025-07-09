@@ -28,8 +28,8 @@ type Showtime struct {
 	TimeArray   datatypes.JSON `json:"timearray"`
 	Language    datatypes.JSON `json:"language"`
 	Archived    bool           `json:"archived"`
-	Movie       Movie          `gorm:"foreignKey:MovieID;constraint:OnDelete:CASCADE;"`
-	Theatre     Theatre        `gorm:"foreignKey:TheatreID;constraint:OnDelete:CASCADE;"`
+	Movie       Movie          `gorm:"foreignKey:MovieID;constraint:OnDelete:CASCADE,OnUpdate:CASCADE;"`
+	Theatre     Theatre        `gorm:"foreignKey:TheatreID;constraint:OnDelete:CASCADE,OnUpdate:CASCADE;"`
 }
 
 

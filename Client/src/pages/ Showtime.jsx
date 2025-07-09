@@ -6,11 +6,15 @@ import MainHeader1 from "../components/MainHeader1";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Theatres from "../components/Theatres";
 import axiosInstance from "../utils/axiosInstance";
+import Stack from "@mui/material/Stack";
+import Alert from "@mui/material/Alert";
 
 // theatre-> id,theatrename,address,cityName,stateName,status,totalscreens,theatrefile,value
 
 const Showtime = () => {
   const [language, setLanguage] = useState(null);
+  const [showDateWarning,setShowDataWarning]=useState(false);
+
   const languagesArray = [
     { name: "Hindi", code: "HND" },
     { name: "Marathi", code: "MRT" },
@@ -186,6 +190,22 @@ const Showtime = () => {
           </span>
         </div>
 
+         {
+                showDateWarning && (
+                  <Stack
+                    sx={{ width: "60%", position: "absolute", zIndex: "1020",marginLeft:"18vw" }}
+                    spacing={2}
+                  >
+                    <Alert 
+                    severity="warning" variant="filled"
+                    onClose={() => {setShowDataWarning(false)}}
+                    >
+                      {"First Select The Date You Want To Watch Show, then showtime  would fetch"}
+                    </Alert>
+                  </Stack>
+                )
+              }
+
         {/* Header Section */}
         <div className="flex items-center justify-start  h-[30vw] p-2 mt-[3vw]">
           {/* Header Left Section */}
@@ -267,7 +287,7 @@ const Showtime = () => {
           // )
           
           showtime.map((show)=>(
-            <Theatres key={show.id} theatre={show.Theatre} movies={show.Movie} timearray={show.timearray} date={curdate}/>
+            <Theatres key={show.id} theatre={show.Theatre} movies={show.Movie} timearray={show.timearray} date={curdate} setShowDataWarning={setShowDataWarning}/>
           ))
           //  : (
           //   <p className="text-md">No Theatres Added</p>

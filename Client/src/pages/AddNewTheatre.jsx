@@ -29,7 +29,7 @@ const AddNewTheatre = () => {
   const [status, setStatus] = useState("");
   const [totalscreens, setTotalScreens] = useState("");
 
-  const [theatrefile, setTheatreFile] = useState("");
+  var [theatrefile, setTheatreFile] = useState("");
 
   const [value, setValue] = useState([]); // multi input state
 
@@ -106,7 +106,7 @@ const AddNewTheatre = () => {
 
   const handleRemoveFile = () => {
     theatrefile = "";
-    setFile(file);
+    setTheatreFile(theatrefile);
   };
 
   const handleSubmit = async (e) => {
@@ -470,6 +470,7 @@ const AddNewTheatre = () => {
                  sx={{
                   "& .MuiOutlinedInput-root": {
                     // Default border color for outlined input
+                    height:"2.2vw",
                     "& .MuiOutlinedInput-notchedOutline": {
                       borderColor: "#A1A2A4", // Grey border by default
                       borderWidth: "1px",
@@ -585,6 +586,7 @@ const AddNewTheatre = () => {
                  sx={{
                   "& .MuiOutlinedInput-root": {
                     // Default border color for outlined input
+                    height:"2.2vw",
                     "& .MuiOutlinedInput-notchedOutline": {
                       borderColor: "#A1A2A4", // Grey border by default
                       borderWidth: "1px",

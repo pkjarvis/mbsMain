@@ -17,6 +17,7 @@ const MovieManagement = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // The replace: true option replaces the current entry in the history stack, and state: {} clears the state object.
   useEffect(() => {
     if (location.state?.toastMessage) {
       toast.success(location.state.toastMessage);
@@ -39,7 +40,7 @@ const MovieManagement = () => {
         console.log("Error fetching movies", err.response?.data || err.message)
       )
       .finally(() => setLoading(false));
-  }, []);
+  }, [location]);
 
 
 

@@ -216,6 +216,7 @@ func AddMovie(c *gin.Context) {
 		Language    []Language `json:"language"`
 		Status      string     `json:"status"`
 		File        string     `json:"file"`
+		Duration    int        `json:"duration"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -266,6 +267,7 @@ func AddMovie(c *gin.Context) {
 		Languages:   datatypes.JSON(languagebytes),
 		Status:      input.Status,
 		MovieURL:    input.File,
+		Duration:    input.Duration,
 	}
 
 	if err := models.DB.Create(&movie).Error; err != nil {
@@ -538,6 +540,7 @@ func UpdateMovie(c *gin.Context) {
 		Language    json.RawMessage `json:"language"`
 		Status      string          `json:"status"`
 		File        string          `json:"file"`
+		Duration    int             `json:"duration"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -572,6 +575,7 @@ func UpdateMovie(c *gin.Context) {
 		Languages:   datatypes.JSON(input.Language),
 		Status:      input.Status,
 		MovieURL:    input.File,
+		Duration:    input.Duration,
 	}
 
 	// model was not updating previously then i google this way
@@ -692,7 +696,7 @@ func GetTheatres(c *gin.Context) {
 
 func GetShowTimes(c *gin.Context) {
 	var showtime []models.Showtime
-	if err := models.DB.Find(&showtime).Error; err != nil {
+	if err := models.DB.Preload("Movie").Find(&showtime).Error; err != nil {
 		c.JSON(400, gin.H{"message": "Failed to fetch showtime"})
 		return
 	}

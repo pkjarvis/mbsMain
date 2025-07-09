@@ -17,30 +17,20 @@ const baseUrl = import.meta.env.VITE_ROUTE;
 //       selectedCities:selectedCities,
 
 const Shows = () => {
-  // const {showtimes}=useContext(ShowTimeContext);
-  // const [showtime, setShowTime] = useState([]);
-  // const [loading,setLoading]=useState(true);
 
-  // Get movies api call
-  // useEffect(() => {
-  //   axiosInstance
-  //     .get("/get-showtime", { withCredentials: true })
-  //     .then((res) => {
-  //       console.log(res.data)
-  //       setShowTime(res.data)
-  //     })
-  //     .catch((err) => console.log("Error fetching movies", err.response?.data || err.message))
-  //     .finally(()=>setLoading(false))
-  // }, []);
 
   const location = useLocation();
   const navigate = useNavigate();
 
+
+  
   useEffect(() => {
     if (location.state?.toastMessage) {
       toast.success(location.state.toastMessage);
       navigate(location.pathname, { replace: true, state: {} });
     }
+    
+    
   }, [location, navigate]);
 
   const [showtime, setShowTime] = useState([]);
@@ -48,17 +38,11 @@ const Shows = () => {
 
   // Get movies api call
   useEffect(() => {
-      
-      setTimeout(()=>{
-        console.log("Fetched api data!")
-      },500)
-
       axiosInstance
         .get("/get-showtime", { withCredentials: true })
         .then((res) => {
           console.log("Api response", res.data);
-          setShowTime(res.data || []);
-          
+          setShowTime(res.data);
         })
         .catch((err) =>
           console.log(
@@ -67,7 +51,7 @@ const Shows = () => {
         )
         .finally(() => setLoading(false));
           
-  }, []);
+  }, [location]);
 
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -117,6 +101,9 @@ const Shows = () => {
             language={s.language}
             status={s.status}
             archived={s.archived}
+            file={s.Movie.file}
+            
+            
           />
         ))
       ) : (

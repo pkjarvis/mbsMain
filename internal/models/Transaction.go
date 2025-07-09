@@ -14,7 +14,7 @@ type Transaction struct {
 
 	
 	UserId *uint `json:"userId"`
-	User   User  `gorm:"foreignKey:UserId;constraint:OnDelete:SET NULL;" json:"-"`
+	User   User  `gorm:"foreignKey:UserId;constraint:OnDelete:CASCADE,OnUpdate:CASCADE;" json:"-"`
 
 	
 	MovieName      string `json:"movieName"`

@@ -42,7 +42,10 @@ useEffect(() => {
   const date=state?.date;
   const from=state?.from;
   const to=state?.to;
+  const id=state?.id;
   console.log("theatre from location.state",theatre);
+
+  console.log("Id is",id);
 
   
 
@@ -116,7 +119,7 @@ useEffect(() => {
       alert("All seats booked can't proceed to pay!")
       return;
     }
-    navigate("/booking",{state:{storeId,totalprice,movie,theatre,date,from,to}});
+    navigate("/booking",{state:{storeId,totalprice,movie,theatre,date,from,to,id}});
   };
 
   // const handlePopUP = () => {
@@ -125,7 +128,7 @@ useEffect(() => {
 
 
   return (
-    <div>
+    <div id={id}>
       <div className="show-booking-container">
         <div className="theatre-container font-[Inter]">
           <NavBar1 title={username} />

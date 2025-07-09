@@ -10,7 +10,7 @@ type Review struct{
 	Star int `json:"star"`
 	Text string `json:"text"`
 	Username string `json:"username"`
-	Movie Movie `gorm:"foreignKey:MovieId;constraint:OnDelete:CASCADE;" json:"-"`
-	User User `gorm:"foreignKey:UserId;contraint:OnDelete:CASCADE;" json:"-"`
+	Movie Movie `gorm:"foreignKey:MovieId;constraint:OnDelete:CASCADE,OnUpdate:CASCADE;" json:"-"`
+	User User `gorm:"foreignKey:UserId;constraint:OnDelete:CASCADE,onUpdate:CASCADE;" json:"-"`
 
 }

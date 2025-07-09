@@ -8,6 +8,9 @@ import { ShowTimeContext } from "../context/ShowTimeContext";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Dropdown } from "primereact/dropdown";
 
+import Stack from "@mui/material/Stack";
+import Alert from "@mui/material/Alert";
+
 import axios from "axios";
 import axiosInstance from "../utils/axiosInstance";
 
@@ -22,25 +25,46 @@ const AddNewShowtime = () => {
   const [startDate, setStartDate] = useState("");
   const [moviename, setMovieName] = useState("");
   const [theatrename, setTheatreName] = useState("");
-  const [datetime12h, setDateTime12h] = useState(null);
-  const [datetime, setDateTime] = useState(null);
+  var [datetime12h, setDateTime12h] = useState(null);
+  var [datetime, setDateTime] = useState(null);
   const [timearray, setTimeArray] = useState([]);
 
   const [selectedCities, setSelectedCities] = useState("");
-  const cities = [
-    { name: "English", code: "ENG" },
-    { name: "Hindi", code: "HN" },
-    { name: "Marathi", code: "MT" },
-    { name: "Telugu", code: "TLG" },
-    { name: "Punjabi", code: "PNJ" },
-    { name: "Spanish", code: "SPN" },
-    { name: "French", code: "FRN" },
-    { name: "German", code: "GER" },
-  ];
+  const [cities, setCities] = useState([]);
+
+  const [duration, setDuration] = useState(null);
+  const [showDateWarning,setShowDataWarning]=useState(false);
+  const [message,setMessage]=useState("");
+
 
   // movie label options through get movies
   const [movies, setMovies] = useState([]);
   const [allmoviesData, setAllMoviesData] = useState([]);
+
+  const [start, setStart] = useState("");
+  const [end, setEnd] = useState("");
+
+  useEffect(() => {
+    const newstart = new Date(start);
+    const newStartDate = newstart.getDate();
+    const newStartMonth = newstart.getMonth();
+    const newend = new Date(end);
+
+    const newcur = new Date(startDate);
+
+    console.log("date", newstart);
+    console.log("new", newStartDate);
+    console.log("newdate", newStartMonth);
+
+    if (newcur > newend || newcur < newstart) {
+      // alert(`select showtime between movie startDate ${new Date(start)} and endDate ${new Date(end)}`);
+      setShowDataWarning(true);
+      setMessage(`select showtime between movie startDate ${new Date(start)} and endDate ${new Date(end)}`);
+     
+
+      setStartDate("");
+    }
+  }, [startDate]);
 
   useEffect(() => {
     axiosInstance
@@ -84,10 +108,17 @@ const AddNewShowtime = () => {
         withCredentials: true,
       })
       .then((res) => {
-        console.log("Movie is fetched by name", res.data);
+        console.log("Movie is fetched by name", res.data.movie[0]);
+        setCities(res.data.movie[0].language);
+        setDuration(res.data.movie[0].duration);
+        setStart(res.data.movie[0].startDate);
+        setEnd(res.data.movie[0].endDate);
+       
       })
       .catch((err) => console.log(err));
   }, [moviename]);
+
+  
 
   const { state } = useLocation();
   const editingNewShowTime = state?.showtime;
@@ -109,16 +140,19 @@ const AddNewShowtime = () => {
     return ans;
   }
 
-  // datetime -> is endtime , datetime12 is starttime
-  var last,first;
+ 
 
   const handleTime = () => {
     if (!datetime || !datetime12h) {
-      console.log("Date time values not selected");
+      setShowDataWarning(true);
+      setMessage("Pick startdate correct such that no collision occur");
+      // alert("Pick startdate correct such that no collision occur");
       return;
     }
-    if(datetime<datetime12h){
-      alert("Add endtime greater than starttime!");
+    if (datetime < datetime12h) {
+      setShowDataWarning(true);
+      setMessage("Add endtime greater than starttime!")
+      // alert("Add endtime greater than starttime!");
       return;
     }
 
@@ -130,30 +164,30 @@ const AddNewShowtime = () => {
       return;
     }
 
-    if(timearray.length>=1){
-      last=timearray.at(-1);
-      
-      // let lasthour=last.split(":")[0];
-      // let lastmin=lasthour.split(" ")[0];
-      // console.log("lasthour",lasthour);
-      // console.log("lastmin",lastmin);
-
-      console.log("value of last index second:",last.val2);
-      console.log("value of last index first",last.val1);
-      console.log("current timearray",val1);
-      console.log("current timearray",val2);
-
-      // console.log("value of first index is:",first.val2);
-      if(datetime!="" && datetime12h!=""){
-        if(val1<=last.val2  ||  val1>=last.val2){
-          alert("Use correct val from starttime && endtime");
-          return;
-        }
-      }
-    }
-
     console.log(val1, val2);
-    setTimeArray((prev) => [...prev, { val1, val2 }]);
+    // setTimeArray((prev) => [...prev, { val1, val2 }]);
+    const newEntry = { val1, val2 };
+
+    // Append and sort by val1
+    setTimeArray((prev) => {
+      const updated = [...prev, newEntry];
+
+      // Custom sort logic for 12-hour format with AM/PM
+      updated.sort((a, b) => {
+        const parseTime = (t) => {
+          const [time, meridiem] = t.split(" ");
+          let [hours, minutes] = time.split(":").map(Number);
+          if (meridiem === "PM" && hours !== 12) hours += 12;
+          if (meridiem === "AM" && hours === 12) hours = 0;
+          return hours * 60 + minutes;
+        };
+
+        return parseTime(a.val1) - parseTime(b.val1);
+      });
+
+      return updated;
+    });
+
     setDateTime12h("");
     setDateTime("");
   };
@@ -170,10 +204,8 @@ const AddNewShowtime = () => {
     }
   }, [editingNewShowTime]);
 
-
-
   const handleShowTimeDelete = (id) => {
-    setTimeArray((prev)=>prev.filter((_,idx)=>idx!==id));
+    setTimeArray((prev) => prev.filter((_, idx) => idx !== id));
   };
 
   const handleSubmit = (e) => {
@@ -215,9 +247,9 @@ const AddNewShowtime = () => {
         toastMessage: editingNewShowTime
           ? "Showtime has been updated successfully"
           : "Showtime has been added successfully",
+        
       },
     });
-
   };
 
   const handleCancel = () => {
@@ -234,16 +266,62 @@ const AddNewShowtime = () => {
     console.log(datetime);
   }, [datetime]);
 
-  
-  useEffect(()=>{
-    if( datetime!="" && datetime<datetime12h){
-      alert("Select endtime greater than starttime");
-      
-    }
-    
+  useEffect(() => {
+    console.log("inside use Effect");
+    if (!datetime12h || !duration) return;
 
-  },[timearray,datetime])
-  
+    const start = new Date(datetime12h);
+    const end = new Date(start.getTime() + duration * 60000); // duration in ms
+
+    setDateTime(end);
+    console.log(datetime);
+
+    // Check for collision
+    const newStart = start;
+    const newEnd = end;
+
+    const isOverlapping = timearray.some(({ val1, val2 }) => {
+      const [startHour, startMinute] = val1.split(/[: ]/);
+      const [endHour, endMinute] = val2.split(/[: ]/);
+
+      const startAMPM = val1.includes("PM") ? 12 : 0;
+      const endAMPM = val2.includes("PM") ? 12 : 0;
+
+      const existingStart = new Date(start);
+      existingStart.setHours((parseInt(startHour) % 12) + startAMPM);
+      existingStart.setMinutes(parseInt(startMinute));
+
+      const existingEnd = new Date(start);
+      existingEnd.setHours((parseInt(endHour) % 12) + endAMPM);
+      existingEnd.setMinutes(parseInt(endMinute));
+
+      return (
+        (newStart >= existingStart && newStart < existingEnd) ||
+        (newEnd > existingStart && newEnd <= existingEnd) ||
+        (newStart <= existingStart && newEnd >= existingEnd)
+      );
+    });
+
+    if (isOverlapping) {
+      setShowDataWarning(true);
+      setMessage("Time slot overlaps with an existing showtime. Please choose another start time.");
+      // alert(
+      //   "Time slot overlaps with an existing showtime. Please choose another start time."
+      // );
+      setDateTime("");
+    }
+  }, [datetime12h, duration]);
+
+  // useEffect(()=>{
+  //   if( datetime!="" && datetime<datetime12h){
+  //     alert("Select endtime greater than starttime");
+
+  //   }
+  //   if(datetime12h){
+  //     datetime=datetime12h+duration;
+  //   }
+
+  // },[timearray,datetime])
 
   return (
     <div>
@@ -260,9 +338,31 @@ const AddNewShowtime = () => {
           </Link>
           <p className="font-light text-sm">Add New Showtime</p>
         </span>
+
+
+
+            {
+        showDateWarning && (
+          <Stack
+            sx={{ width: "60%", position: "absolute", zIndex: "1020",marginLeft:"18vw" }}
+            spacing={2}
+          >
+            <Alert 
+            severity="warning" variant="filled"
+            onClose={() => {setShowDataWarning(false)}}
+            >
+              {message}
+            </Alert>
+          </Stack>
+        )
+      }
+       
+
         <div className="info flex flex-col place-items-center mt-[1.8vw]">
+          
           <div className="flex flex-col justify-between gap-5 ">
             <p className="font-semibold text-base">Basic Info</p>
+            
             {/* <input
               type="text"
               placeholder="Movie Name"
@@ -318,6 +418,7 @@ const AddNewShowtime = () => {
                 }}
               />
             </Box> */}
+
 
             <div className="card flex justify-content-center items-center h-[2.4vw]">
               <Dropdown
@@ -479,7 +580,7 @@ const AddNewShowtime = () => {
                   <Calendar
                     id="calendar-12h"
                     value={datetime}
-                    onChange={(e) => setDateTime(e.value)}
+                    // onChange={(e) => setDateTime(e.value)}
                     showTime
                     hourFormat="12"
                   />

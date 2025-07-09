@@ -8,37 +8,44 @@ import {  useNavigate } from "react-router-dom";
 
 
 const DeleteBox = (props) => {
-  const { deleteTheatre } = useContext(TheatreContext);
-  const { deleteMovie ,fetchMovies} = useContext(MoviesContext);
+  // const { deleteTheatre } = useContext(TheatreContext);
+  // const { deleteMovie ,fetchMovies} = useContext(MoviesContext);
   const { archive } = useContext(ShowTimeContext);
 
   const navigate=useNavigate("");
 
-  const handleDelete = async(id) => {
+  const handleDelete = (id) => {
     if (props.type === "theatre") {
+
+      props.func(!props.val);
+      // deleteTheatre(id);
       // delete call
       axiosInstance
       .post("/delete-theatre", id, {
         withCredentials: true,
       })
-      .then((res) => console.log(res.data)) 
-      .catch((err) => console.log(err));
-
-      deleteTheatre(id);
-      toast("Theatre has been deleted successfully!")
+      .then(res => {
+        console.log(res.data);
+        navigate("/admin-theatre",{state:{toastMessage:"Theatre has been deleted successfully!"}});
+      }) 
+      .catch(err => console.log(err));
+    
+      
+      
+      
     }
     if (props.type === "movie") {
-      deleteMovie(id);
+      // deleteMovie(id);
       props.func(!props.val)
        // delete movie api call would go here
           axiosInstance.post("/delete-movie",id,{
             withCredentials:true
           }).then(res=>{
             console.log(res.data)
+            navigate("/admin-movie",{state:{toastMessage:"Movie Deleted successfully!"}})
             
           })
           .catch(err=>console.log(err))
-
 
       
 
@@ -50,10 +57,14 @@ const DeleteBox = (props) => {
        axiosInstance.post("/archive-showtime",id,{
       withCredentials:true
       })
-      .then(res=>console.log(res.data))
+      .then(res=>{
+        console.log(res.data);
+        
+      })
       .catch(err=>console.log(err))
-
-      toast("Archived successfully!");
+      
+      navigate("/admin-shows",{state:{toastMessage:"Archived Successfully!"}});
+      
       
 
     }
@@ -62,13 +73,11 @@ const DeleteBox = (props) => {
   
       
    
-   setTimeout(()=>{
-     window.location.reload();
-   },1000)
+  //  setTimeout(()=>{
+  //    window.location.reload();
+  //  },2000)
 
-    if(props.type==="movie"){
-    toast("Movie Deleted Successfully!")
-   }
+    // window.location.reload();
 
    
 

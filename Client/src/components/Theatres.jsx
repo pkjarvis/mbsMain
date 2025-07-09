@@ -44,12 +44,12 @@ const Theatres = ({ theatre,movies,timearray ,date}) => {
   console.log("showtime", showtime);
   console.log("theatreval",theatre);
 
-  const handleClick = (from,to) => {
+  const handleClick = (from,to,id) => {
     if(!date){
       alert("Please select the date first!")
       return;
     }
-    navigate("/showbooking",{state:{movie:movies,theatreval:theatre,date:date,from:from,to:to}});
+    navigate("/showbooking",{state:{movie:movies,theatreval:theatre,date:date,from:from,to:to,id}});
   };
 
   return (
@@ -82,7 +82,7 @@ const Theatres = ({ theatre,movies,timearray ,date}) => {
         // ) 
         timearray && timearray.length>0?(
           timearray.map((item,index)=>(
-           <div key={index} className="font-medium border-1 border-[#ACACAC] p-2 w-[10vw] text-center rounded-2xl cursor-pointer" onClick={()=>handleClick(item.val1,item.val2)}>
+           <div key={index} className="font-medium border-1 border-[#ACACAC] p-2 w-[10vw] text-center rounded-2xl cursor-pointer" onClick={()=>handleClick(item.val1,item.val2,index)}>
                 <p key={index} className="text-[#008610] " >{item.val1}:{item.val2}</p>
            </div>
         ))

@@ -5,7 +5,7 @@ import AddButton from "../components/AddButton";
 
 // import DatePicker from "react-datepicker";
 
-const baseUrl=import.meta.env.VITE_ROUTE
+const baseUrl = import.meta.env.VITE_ROUTE;
 
 import "react-datepicker/dist/react-datepicker.css";
 import { MoviesContext } from "../context/MovieContext";
@@ -17,16 +17,22 @@ import axiosInstance from "../utils/axiosInstance";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+
 const AddNewMovie = () => {
   const [movie, setMovie] = useState("");
   const [description, setDescription] = useState("");
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   const [genre, setGenre] = useState("");
   const [status, setStatus] = useState("");
   var [file, setFile] = useState("");
+  const [duration, setDuration] = useState(null);
 
-  const [selectedCities, setSelectedCities] = useState("");
+  const [language, setLanguage] = useState("");
   const cities = [
     { name: "English", code: "ENG" },
     { name: "Hindi", code: "HN" },
@@ -52,7 +58,8 @@ const AddNewMovie = () => {
       setGenre(editingMovie.genre);
       setFile(editingMovie.file);
       setStatus(editingMovie.status);
-      setSelectedCities(editingMovie.language);
+      setLanguage(editingMovie.language);
+      setDuration(editingMovie.duration);
     }
 
     const bg = document.getElementById("ImageBg");
@@ -62,6 +69,27 @@ const AddNewMovie = () => {
       bg.style.objectFit = "fill";
     }
   }, [editingMovie]);
+
+  // handling auto status
+  useEffect(()=>{
+    const currentTime=new Date();
+    if(!startDate && !endDate) return;
+
+    const newstart=new Date(startDate);
+    const newend=new Date(endDate);
+
+    if(currentTime>=newstart && currentTime<=newend){
+      setStatus("Now Showing");
+    }else if(currentTime>newend && currentTime>newstart){
+      setStatus("Expired");
+    }else if(currentTime<newstart && currentTime<newend){
+      setStatus("Upcoming");
+    }else{
+      setStatus("");
+    }
+
+  },[startDate,endDate])
+  
 
   const fileInputRef = useRef(null);
 
@@ -101,20 +129,17 @@ const AddNewMovie = () => {
     setSelectedCities("");
     setStatus("");
     setFile(null);
+    setLanguage("");
     let bg = document.getElementById("ImageBg");
     bg.style.background = "";
   };
 
-  const handleRemoveFile=()=>{
-    file="";
+  const handleRemoveFile = () => {
+    file = "";
     setFile(file);
-   
-    
-  }
+  };
 
   const navigate = useNavigate();
-
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -126,14 +151,15 @@ const AddNewMovie = () => {
       startDate,
       endDate,
       genre,
-      language: selectedCities,
+      language,
       status,
       file: file || editingMovie?.file,
+      duration,
     };
 
     console.log(newMovie);
 
-    if(startDate>endDate){
+    if (startDate > endDate) {
       alert("StartDate should be less than EndDate");
       return;
     }
@@ -149,15 +175,14 @@ const AddNewMovie = () => {
 
       // updateMovie(newMovie);
     } else {
-      
       // add api call
       await axiosInstance
-      .post("/add-movie", newMovie, {
-        withCredentials: true,
-      })
-      .then((res) => console.log(res.data))
-      .catch((err) => console.log(err));
-      
+        .post("/add-movie", newMovie, {
+          withCredentials: true,
+        })
+        .then((res) => console.log(res.data))
+        .catch((err) => console.log(err));
+
       // addMovie(newMovie);
     }
 
@@ -169,6 +194,8 @@ const AddNewMovie = () => {
       },
     });
   };
+
+
 
   return (
     <div>
@@ -186,7 +213,7 @@ const AddNewMovie = () => {
           <p className="font-light text-sm">Add New Movie</p>
         </span>
         <div className="info flex flex-col place-items-center mt-[1.8vw]">
-          <div className="flex flex-col justify-between gap-2">
+          <div className="flex flex-col justify-between gap-3">
             <p className="font-semibold text-base">Basic Info</p>
             {/* <input
               type="text"
@@ -319,8 +346,8 @@ const AddNewMovie = () => {
 
               <div className="card flex justify-content-center w-[14vw] h-[2vw]">
                 <MultiSelect
-                  value={selectedCities}
-                  onChange={(e) => setSelectedCities(e.value)}
+                  value={language}
+                  onChange={(e) => setLanguage(e.value)}
                   options={cities}
                   optionLabel="name"
                   display="chip"
@@ -355,7 +382,7 @@ const AddNewMovie = () => {
               />
             </div>
 
-            <select
+            {/* <select
               id="language"
               value={status}
               onChange={(e) => setStatus(e.target.value)}
@@ -367,7 +394,135 @@ const AddNewMovie = () => {
               </option>
               <option id="expired">Expired</option>
               <option id="upcoming">Upcoming</option>
-            </select>
+            </select> */}
+
+            <Box 
+            component="form"
+              sx={{ "& > :not(style)": { width: "30vw", margin: "0.2vw 0" } }}
+              noValidate
+              autoComplete="off"
+            >
+              <FormControl 
+              fullWidth
+              sx={{
+                  "& .MuiOutlinedInput-root": {
+                    // Default border color for outlined input
+                    height: "2.2vw",
+
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#A1A2A4", // Grey border by default
+                      borderWidth: "1px",
+                    },
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#A1A2A4", // Keep grey on hover if not focused
+                    },
+                    // Styles when the input itself is focused
+                    "&.Mui-focused": {
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#000", // Black border when focused
+                        borderWidth: "1px", // Keep border width consistent
+                      },
+                    },
+                  },
+                  // Target the label component directly
+                  "& .MuiInputLabel-root": {
+                    color: "#A1A2A4", // Default label color (grey)
+                    fontWeight: "normal", // Assuming default is normal, if you want bold when focused
+
+                    "&.Mui-focused": {
+                      color: "#000", // Black label when focused
+                      fontWeight: "light", // Bold label when focused
+                    },
+                    // Optional: Keep label black when it has a value (shrunk) and is not focused
+                    "&.MuiInputLabel-shrink": {
+                      color: "#000", // Black label when shrunk (has value)
+                    },
+                  },
+                }}
+              >
+                <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={status}
+                  label="Age"
+                  onChange={(e)=>setStatus(e.target.value)}
+                >
+                  <MenuItem value={"Now Showing"}>Now Showing</MenuItem>
+                  <MenuItem value={"Expired"}>Expired</MenuItem>
+                  <MenuItem value={"Upcoming"}>Upcoming</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+
+            <Box
+              component="form"
+              sx={{ "& > :not(style)": { width: "30vw", margin: "0.2vw 0" } }}
+              noValidate
+              autoComplete="off"
+            >
+              <FormControl
+                fullWidth
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    // Default border color for outlined input
+                    height: "2.2vw",
+
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#A1A2A4", // Grey border by default
+                      borderWidth: "1px",
+                    },
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#A1A2A4", // Keep grey on hover if not focused
+                    },
+                    // Styles when the input itself is focused
+                    "&.Mui-focused": {
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#000", // Black border when focused
+                        borderWidth: "1px", // Keep border width consistent
+                      },
+                    },
+                  },
+                  // Target the label component directly
+                  "& .MuiInputLabel-root": {
+                    color: "#A1A2A4", // Default label color (grey)
+                    fontWeight: "normal", // Assuming default is normal, if you want bold when focused
+
+                    "&.Mui-focused": {
+                      color: "#000", // Black label when focused
+                      fontWeight: "light", // Bold label when focused
+                    },
+                    // Optional: Keep label black when it has a value (shrunk) and is not focused
+                    "&.MuiInputLabel-shrink": {
+                      color: "#000", // Black label when shrunk (has value)
+                    },
+                  },
+                }}
+              >
+                <InputLabel id="demo-simple-select-label">
+                  Duration (in minutes)
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={duration}
+                  label="Duration (in minutes)"
+                  onChange={(e) => setDuration(parseInt(e.target.value))}
+                >
+                  <MenuItem value={50}>Fifty</MenuItem>
+                  <MenuItem value={60}>Sixty</MenuItem>
+                  <MenuItem value={90}>Ninty</MenuItem>
+                  <MenuItem value={120}>One Twenty</MenuItem>
+                  <MenuItem value={150}>One Fifty</MenuItem>
+                  <MenuItem value={160}>One Sixty</MenuItem>
+                  <MenuItem value={180}>One Eighty</MenuItem>
+                  <MenuItem value={200}>Two Hundred</MenuItem>
+                  <MenuItem value={240}>Two Forty</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+
+
 
             <p className="font-semibold text-zinc-600 text-base my-2">
               Upload Poster
@@ -389,7 +544,9 @@ const AddNewMovie = () => {
                     Upload file here
                   </p>
                   <span onClick={handleRemoveFile} className="cursor-pointer">
-                    <p className="ml-[6vw] mb-[5.8vw] w-[1vw] h-[1vw] bg-black text-white flex items-center justify-center text-center rounded-xl text-xs font-semibold">x</p>
+                    <p className="ml-[6vw] mb-[5.8vw] w-[1vw] h-[1vw] bg-black text-white flex items-center justify-center text-center rounded-xl text-xs font-semibold">
+                      x
+                    </p>
                   </span>
                 </div>
               ) : (
