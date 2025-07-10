@@ -18,6 +18,7 @@ const Booking = () => {
   const date=state?.date;
   const from=state?.from;
   const to=state?.to;
+  const showId=state?.showId;
 
   console.log("seats", store);
   console.log("totalprice", price);
@@ -58,7 +59,7 @@ const Booking = () => {
     try{
       const res = await axiosInstance.post(
       "/api-payu",
-      { store, price, movieId,moviename,moviefile,theatrename,theatreaddress,date,from,to },
+      { store, price, movieId,moviename,moviefile,theatrename,theatreaddress,date,from,to,showId },
       { withCredentials: true }
     );
       const  payUData  = res.data?.payUData;

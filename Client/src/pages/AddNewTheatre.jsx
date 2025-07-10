@@ -150,6 +150,7 @@ const AddNewTheatre = () => {
         toastMessage: editingTheatre
           ? "Theatre has been updated successfully"
           : "Theatre has been added successfully",
+          setShowDataWarning:false,
       },
     });
   };

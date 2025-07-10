@@ -7,6 +7,10 @@ import { MoviesContext } from "../context/MovieContext";
 import axiosInstance from "../utils/axiosInstance";
 import { toast, ToastContainer } from "react-toastify";
 import { replace, useLocation, useNavigate } from "react-router-dom";
+import Stack from "@mui/material/Stack";
+import Alert from "@mui/material/Alert";
+
+
 
 const baseUrl = import.meta.env.VITE_ROUTE;
 
@@ -24,6 +28,15 @@ const MovieManagement = () => {
       navigate(location.pathname, { replace: true, state: {} });
     }
   }, [location, navigate]);
+   
+  const [showDateWarning, setShowDataWarning] = useState(false); 
+
+  useEffect(()=>{
+    if (location.state){
+    setShowDataWarning(true);
+  }
+  },[location])
+  
 
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -43,6 +56,7 @@ const MovieManagement = () => {
   }, [location]);
 
 
+  
 
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -65,6 +79,30 @@ const MovieManagement = () => {
             "relative flex p-3 rounded-md justify-between items-center text-white bg-[rgba(31,132,90,1)] shadow-lg mt-12"
           }
         />
+
+         {showDateWarning && (
+          <Stack
+            sx={{
+              width: "60%",
+              position: "absolute",
+              zIndex: "1020",
+              marginLeft: "18vw",
+              marginTop:"6vw",
+            }}
+            spacing={2}
+          >
+            <Alert
+              severity="warning"
+              variant="filled"
+              onClose={() => {
+                setShowDataWarning(false);
+              }}
+            >
+              {"Update the corresponding showtime as movie is edited"}
+            </Alert>
+          </Stack>
+        )}
+
 
         <MainHeader
           title="Manage Movies"
@@ -90,6 +128,7 @@ const MovieManagement = () => {
               language={m.language}
               status={m.status}
               file={m.file}
+              setShowDataWarning={setShowDataWarning}
             />
           ))
         ) : (

@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { useNavigate } from 'react-router-dom'
+import axiosInstance from '../utils/axiosInstance';
 
 // movie-> {id,movie,description,startDate,endDate,genre,language,status,file}
 // "../src/assets/aliceWonderland.png"
@@ -8,6 +9,30 @@ const MovieCard1 = ({movie}) => {
     if(!movie || !movie.file) return null;
  
   const navigate=useNavigate("");
+
+  const [review,setReview]=useState([]);
+
+  useEffect(()=>{
+
+    axiosInstance.get("get-review-bymovie",{params:{movieId:movie.id}},{withCredentials:true})
+    .then((res)=>{
+      console.log("response is",res.data);
+      const filteredReviews=res.data.reviews.map((item)=>item.star);
+      setReview(filteredReviews);
+      
+    }).catch(err=>console.log(err));
+
+  },[])
+
+  console.log('reviews is:',review);
+  var total;
+
+  for(let i=0;i<review.length;i++){
+    total+=review[i];
+  }
+  var length=review.length;
+  var average=total/length;
+
     
 
   const handleClick=()=>{
@@ -23,7 +48,7 @@ const MovieCard1 = ({movie}) => {
             <span className='w-[95%] mt-2' >
                 <p className='text-md text-black font-semibold mx-2'>{movie.movie || "Alice Wonderland"}</p>
                  <span className='flex items-center justify-start gap-2 ml-3'>
-                    <p className='text-gray-400'>4.2</p>
+                    <p className='text-gray-400'>{average || 4}</p>
                     <img src="/assets/Star.png" alt="Star" className='w-[1vw] h-[1vw]' />
                     <img src="/assets/Star.png" alt="Star" className='w-[1vw] h-[1vw]' />
                     <img src="/assets/Star.png" alt="Star" className='w-[1vw] h-[1vw]' />

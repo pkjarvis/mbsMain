@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 
 
 
+
 const MovieCard = ({id,movie,description,startDate,endDate,genre,language,status,file}) => {
   const navigate = useNavigate("");
 
@@ -13,9 +14,13 @@ const MovieCard = ({id,movie,description,startDate,endDate,genre,language,status
   const pencilIconRef = useRef(null);
   const deleteIconRef = useRef(null);
 
+ 
+  
+
   const [check,setCheck]=useState(false);
 
   const handleClick = () => {
+    
     setVisible(!visible);
   };
 

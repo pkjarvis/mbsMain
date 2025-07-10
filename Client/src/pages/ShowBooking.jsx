@@ -5,11 +5,22 @@ import axiosInstance from "../utils/axiosInstance";
 
 const ShowBooking = () => {
   const navigate = useNavigate();
+   const { state } = useLocation();
+  const movie = state?.movie;
+  const theatre=state?.theatreval;
+  const date=state?.date;
+  const from=state?.from;
+  const to=state?.to;
+  const showId=state?.id;
+  console.log("theatre from location.state",theatre);
+
+  console.log("Id is",showId);
 
   // seat booked logic
   const [soldTickets, setSoldTickets] = useState([]);
   useEffect(() => {
-  axiosInstance.get("/booked-seats", { withCredentials: true })
+    if(!showId) return;
+  axiosInstance.get(`/booked-seats?showId=${showId}`, { withCredentials: true })
     .then(res => {
        const paidSeats = res.data.tickets
         .flatMap((tx) => tx.tickets); // Flatten all seat arrays
@@ -36,16 +47,7 @@ useEffect(() => {
     console.log(username);
   }, [username]);
 
-  const { state } = useLocation();
-  const movie = state?.movie;
-  const theatre=state?.theatreval;
-  const date=state?.date;
-  const from=state?.from;
-  const to=state?.to;
-  const id=state?.id;
-  console.log("theatre from location.state",theatre);
-
-  console.log("Id is",id);
+ 
 
   
 
@@ -119,7 +121,7 @@ useEffect(() => {
       alert("All seats booked can't proceed to pay!")
       return;
     }
-    navigate("/booking",{state:{storeId,totalprice,movie,theatre,date,from,to,id}});
+    navigate("/booking",{state:{storeId,totalprice,movie,theatre,date,from,to,showId}});
   };
 
   // const handlePopUP = () => {
@@ -128,7 +130,7 @@ useEffect(() => {
 
 
   return (
-    <div id={id}>
+    <div id={showId}>
       <div className="show-booking-container">
         <div className="theatre-container font-[Inter]">
           <NavBar1 title={username} />

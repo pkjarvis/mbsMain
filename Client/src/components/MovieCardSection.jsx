@@ -42,6 +42,7 @@ const MovieCardSection = ({ title, movies = [] }) => {
           {movies.map((movie) => (
             <MovieCard1 key={movie.id} movie={movie} />
           ))}
+          
         </div>
       </div>
     </div>

@@ -713,7 +713,20 @@ func GetShow(c*gin.Context){
 			return
 		}
 	} 
-	c.JSON(200,gin.H{"showtime":showtime})
+
+	dateSet := make(map[string]bool)
+	for _, st := range showtime {
+		dateOnly := st.StartDate.Format("2006-01-02") // Format as string date
+		dateSet[dateOnly] = true
+	}
+
+	var bookedDates []string
+	for date := range dateSet {
+		bookedDates = append(bookedDates, date) 
+	}
+
+
+	c.JSON(200,gin.H{"showtime":showtime,"bookedDates":bookedDates})
 }
 
 
@@ -736,6 +749,19 @@ func AddReview(c *gin.Context) {
 		c.JSON(400, gin.H{"error": "Invalid user ID type"})
 		return
 	}
+
+	var existingMovieId models.Review
+	var existingUserId  models.Review
+	models.DB.Where("movie_id = ?",input.MovieId).First(&existingMovieId)
+	models.DB.Where("user_id = ?",userId).First(&existingUserId)
+
+
+	if existingMovieId.MovieId != 0  && existingUserId.UserId!=0{
+		c.JSON(400,gin.H{"error":"already gave review for movieId with userId"})
+		return;
+	}
+
+
 
 	var user models.User
 	if err := models.DB.First(&user, userId).Error; err != nil {
@@ -838,6 +864,7 @@ func Payment(c *gin.Context) {
 		Date           string          `json:"date"`
 		From           string          `json:"from"`
 		To             string          `json:"to"`
+		ShowID       string           `json:"showId"`
 	}
 
 	// Validate request body
@@ -872,6 +899,7 @@ func Payment(c *gin.Context) {
 		Date:           input.Date,
 		StartTime:      input.From,
 		EndTime:        input.To,
+		ShowID:         input.ShowID,
 	}
 
 	// Save to DB
@@ -937,6 +965,19 @@ func GetReviews(c *gin.Context) {
 	c.JSON(200, gin.H{"reviews": review})
 }
 
+func GetReviewByMovie(c*gin.Context){
+	movieId:=c.Query("movidId")
+	var review []models.Review
+
+	if err:=models.DB.Where("movie_id = ?",movieId).Find(&review).Error;err!=nil{
+		c.JSON(400,gin.H{"message":"Failed to fetch reviews by movieid"})
+		return
+	}
+	c.JSON(200,gin.H{"reviews":review})
+
+}
+
+
 func UpdateProfile(c *gin.Context) {
 	var input struct {
 		Name  string `json:"name"`
@@ -978,8 +1019,14 @@ func UpdateProfile(c *gin.Context) {
 }
 
 func GetBookedSeats(c *gin.Context) {
+	showIdParam := c.Query("showId")
+	if showIdParam == "" {
+		c.JSON(400, gin.H{"error": "missing showId"})
+		return
+	}
+
 	var transactions []models.Transaction
-	if err := models.DB.Where("status = ?", "paid").Find(&transactions).Error; err != nil {
+	if err := models.DB.Where("showId = ? AND status = ?",showIdParam, "paid").Find(&transactions).Error; err != nil {
 		c.JSON(500, gin.H{"error": "Failed to fetch transactions"})
 		return
 	}
@@ -1019,6 +1066,49 @@ func GetMovieByName(c*gin.Context){
 		}
 	}
 	c.JSON(200,gin.H{"movie":movie})
+}
+
+
+
+
+func SaveUserState(c *gin.Context) {
+	var input struct {
+		CityName string `json:"city_name"`
+	}
+
+	userIDVal, exists := c.Get("userId")
+	if !exists {
+		c.JSON(401, gin.H{"message": "unauthorized"})
+		return
+	}
+	userID := userIDVal.(uint)
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	state := models.State{
+		UserID:   userID,
+		CityName: input.CityName,
+	}
+
+	if err := models.DB.Create(&state).Error; err != nil {
+		c.JSON(500, gin.H{"error": "Failed to save state"})
+		return
+	}
+
+	c.JSON(200, gin.H{"message": "State saved successfully"})
+}
+
+
+func GetState(c*gin.Context){
+	var state []models.State
+	if err:=models.DB.Find(&state).Error;err!=nil{
+		c.JSON(400,gin.H{"error":"Couldn't find the state"})
+		return
+	}
+	c.JSON(200,gin.H{"state":state})
 }
 
 

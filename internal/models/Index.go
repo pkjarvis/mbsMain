@@ -50,6 +50,9 @@ func InitDB(cfg Config) {
     if err :=db.AutoMigrate(&Transaction{});err!=nil{
         panic(err)
     }
+    if err :=db.AutoMigrate(&State{});err!=nil{
+        panic(err)
+    }
 
     fmt.Println("Migrated database")
 

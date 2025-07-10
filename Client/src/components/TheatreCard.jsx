@@ -47,7 +47,7 @@ const TheatreCard = ({id,theatrename,address,cityName,stateName,status,totalscre
           <div className="right flex items-center justify-between w-[94%] ">
             <div className="right-left flex flex-col   gap-0.2">
               <span className="stream-tag flex items-center gap-2">
-                <p className=" text-2xl font-semibold">{theatrename}</p>
+                <p className=" text-2xl font-semibold text-[#373737]">{theatrename}</p>
                 {
                 status==="Active"
                 ?
@@ -71,7 +71,7 @@ const TheatreCard = ({id,theatrename,address,cityName,stateName,status,totalscre
 
               <span className="flex items-center gap-2">
                 <img src="/assets/Locate.png" alt="LocateIcon" className="w-[0.8vw] h-[0.9vw]" />
-                <p className="font-semibold">{cityName}, {stateName}</p>
+                <p className="font-normal text-[#373737] text-md">{cityName}, {stateName}</p>
               </span>
 
               <span className="tags flex gap-2 ">

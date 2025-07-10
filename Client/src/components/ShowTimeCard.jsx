@@ -73,12 +73,12 @@ const ShowTimeCard = ({
             <div className="right-left flex flex-col">
               <span className="flex items-center gap-2">
                 <p className="font-semibold text-xl leading-0.2">{moviename}</p>
-                <p className="text-xs font-light border-1 rounded-xl p-0.5 border-[#E7E6EA]">
-                  Show Added:{timearray.length}
-                </p>
+                <span className="text-xs font-light border-1 rounded-xl p-1 border-[#E7E6EA]">
+                  <p className="p-0.6">Show Added:{timearray.length}</p>
+                </span>
               </span>
               <span className="flex gap-1">
-                <p className="text-xs font-semibold text-zinc-700">
+                <p className="text-xs font-semibold text-[#373737]">
                   {theatrename}{" "}
                 </p>
               </span>
@@ -90,7 +90,7 @@ const ShowTimeCard = ({
                 {timearray?.map((item, index) => (
                   <p
                     key={index}
-                    className="w-auto h-auto bg-zinc-300 text-[0.7vw] border-1 border-zinc-300 rounded-xl text-center items-center px-1 flex place-items-center font-light text-zinc-800"
+                    className="w-auto h-auto bg-[#E6E9E6] text-[0.7vw] border-1 border-zinc-300 rounded-xl text-center items-center px-1 flex place-items-center font-light text-black"
                   >
                     {item.val1}-{item.val2}
                   </p>

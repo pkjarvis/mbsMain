@@ -60,6 +60,9 @@ func AuthRoutes(r *gin.Engine) {
 	r.GET("/get-showtime", controllers.GetShowTimes)
 	r.GET("/get-show",controllers.GetShow)
 	r.GET("/get-movie-byname",controllers.GetMovieByName)
+	r.GET("/get-state",controllers.GetState)
+	r.GET("/get-review-bymovie",controllers.GetReviewByMovie)
+	
 
 
 	
@@ -72,5 +75,6 @@ func AuthRoutes(r *gin.Engine) {
 	user.POST("/update-profile",controllers.UpdateProfile)
 	user.GET("/booked-seats",controllers.GetBookedSeats)
 	user.GET("/get-paid-ticket",controllers.GetPaidTicketUser)
+	user.POST("/save-state",controllers.SaveUserState)
 
 }

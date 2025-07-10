@@ -38,6 +38,13 @@ const Theatres = ({ theatre,movies,timearray ,date}) => {
 //         console.log("Error fetching movies", err.response?.data || err.message)
 //       );
 //   }, []);
+  const location=useLocation();
+
+  // useEffect(()=>{
+  //   if (location.state){
+  //   setShowDataWarning(true);
+  // }
+  // },[location])
 
   
   
@@ -46,9 +53,11 @@ const Theatres = ({ theatre,movies,timearray ,date}) => {
 
   const handleClick = (from,to,id) => {
     if(!date){
-      alert("Please select the date first!")
+      // alert("Please select the date first!")
+      setShowDataWarning(true);
       return;
     }
+    console.log("id is",id);
     navigate("/showbooking",{state:{movie:movies,theatreval:theatre,date:date,from:from,to:to,id}});
   };
 
@@ -82,7 +91,7 @@ const Theatres = ({ theatre,movies,timearray ,date}) => {
         // ) 
         timearray && timearray.length>0?(
           timearray.map((item,index)=>(
-           <div key={index} className="font-medium border-1 border-[#ACACAC] p-2 w-[10vw] text-center rounded-2xl cursor-pointer" onClick={()=>handleClick(item.val1,item.val2,index)}>
+           <div key={index} className="font-medium border-1 border-[#ACACAC] p-2 w-[10vw] text-center rounded-2xl cursor-pointer" onClick={()=>handleClick(item.val1,item.val2,`${movies.id}-${theatre.id}-${date}-${item.val1}-${item.val2}`)}>
                 <p key={index} className="text-[#008610] " >{item.val1}:{item.val2}</p>
            </div>
         ))

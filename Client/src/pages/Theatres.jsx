@@ -7,6 +7,10 @@ import { TheatreContext } from "../context/TheatreContext";
 import axiosInstance from "../utils/axiosInstance";
 import { toast, ToastContainer } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
+
+import Stack from "@mui/material/Stack";
+import Alert from "@mui/material/Alert";
+
 const baseUrl = import.meta.env.VITE_ROUTE;
 
 
@@ -23,6 +27,17 @@ const Theatres = () => {
       navigate(location.pathname, { replace: true, state: {} });
     }
   }, [location, navigate]);
+
+
+  const [showDateWarning, setShowDataWarning] = useState(false); 
+
+  useEffect(()=>{
+    if (location.state){
+    setShowDataWarning(true);
+  }
+  },[location])
+
+
 
   const [theatres, setTheatres] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -60,6 +75,29 @@ const Theatres = () => {
         }
       />
 
+       {showDateWarning && (
+          <Stack
+            sx={{
+              width: "60%",
+              position: "absolute",
+              zIndex: "1020",
+              marginLeft: "18vw",
+              marginTop:"6vw",
+            }}
+            spacing={2}
+          >
+            <Alert
+              severity="warning"
+              variant="filled"
+              onClose={() => {
+                setShowDataWarning(false);
+              }}
+            >
+              {"Update the corresponding showtime as theatre is edited"}
+            </Alert>
+          </Stack>
+        )}
+
       <MainHeader
         title="Manage Theatres"
         btncontent="+Add New Theatres"
@@ -83,6 +121,7 @@ const Theatres = () => {
             totalscreens={t.totalscreens}
             theatrefile={t.theatrefile}
             value={t.value}
+            
           />
         ))
       ) : (

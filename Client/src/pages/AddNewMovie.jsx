@@ -191,6 +191,7 @@ const AddNewMovie = () => {
         toastMessage: editingMovie
           ? "Movie has been updated successfully"
           : "Movie has been added successfully",
+        setShowDataWarning:false,
       },
     });
   };

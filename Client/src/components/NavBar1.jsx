@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dropdown } from 'primereact/dropdown';
 import { Link, useNavigate } from 'react-router-dom';
+import axiosInstance from '../utils/axiosInstance';
+
+
 
 const NavBar1 = (props) => {
   const [flag,setFlag]=useState(false);
 
-  const [selectedCity, setSelectedCity] = useState(null);
+  const [selectedCity, setSelectedCity] = useState("");
     const cities = [
         { name: 'New Delhi', code: 'ND' },
         { name: 'Pune', code: 'PN' },
@@ -20,9 +23,19 @@ const NavBar1 = (props) => {
     setFlag(!flag);
   }
 
+  useEffect(()=>{
+    if(!selectedCity) return;
+
+    axiosInstance.post("/save-state",{city_name:selectedCity.name},{withCredentials:true}).
+    then((res)=>console.log(res.data)).
+    catch(err=>console.log(err));
+
+  },[selectedCity.name])
+
   const handleProfile=()=>{
     navigate("/profile");
   }
+  
   
   return (
     <div className="flex items-center justify-center mt-[2vw]">
@@ -65,9 +78,9 @@ const NavBar1 = (props) => {
         <div className="nav-container  w-[95%] flex items-center justify-between p-2">
             <Link to="/dashboard"><img src="/assets/Logo.png" alt="WebLogo" className='w-[2.6vw] h-[2.6vw]' /></Link>
             <span className='container-right flex items-center justify-center gap-4'>
-                <Link to="/admin" target='_blank' rel="noopener noreferrer" className='underline'>Admin Access</Link>
+                <Link to="/admin-login" target='_blank' rel="noopener noreferrer" className='underline'>Admin Access</Link>
                 <span className='flex items-center gap-2 cursor-pointer' onClick={handleClick}>
-                    <p className='text-[#373737] font-normal'>New Delhi</p>
+                    <p className='text-[#373737] font-normal'>{selectedCity.name }</p>
                     <img src="/assets/dropDown.png" alt="DropDown" className={`${flag?"transform rotate-180 duration-200 transition-transform":"duration-200 transition-transform"}w-[1vw] h-[0.7vw]`} />
                 </span>
 

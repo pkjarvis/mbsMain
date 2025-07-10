@@ -33,9 +33,8 @@ const AddNewShowtime = () => {
   const [cities, setCities] = useState([]);
 
   const [duration, setDuration] = useState(null);
-  const [showDateWarning,setShowDataWarning]=useState(false);
-  const [message,setMessage]=useState("");
-
+  const [showDateWarning, setShowDataWarning] = useState(false);
+  const [message, setMessage] = useState("");
 
   // movie label options through get movies
   const [movies, setMovies] = useState([]);
@@ -43,28 +42,6 @@ const AddNewShowtime = () => {
 
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
-
-  useEffect(() => {
-    const newstart = new Date(start);
-    const newStartDate = newstart.getDate();
-    const newStartMonth = newstart.getMonth();
-    const newend = new Date(end);
-
-    const newcur = new Date(startDate);
-
-    console.log("date", newstart);
-    console.log("new", newStartDate);
-    console.log("newdate", newStartMonth);
-
-    if (newcur > newend || newcur < newstart) {
-      // alert(`select showtime between movie startDate ${new Date(start)} and endDate ${new Date(end)}`);
-      setShowDataWarning(true);
-      setMessage(`select showtime between movie startDate ${new Date(start)} and endDate ${new Date(end)}`);
-     
-
-      setStartDate("");
-    }
-  }, [startDate]);
 
   useEffect(() => {
     axiosInstance
@@ -99,6 +76,7 @@ const AddNewShowtime = () => {
       .catch((err) => console.log(err));
   }, []);
 
+  const [movieId, setMovieId] = useState(null);
   useEffect(() => {
     if (!moviename) return;
 
@@ -113,12 +91,73 @@ const AddNewShowtime = () => {
         setDuration(res.data.movie[0].duration);
         setStart(res.data.movie[0].startDate);
         setEnd(res.data.movie[0].endDate);
-       
+        setMovieId(res.data.movie[0].id);
       })
       .catch((err) => console.log(err));
   }, [moviename]);
 
-  
+  // get shows
+
+  const [usedShowDates, setUsedShowDates] = useState([]);
+  const [showtime, setShowTime] = useState([]);
+
+  useEffect(() => {
+    if (!moviename) return;
+
+    axiosInstance
+      .get("/get-show", {
+        params: { movieId },
+        withCredentials: true,
+      })
+      .then((res) => {
+        console.log("response is ", res.data);
+        const datesUsed = res.data.showtime.map(
+          (st) => new Date(st.startDate).toISOString().split("T")[0]
+        );
+        setShowTime(res.data.showtime);
+        setUsedShowDates(datesUsed); // e.g., ["2025-07-10", "2025-07-11"]
+      })
+      .catch((err) => console.log(err));
+  }, [movieId]);
+
+  const formatToDateString = (inputDate) => {
+    const dateObj = new Date(inputDate);
+    return isNaN(dateObj) ? null : dateObj.toISOString().split("T")[0];
+  };
+
+  // start date
+  useEffect(() => {
+    const newstart = new Date(start);
+    const newStartDate = newstart.getDate();
+    const newStartMonth = newstart.getMonth();
+    const newend = new Date(end);
+
+    const newcur = new Date(startDate);
+
+    console.log("date", newstart);
+    console.log("new", newStartDate);
+    console.log("newdate", newStartMonth);
+
+    const selectedDateStr = formatToDateString(startDate);
+    if (usedShowDates.includes(selectedDateStr)) {
+      setShowDataWarning(true);
+      setMessage(`Showtime already added for ${selectedDateStr}`);
+      setStartDate("");
+      return;
+    }
+
+    if (newcur > newend || newcur < newstart) {
+      // alert(`select showtime between movie startDate ${new Date(start)} and endDate ${new Date(end)}`);
+      setShowDataWarning(true);
+      setMessage(
+        `select showtime between movie startDate ${new Date(
+          start
+        )} and endDate ${new Date(end)}`
+      );
+
+      setStartDate("");
+    }
+  }, [startDate]);
 
   const { state } = useLocation();
   const editingNewShowTime = state?.showtime;
@@ -140,8 +179,6 @@ const AddNewShowtime = () => {
     return ans;
   }
 
- 
-
   const handleTime = () => {
     if (!datetime || !datetime12h) {
       setShowDataWarning(true);
@@ -151,7 +188,7 @@ const AddNewShowtime = () => {
     }
     if (datetime < datetime12h) {
       setShowDataWarning(true);
-      setMessage("Add endtime greater than starttime!")
+      setMessage("Add endtime greater than starttime!");
       // alert("Add endtime greater than starttime!");
       return;
     }
@@ -247,7 +284,6 @@ const AddNewShowtime = () => {
         toastMessage: editingNewShowTime
           ? "Showtime has been updated successfully"
           : "Showtime has been added successfully",
-        
       },
     });
   };
@@ -302,9 +338,16 @@ const AddNewShowtime = () => {
       );
     });
 
+    if (!isOverlapping) {
+      setShowDataWarning(false);
+      setMessage("");
+    }
+
     if (isOverlapping) {
       setShowDataWarning(true);
-      setMessage("Time slot overlaps with an existing showtime. Please choose another start time.");
+      setMessage(
+        "Time slot overlaps with an existing showtime. Please choose another start time."
+      );
       // alert(
       //   "Time slot overlaps with an existing showtime. Please choose another start time."
       // );
@@ -339,30 +382,32 @@ const AddNewShowtime = () => {
           <p className="font-light text-sm">Add New Showtime</p>
         </span>
 
-
-
-            {
-        showDateWarning && (
+        {showDateWarning && (
           <Stack
-            sx={{ width: "60%", position: "absolute", zIndex: "1020",marginLeft:"18vw" }}
+            sx={{
+              width: "60%",
+              position: "absolute",
+              zIndex: "1020",
+              marginLeft: "18vw",
+            }}
             spacing={2}
           >
-            <Alert 
-            severity="warning" variant="filled"
-            onClose={() => {setShowDataWarning(false)}}
+            <Alert
+              severity="warning"
+              variant="filled"
+              onClose={() => {
+                setShowDataWarning(false);
+              }}
             >
               {message}
             </Alert>
           </Stack>
-        )
-      }
-       
+        )}
 
         <div className="info flex flex-col place-items-center mt-[1.8vw]">
-          
           <div className="flex flex-col justify-between gap-5 ">
             <p className="font-semibold text-base">Basic Info</p>
-            
+
             {/* <input
               type="text"
               placeholder="Movie Name"
@@ -418,7 +463,6 @@ const AddNewShowtime = () => {
                 }}
               />
             </Box> */}
-
 
             <div className="card flex justify-content-center items-center h-[2.4vw]">
               <Dropdown
@@ -588,18 +632,20 @@ const AddNewShowtime = () => {
               </div>
               <div className="flex mt-2 mx-2 gap-1">
                 {timearray?.map((item, index) => (
-                  <p
-                    key={index}
-                    className="text-[0.5vw] font-light h-[0.8vw] w-auto text-zinc-800 bg-zinc-300 items-center justify-center text-center inline rounded-md"
-                  >
-                    {item.val1}-{item.val2}{" "}
-                    <span
-                      className="text-xs cursor-pointer"
-                      onClick={() => handleShowTimeDelete(index)}
+                  <div>
+                    <p
+                      key={index}
+                      className="text-[0.5vw] font-light h-[0.8vw] w-auto text-[#1F242D] bg-[#E1E4EA] items-center justify-center text-center inline rounded-xl p-1"
                     >
-                      x
-                    </span>
-                  </p>
+                      {item.val1}-{item.val2}{" "}
+                      <span
+                        className="text-xs cursor-pointer"
+                        onClick={() => handleShowTimeDelete(index)}
+                      >
+                        x
+                      </span>
+                    </p>
+                  </div>
                 ))}
               </div>
 
@@ -622,7 +668,7 @@ const AddNewShowtime = () => {
             timearray?.length ? (
               <div className="buttons flex items-center justify-start gap-5 mb-1 ">
                 <button
-                  className="bg-pink-500 cursor-pointer w-[6vw] h-[2vw] text-md text-white font-semibold p-1 rounded-xl"
+                  className="bg-[#FF5295] cursor-pointer w-[6vw] h-[2vw] text-md text-white font-semibold p-1 rounded-xl"
                   onClick={handleSubmit}
                 >
                   Add
@@ -637,7 +683,7 @@ const AddNewShowtime = () => {
             ) : (
               <div className="buttons flex items-center justify-start gap-5 mb-1 opacity-15">
                 <button
-                  className="bg-pink-500 cursor-pointer w-[6vw] h-[2vw] text-md text-white font-semibold p-1 rounded-xl"
+                  className="bg-[#FF5295] cursor-pointer w-[6vw] h-[2vw] text-md text-white font-semibold p-1 rounded-xl"
                   onClick={handleSubmit}
                 >
                   Add
