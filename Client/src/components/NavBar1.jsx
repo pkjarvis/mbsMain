@@ -30,6 +30,8 @@ const NavBar1 = (props) => {
     then((res)=>console.log(res.data)).
     catch(err=>console.log(err));
 
+    setFlag(false);
+
   },[selectedCity.name])
 
   const handleProfile=()=>{

@@ -82,7 +82,6 @@ const Showtime = () => {
       .then((res) => {
         console.log("Current movie showtime", res.data);
         setShowTime(res.data.showtime);
-        
         setDateBooked(res.data.booked);
       })
       .catch((err) =>
@@ -95,6 +94,8 @@ const Showtime = () => {
 
     // alert("First Select The Date You Want To Watch Show, then showtime  would fetch")
   }, []);
+
+
   console.log("Booked ",datebooked);
 
 

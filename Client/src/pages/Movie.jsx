@@ -7,6 +7,7 @@ import { Rating } from "primereact/rating";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
+import axios from "axios";
 
 const Movie = () => {
   const [visible, setVisible] = useState(false);
@@ -20,25 +21,23 @@ const Movie = () => {
 
   console.log("state", m);
 
-  
-
   // if(!movie){
   //   return <p>Movie data not available</p>
   // }
 
   useEffect(() => {
-    window.scrollTo(0,0);
-    setVisible(true);
+    window.scrollTo(0, 0);
+    setVisible(false);
   }, []);
 
   const handleClick = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
     setVisible(true);
   };
   const handleCancel = () => {
     setVisible(false);
   };
-
-
 
   const username = localStorage.getItem("userName");
   useEffect(() => {
@@ -57,17 +56,33 @@ const Movie = () => {
       .catch((err) =>
         console.log("Error fetching movies", err.response?.data || err.message)
       );
-
-      
-    window.scrollTo(0,0);
-    
   }, []);
 
+
+  useEffect(() => {
+    axiosInstance
+      .get("/get-paid-ticket", { withCredentials: true })
+      .then((res) => {
+        console.log("response of paid ticker user", res.data);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+
+  
   const handleSubmit = async () => {
     setVisible(false);
     setStar(star);
     setText(text);
     const movieId = m.id;
+
+    const username = localStorage.getItem("userName");
+    const token = localStorage.getItem("userToken");
+
+    if (!username && !token) {
+      navigate("/root");
+    }
+
     await axiosInstance
       .post("/add-review", { text, star, movieId }, { withCredentials: "true" })
       .then((res) => console.log(res.data))
@@ -83,15 +98,13 @@ const Movie = () => {
     axiosInstance
       .get("/get-review", { withCredentials: "true" })
       .then((res) => {
-        console.log("reviews",res.data.reviews);
+        console.log("reviews", res.data.reviews);
         setReviews(res.data.reviews);
       })
       .catch((err) => console.log(err));
-       
-    window.scrollTo(0,0);
-        
-      
   }, []);
+
+  const filteredReviews = reviews.filter((r) => r.movieId === m.id);
 
   return (
     <div>
@@ -207,9 +220,7 @@ const Movie = () => {
             <p className="text-black text-md my-[1vw] font-medium">
               About the movie
             </p>
-            <p className="text-normal text-black font-light">
-              {m.description}
-            </p>
+            <p className="text-normal text-black font-light">{m.description}</p>
             <button
               className="bg-[#FF5295] p-1 text-xl w-[16vw] h-[3vw] rounded-lg text-white font-semibold text-center cursor-pointer my-[1vw]"
               onClick={handleBook}
@@ -260,36 +271,44 @@ const Movie = () => {
           </div>
           {/* Comment container */}
           <div className="flex items-center  gap-4 w-full overflow-x-auto mt-[1vw]">
-            {reviews.length > 0 ? (
-              reviews.map((item, index) => (
-                <div key={index} className="msg-container w-[23%] bg-white rounded-2xl p-2 flex-shrink-0">
-                  <p className="text-gray-300">
-                    <span className="text-black">{item.username || "Jarvis"}</span> 2d ago
-                  </p>
-                  <hr className="w-[100%] h-[1vw] mt-1 text-[#E8E8E8]" />
-                  <p className="text-wrap mt-[-0.6vw] text-sm">
-                    "{item.text}"
-                  </p>
-                  <span className="flex items-center justify-start gap-2 rounded-xl text-white my-1">
-                    {/* <img
+            {filteredReviews.length > 0 ? (
+              filteredReviews
+                .map((item, index) => (
+                  <div
+                    key={index}
+                    className="msg-container w-[23%] bg-white rounded-2xl p-2 flex-shrink-0"
+                  >
+                    <p className="text-gray-300">
+                      <span className="text-black">
+                        {item.username || "Jarvis"}
+                      </span>{" "}
+                      2d ago
+                    </p>
+                    <hr className="w-[100%] h-[1vw] mt-1 text-[#E8E8E8]" />
+                    <p className="text-wrap mt-[-0.6vw] text-sm">
+                      "{item.text}"
+                    </p>
+                    <span className="flex items-center justify-start gap-2 rounded-xl text-white my-1">
+                      {/* <img
                       src="../src/assets/thumbsUp.png"
                       alt="ThumbsUp"
                       className="w-4 h-4"
                     /> */}
-                    <p className="text-gray-300 text-sm">{item.star} ⭐</p>
-                    {/* <img
+                      <p className="text-gray-300 text-sm">{item.star} ⭐</p>
+                      {/* <img
                       src="../src/assets/thumbsDown.png"
                       alt="ThumbsDown"
                       className="w-4 h-4"
                     />
                     <p className="text-gray-300 text-sm">50</p> */}
-                  </span>
-                </div>
-              )).sort((a,b)=>a.star-b.star).reverse()
+                    </span>
+                  </div>
+                ))
+                .sort((a, b) => a.star - b.star)
+                .reverse()
             ) : (
               <p className="text-sm">No reviews added yet</p>
             )}
-        
           </div>
         </div>
 

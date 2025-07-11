@@ -966,11 +966,11 @@ func GetReviews(c *gin.Context) {
 }
 
 func GetReviewByMovie(c*gin.Context){
-	movieId:=c.Query("movidId")
+	movieId:=c.Query("movieId")
 	var review []models.Review
 
 	if err:=models.DB.Where("movie_id = ?",movieId).Find(&review).Error;err!=nil{
-		c.JSON(400,gin.H{"message":"Failed to fetch reviews by movieid"})
+		c.JSON(400,gin.H{"message":"Failed to fetch reviews by movieId"})
 		return
 	}
 	c.JSON(200,gin.H{"reviews":review})
@@ -1031,7 +1031,7 @@ func GetBookedSeats(c *gin.Context) {
 		return
 	}
 	c.JSON(200, gin.H{"tickets": transactions})
-
+	
 }
 
 func GetPaidTicketUser(c *gin.Context) {

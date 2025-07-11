@@ -98,7 +98,7 @@ const AddNewShowtime = () => {
 
   // get shows
 
-  const [usedShowDates, setUsedShowDates] = useState([]);
+  // const [usedShowDates, setUsedShowDates] = useState([]);
   const [showtime, setShowTime] = useState([]);
 
   useEffect(() => {
@@ -115,7 +115,7 @@ const AddNewShowtime = () => {
           (st) => new Date(st.startDate).toISOString().split("T")[0]
         );
         setShowTime(res.data.showtime);
-        setUsedShowDates(datesUsed); // e.g., ["2025-07-10", "2025-07-11"]
+        // setUsedShowDates(datesUsed); // e.g., ["2025-07-10", "2025-07-11"]
       })
       .catch((err) => console.log(err));
   }, [movieId]);
@@ -138,13 +138,13 @@ const AddNewShowtime = () => {
     console.log("new", newStartDate);
     console.log("newdate", newStartMonth);
 
-    const selectedDateStr = formatToDateString(startDate);
-    if (usedShowDates.includes(selectedDateStr)) {
-      setShowDataWarning(true);
-      setMessage(`Showtime already added for ${selectedDateStr}`);
-      setStartDate("");
-      return;
-    }
+    // const selectedDateStr = formatToDateString(startDate);
+    // if (usedShowDates.includes(selectedDateStr)) {
+    //   setShowDataWarning(true);
+    //   setMessage(`Showtime already added for ${selectedDateStr}`);
+    //   setStartDate("");
+    //   return;
+    // }
 
     if (newcur > newend || newcur < newstart) {
       // alert(`select showtime between movie startDate ${new Date(start)} and endDate ${new Date(end)}`);

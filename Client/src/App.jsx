@@ -49,11 +49,11 @@ function App() {
               <ShowTimeProvider>
                 <Routes>
                   
-                  <Route path="*" element={<Navigate to="/root" />} />
                   {/* user route */}
                   
 
-                  <Route path="/root" element={<Dashboard1/>} />
+                  {/* <Route path="/" element={<Navigate to="/dashboard"/>}/> */}
+                  <Route path="*" element={<Navigate to="/dashboard"/>}/>
                   <Route path="/dashboard" element={<LoggedDashboard />} />
                   <Route path="/movies" element={<AllMovies/>} />
                   <Route path="/movie" element={<Movie />} />
@@ -65,6 +65,8 @@ function App() {
                   <Route path="/booking" element={<Booking/>} />
                   <Route path="/history" element={<History />} />
                   <Route path="/payment-status" element={<PaymentStatus />} />
+                  <Route path="/root" element={<Dashboard1/>} />
+                  {/* <Route path="*" element={<Navigate to="/root" />} /> */}
 
 
 

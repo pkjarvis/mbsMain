@@ -15,11 +15,11 @@ const Dashboard = () => {
   const username = localStorage.getItem("userName");
   const token = localStorage.getItem("userToken");
 
-  useEffect(() => {
-    if (!username && !token) {
-      navigate("/root");
-    }
-  });
+  // useEffect(() => {
+  //   if (!username && !token) {
+  //     navigate("/root");
+  //   }
+  // });
 
   useEffect(() => {
     axiosInstance
