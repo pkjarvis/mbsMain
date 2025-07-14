@@ -9,17 +9,26 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
 import axios from "axios";
 
+import Stack from "@mui/material/Stack";
+import Alert from "@mui/material/Alert";
+
 const Movie = () => {
+
   const [visible, setVisible] = useState(false);
   const [star, setStar] = useState(null);
   const [text, setText] = useState("");
 
   const navigate = useNavigate("");
 
+   const [showDateWarning, setShowDataWarning] = useState(false); 
+
   const { state } = useLocation();
   const m = state?.movie;
 
-  console.log("state", m);
+  console.log("state of movie page is:", m);
+  
+  const [selectedCity, setSelectedCity] = useState("");
+  const username = localStorage.getItem("userName");
 
   // if(!movie){
   //   return <p>Movie data not available</p>
@@ -33,16 +42,15 @@ const Movie = () => {
   const handleClick = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
 
-    setVisible(true);
+    if(!username){
+      setVisible(true);
+    }
+   
   };
   const handleCancel = () => {
     setVisible(false);
   };
 
-  const username = localStorage.getItem("userName");
-  useEffect(() => {
-    console.log(username);
-  }, [username]);
 
   const [movies, setMovies] = useState([]);
 
@@ -58,18 +66,31 @@ const Movie = () => {
       );
   }, []);
 
+  const [userwatchedmovie,setUserWatchedMovie]=useState(false);
 
   useEffect(() => {
+    const currentUserId = parseInt(localStorage.getItem("userId"));
     axiosInstance
       .get("/get-paid-ticket", { withCredentials: true })
       .then((res) => {
-        console.log("response of paid ticker user", res.data);
+        console.log("paid ticket user",res.data.tickets)
+        const tickets = res.data.tickets;
+        const found = tickets.some(
+          (ticket) =>
+            ticket.userId === currentUserId &&
+            ticket.movieName.toLowerCase() === m.movie.toLowerCase()
+        );
+        if(found){
+          setUserWatchedMovie(true);
+        }else{
+          setUserWatchedMovie(false);
+        }
       })
       .catch((err) => console.log(err));
   }, []);
 
 
-  
+
   const handleSubmit = async () => {
     setVisible(false);
     setStar(star);
@@ -79,10 +100,17 @@ const Movie = () => {
     const username = localStorage.getItem("userName");
     const token = localStorage.getItem("userToken");
 
+   
+
     if (!username && !token) {
       navigate("/root");
+      return;
     }
 
+    if(!userwatchedmovie){
+      setShowDataWarning(true);
+      return;
+    }
     await axiosInstance
       .post("/add-review", { text, star, movieId }, { withCredentials: "true" })
       .then((res) => console.log(res.data))
@@ -153,8 +181,32 @@ const Movie = () => {
             </button>
           </div>
         </div>
+         {/* Alert message */}
+         {showDateWarning && (
+          <Stack
+            sx={{
+              width: "60%",
+              position: "absolute",
+              zIndex: "1020",
+              marginLeft: "20vw",
+              marginTop:"4vw",
+            }}
+            spacing={2}
+          >
+            <Alert
+              severity="warning"
+              variant="filled"
+              onClose={() => {
+                setShowDataWarning(false);
+              }}
+            >
+              {"You haven't purchased ticket for this movie, first watch the movie then give review"}
+            </Alert>
+          </Stack>
+        )}
         <div className="theatre-container font-[Inter]">
-          <NavBar1 title={username} />
+          <NavBar1 title={username}  selectedCity={selectedCity} setSelectedCity={setSelectedCity}  />
+          
           <span className="flex items-center justify-start mx-[3vw] gap-1 mt-2">
             {/* <a href="http://localhost:3000/dashboard" className='cursor-pointer font-light text-zinc-500 '>Home / </a> */}
             <Link
@@ -168,14 +220,20 @@ const Movie = () => {
               Movie
             </Link>
           </span>
+          
         </div>
+
+       
+
+
+
         <div className="flex items-center justify-start gap-2 h-[35vw] p-2">
           <div className="h-[30vw] w-[28%]  ml-[2.6vw] overflow-hidden">
             <img
               // src="../src/assets/Azaad.png"
               src={m.file}
               alt={m.movie}
-              className="w-[100%] h-[100%]"
+              className="w-[100%] h-[100%] rounded-xl"
             />
           </div>
           <div className="h-[100%] flex flex-col items-start justify-start mt-[6vw] p-[2vw] max-w-[40%]">
@@ -211,10 +269,10 @@ const Movie = () => {
             <p className="text-[#6F6F6F] mt-[1vw]">
               <span className="text-black ">2h 49m</span> {m.genre}|UA13+|
               {m.language?.map((lang, index) => (
-                <p key={index} className="inline-block flex-wrap">
+                <span key={index} className="inline-block flex-wrap">
                   {lang.name}
                   {index < m.language.length - 1 && ", "}
-                </p>
+                </span>
               ))}
             </p>
             <p className="text-black text-md my-[1vw] font-medium">
@@ -305,7 +363,6 @@ const Movie = () => {
                   </div>
                 ))
                 .sort((a, b) => a.star - b.star)
-                .reverse()
             ) : (
               <p className="text-sm">No reviews added yet</p>
             )}

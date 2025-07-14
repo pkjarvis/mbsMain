@@ -96,7 +96,7 @@ const SignUp = () => {
 
           <button
             type="submit"
-            className="bg-blue-500 w-[50%] p-2 rounded-sm text-md font-light items-center  mx-auto cursor-pointer"
+            className="bg-[#FF5295]  w-[50%] p-2 rounded-sm text-md font-light items-center  mx-auto cursor-pointer"
           >
             Create Account
           </button>

@@ -9,6 +9,9 @@ import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
 
 const AllMovies = () => {
+  const username = localStorage.getItem("userName");
+  const [selectedCity, setSelectedCity] = useState("");
+
   const [genre, setGenre] = useState(null);
   const genres = [
     { name: "Horror", code: "HRR" },
@@ -29,39 +32,90 @@ const AllMovies = () => {
     { name: "Malyalam", code: "MLY" },
   ];
 
-  const username = localStorage.getItem("userName");
-  useEffect(() => {
-    console.log(username);
-  }, [username]);
-
   // fetch get api's for movies
-  const [movies, setMovies] = useState([]);
-  // const [loading, setLoading] = useState(true);
+  // const [movies, setMovies] = useState([]);
+  // // const [loading, setLoading] = useState(true);
+
+  // useEffect(() => {
+  //   // polling user side to get latest movie added by admin every 10 seconds
+  //   // const interval=setInterval(()=>{
+  //   axiosInstance
+  //     .get("/get-movies", { withCredentials: true })
+  //     .then((res) => {
+  //       console.log(res.data);
+  //       setMovies(res.data);
+  //     })
+  //     .catch((err) =>
+  //       console.log("Error fetching movies", err.response?.data || err.message)
+  //     );
+  //   // },2000);
+
+  //   // return ()=>clearInterval(interval);
+  // }, []);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredshowtimes, setFilteredShowtimes] = useState([]);
+  const [allshowtime, setAllShowtimes] = useState([]);
 
   useEffect(() => {
-    // polling user side to get latest movie added by admin every 10 seconds
-    // const interval=setInterval(()=>{
     axiosInstance
-      .get("/get-movies", { withCredentials: true })
+      .get("/get-showtime", { withCredentials: true })
       .then((res) => {
-        console.log(res.data);
-        setMovies(res.data);
-      })
-      .catch((err) =>
-        console.log("Error fetching movies", err.response?.data || err.message)
-      );
-    // },2000);
+        // console.log("showtime response",res.data);
+        const allShowtimes = res.data;
+        const uniqueMap = new Map();
 
-    // return ()=>clearInterval(interval);
+        allShowtimes.forEach((item) => {
+          const key = `${item.movieId}-${item.theatreId}`;
+          if (!uniqueMap.has(key)) {
+            uniqueMap.set(key, {
+              id: item.movieId,
+              movie: item.moviename,
+              file: item.Movie?.file || item.movieFile || "",
+              genre: item.Movie?.genre || "",
+              language: item.Movie?.language || [],
+              theatreId: item.theatreId,
+              theatrename: item.theatrename,
+              theatreAddress: item.Theatre?.address || "",
+              state: item.Theatre.stateName,
+            });
+          }
+        });
+        const uniqueMovies = Array.from(uniqueMap.values());
+        setFilteredShowtimes(uniqueMovies);
+        setAllShowtimes(uniqueMovies);
+      })
+      .catch((err) => console.log(err));
   }, []);
 
-  const [searchTerm,setSearchTerm]=useState("");
+  const filteredCombos = filteredshowtimes.filter((item) => {
+    const matchesSearch = searchTerm.trim() === "" || item.movie?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCity =
+      !selectedCity?.name ||
+      item.state?.toLowerCase() === selectedCity.name.toLowerCase();
+    const genreMatch = genre ? item.genre === genre.name : true;
+    const languageMatch = language
+      ? item.language?.some((lang) => lang.name === language.name)
+      : true;
+    // const searchMatch = searchTerm
+    //   ? m.movie.toLowerCase().includes(searchTerm.toLowerCase())
+    //   : true;
+
+    return (
+       matchesCity && genreMatch && languageMatch && matchesSearch
+    );
+  });
+
 
   return (
     <div>
       <div className="all-movies">
         <div className="theatre-container font-[Inter] mb-[-1vw]">
-          <NavBar1 title={username} />
+          <NavBar1
+            title={username}
+            selectedCity={selectedCity}
+            setSelectedCity={setSelectedCity}
+          />
           <span className="flex items-center justify-start mx-[3vw] gap-1 mt-`">
             {/* <a href="http://localhost:3000/dashboard" className='cursor-pointer font-light text-zinc-500 '>Home / </a> */}
             {/* <a href="http://localhost:3000/movie" className='cursor-pointer font-light'>Movie</a> */}
@@ -76,12 +130,9 @@ const AllMovies = () => {
             </Link>
           </span>
         </div>
-        <section >
-        <ImageContainer  setSearchTerm={setSearchTerm}/>
-
+        <section>
+          <ImageContainer setSearchTerm={setSearchTerm} />
         </section>
-
-       
 
         <div className="card-container mx-[3vw] bg-white h-[auto]">
           <span className="flex items-center gap-4 mt-[4vw] ">
@@ -120,19 +171,14 @@ const AllMovies = () => {
             ):(<p className="text-md ">No movies added</p>)
             
           } */}
-            {movies
-              .filter((m) => {
-                const genreMatch = genre ? m.genre === genre.name : true;
-                const languageMatch = language
-                  ? m.language?.some((lang) => lang.name === language.name)
-                  : true;
-                const searchMatch=searchTerm?m.movie.toLowerCase().includes(searchTerm.toLowerCase()):true;
-
-                return genreMatch && languageMatch && searchMatch;
-              })
-              .map((m) => (
-                <MovieCard1 key={m.id} movie={m} />
-              ))}
+            {filteredCombos.length > 0 ? (
+              filteredCombos.map((m) => <MovieCard1 key={m.id} movie={m} />)
+            ) : (
+              <p className="text-gray-500 text-lg col-span-4 mt-4">
+                No matching movies found.
+              </p>
+            )}
+            
           </div>
           <div className="  h-[14vw]  my-[4vw]">
             <img

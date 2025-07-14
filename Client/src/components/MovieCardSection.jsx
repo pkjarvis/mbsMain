@@ -19,30 +19,36 @@ const MovieCardSection = ({ title, movies = [] }) => {
   //     )
 
   // },[]);
-    useEffect(() => {
-      window.scrollTo(0,0);
-      
-    }, []);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <div>
       <div className="card-container mx-[3vw] bg-white h-[35vw]">
         <span className="flex items-center justify-between mt-[4vw] ">
           <p className="text-3xl font-bold">{title}</p>
-          <Link
-            to="/movies"
-            className="underline text-gray-500"
-          >
+          <Link to="/movies" className="underline text-gray-500">
             see all
           </Link>
         </span>
 
         <div className="grid grid-cols-4 gap-[3vw]">
-          
-          {movies.map((movie) => (
+          {/* {movies.map((movie) => (
             <MovieCard1 key={movie.id} movie={movie} />
-          ))}
-          
+          ))} */}
+          {movies.length > 0 ? (
+            movies.map((movie) => (
+              <MovieCard1
+                key={`${movie.id}-${movie.theatreId}`}
+                movie={movie}
+              />
+            ))
+          ) : (
+            <p className="text-gray-500 text-lg col-span-4 mt-4">
+              No matching movies found.
+            </p>
+          )}
         </div>
       </div>
     </div>

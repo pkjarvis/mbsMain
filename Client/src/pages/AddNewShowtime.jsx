@@ -61,6 +61,7 @@ const AddNewShowtime = () => {
 
   // theatre lable options through get theatres
   const [theatres, setTheatres] = useState([]);
+
   useEffect(() => {
     axiosInstance
       .get("/get-theatres", { withCredentials: true })
@@ -75,6 +76,7 @@ const AddNewShowtime = () => {
       })
       .catch((err) => console.log(err));
   }, []);
+  
 
   const [movieId, setMovieId] = useState(null);
   useEffect(() => {

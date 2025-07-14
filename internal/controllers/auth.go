@@ -143,53 +143,141 @@ func SignupWithRole(c *gin.Context, role string) {
 	c.JSON(200, gin.H{"message": "signup successful", "role": role})
 }
 
-func Home(c *gin.Context) {
+// func Signup(c *gin.Context) {
+// 	var user models.User
+// 	if err := c.ShouldBindJSON(&user); err != nil {
+// 		c.JSON(400, gin.H{"error": err.Error()})
+// 		return
+// 	}
 
-	cookie, err := c.Cookie("token")
+// 	// Check if user exists
+// 	var existing models.User
+// 	if err := models.DB.Where("email = ?", user.Email).First(&existing).Error; err == nil {
+// 		c.JSON(400, gin.H{"error": "User already exists"})
+// 		return
+// 	}
 
-	if err != nil {
-		c.JSON(401, gin.H{"error": "unauthorized"})
-		return
-	}
+// 	if user.Role == "" {
+// 		user.Role = "user" // default
+// 	}
 
-	claims, err := utils.ParseToken(cookie)
+// 	if err := models.DB.Create(&user).Error; err != nil {
+// 		c.JSON(500, gin.H{"error": "Failed to create user"})
+// 		return
+// 	}
 
-	if err != nil {
-		c.JSON(401, gin.H{"error": "unauthorized"})
-		return
-	}
+// 	c.JSON(200, gin.H{"message": "Signup successful"})
+// }
 
-	if claims.Role != "user" && claims.Role != "admin" {
-		c.JSON(401, gin.H{"error": "unauthorized"})
-		return
-	}
+// func Login(c *gin.Context) {
+// 	var input models.User
+// 	if err := c.ShouldBindJSON(&input); err != nil {
+// 		c.JSON(400, gin.H{"error": err.Error()})
+// 		return
+// 	}
 
-	c.JSON(200, gin.H{"success": "home page", "role": claims.Role})
-}
+// 	var existing models.User
+// 	if err := models.DB.Where("email = ?", input.Email).First(&existing).Error; err != nil {
+// 		c.JSON(400, gin.H{"error": "User does not exist"})
+// 		return
+// 	}
 
-func Premium(c *gin.Context) {
+// 		if !utils.CompareHashPassword(input.Password, existing.Password) {
+// 		c.JSON(400, gin.H{"error": "invalid password"})
+// 		return
+// 	}
 
-	cookie, err := c.Cookie("token")
+// 	expirationTime := time.Now().Add(7 * 24 * time.Hour)
 
-	if err != nil {
-		c.JSON(401, gin.H{"error": "unauthorized"})
-		return
-	}
+// 	claims := &models.Claims{
+// 		UserId: existing.Id,
+// 		Name:   existing.Name,
+// 		Email:  existing.Email,
+// 		Role:   existing.Role,
+// 		StandardClaims: jwt.StandardClaims{
+// 			Subject:   existing.Email,
+// 			ExpiresAt: expirationTime.Unix(),
+// 			IssuedAt:  time.Now().Unix(),
+// 		},
+// 	}
 
-	claims, err := utils.ParseToken(cookie)
+// 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+// 	secret := os.Getenv("SECRET")
 
-	if err != nil {
-		c.JSON(401, gin.H{"error": "unauthorized"})
-		return
-	}
+// 	tokenString, err := token.SignedString([]byte(secret))
+// 	if err != nil {
+// 		c.JSON(500, gin.H{"error": "could not generate token"})
+// 		return
+// 	}
 
-	if claims.Role != "admin" {
-		c.JSON(401, gin.H{"error": "unauthorized"})
-		return
-	}
+// 	// Set cookie
+// 	c.SetCookie("token", tokenString, 3600*24*365, "", "", true, true)
 
-	c.JSON(200, gin.H{"success": "premium page", "role": claims.Role})
-}
+// 	c.Set("userId", claims.UserId)
+// 	c.Set("userToken", tokenString)
+// 	c.Set("role",claims.Role)
+
+
+// 	fmt.Print("existingUser.Id", existing.Id)
+// 	c.JSON(200, gin.H{
+// 		"msg":      "logged in",
+// 		"token":    tokenString,
+// 		"username": existing.Name,
+// 		"role":     existing.Role,
+// 		"userId":   existing.Id,
+// 		"email":    existing.Email,
+// 	})
+// }
+
+
+
+// func Home(c *gin.Context) {
+
+// 	cookie, err := c.Cookie("token")
+
+// 	if err != nil {
+// 		c.JSON(401, gin.H{"error": "unauthorized"})
+// 		return
+// 	}
+
+// 	claims, err := utils.ParseToken(cookie)
+
+// 	if err != nil {
+// 		c.JSON(401, gin.H{"error": "unauthorized"})
+// 		return
+// 	}
+
+// 	if claims.Role != "user" && claims.Role != "admin" {
+// 		c.JSON(401, gin.H{"error": "unauthorized"})
+// 		return
+// 	}
+
+// 	c.JSON(200, gin.H{"success": "home page", "role": claims.Role})
+// }
+
+// func Premium(c *gin.Context) {
+
+// 	cookie, err := c.Cookie("token")
+
+// 	if err != nil {
+// 		c.JSON(401, gin.H{"error": "unauthorized"})
+// 		return
+// 	}
+
+// 	claims, err := utils.ParseToken(cookie)
+
+// 	if err != nil {
+// 		c.JSON(401, gin.H{"error": "unauthorized"})
+// 		return
+// 	}
+
+// 	if claims.Role != "admin" {
+// 		c.JSON(401, gin.H{"error": "unauthorized"})
+// 		return
+// 	}
+
+// 	c.JSON(200, gin.H{"success": "premium page", "role": claims.Role})
+// }
 
 func Logout(c *gin.Context) {
 	c.SetCookie("token", "", -1, "/", "localhost", false, true)
@@ -696,7 +784,7 @@ func GetTheatres(c *gin.Context) {
 
 func GetShowTimes(c *gin.Context) {
 	var showtime []models.Showtime
-	if err := models.DB.Preload("Movie").Find(&showtime).Error; err != nil {
+	if err := models.DB.Preload("Movie").Preload("Theatre").Find(&showtime).Error; err != nil {
 		c.JSON(400, gin.H{"message": "Failed to fetch showtime"})
 		return
 	}
@@ -1020,13 +1108,17 @@ func UpdateProfile(c *gin.Context) {
 
 func GetBookedSeats(c *gin.Context) {
 	showIdParam := c.Query("showId")
+	
 	if showIdParam == "" {
 		c.JSON(400, gin.H{"error": "missing showId"})
 		return
 	}
 
+	log.Println("Incoming showId:", showIdParam)
+
 	var transactions []models.Transaction
-	if err := models.DB.Where("showId = ? AND status = ?",showIdParam, "paid").Find(&transactions).Error; err != nil {
+	if err := models.DB.Where("show_id = ? AND status = ?",showIdParam, "paid").Find(&transactions).Error; err != nil {
+		log.Println("🔥 DB ERROR:", err) // print full error
 		c.JSON(500, gin.H{"error": "Failed to fetch transactions"})
 		return
 	}
@@ -1034,7 +1126,9 @@ func GetBookedSeats(c *gin.Context) {
 	
 }
 
+
 func GetPaidTicketUser(c *gin.Context) {
+
 	var transactions []models.Transaction
 	userIDVal, exists := c.Get("userId")
 	if !exists {
@@ -1054,6 +1148,7 @@ func GetPaidTicketUser(c *gin.Context) {
 	}
 
 	c.JSON(200, gin.H{"tickets": transactions})
+
 }
 
 
@@ -1063,11 +1158,23 @@ func GetMovieByName(c*gin.Context){
 	if moviename!=""{
 		if err:=models.DB.Where("title = ?",moviename).Find(&movie).Error;err!=nil{
 			c.JSON(400,gin.H{"message":"Failed to fetch moviename"})
+			return
 		}
 	}
 	c.JSON(200,gin.H{"movie":movie})
 }
 
+func GetMovieById(c*gin.Context){
+	movieId:=c.Query("movieId")
+	var movie []models.Movie 
+	
+	if err:=models.DB.Where("id = ?",movieId).Find(&movie).Error;err!=nil{
+		c.JSON(400,gin.H{"message":"Failed to fetch moviename"})
+		return
+	}
+	
+	c.JSON(200,gin.H{"movie":movie})
+}
 
 
 
@@ -1110,5 +1217,59 @@ func GetState(c*gin.Context){
 	}
 	c.JSON(200,gin.H{"state":state})
 }
+
+func PromoteUser(c *gin.Context) {
+	type Request struct {
+		Email string `json:"email"`
+	}
+	var req Request
+
+	if err := c.ShouldBindJSON(&req); err != nil || req.Email == "" {
+		c.JSON(400, gin.H{"error": "Invalid email"})
+		return
+	}
+
+	var user models.User
+	if err := models.DB.Where("email = ?", req.Email).First(&user).Error; err != nil {
+		c.JSON(404, gin.H{"error": "User not found"})
+		return
+	}
+
+	user.Role = "admin"
+	if err := models.DB.Save(&user).Error; err != nil {
+		c.JSON(500, gin.H{"error": "Failed to promote user"})
+		return
+	}
+
+	c.JSON(200, gin.H{"message": "User promoted to admin"})
+}
+
+func DemoteUser(c *gin.Context) {
+	type Request struct {
+		Email string `json:"email"`
+	}
+	var req Request
+
+	if err := c.ShouldBindJSON(&req); err != nil || req.Email == "" {
+		c.JSON(400, gin.H{"error": "Invalid email"})
+		return
+	}
+
+	var user models.User
+	if err := models.DB.Where("email = ?", req.Email).First(&user).Error; err != nil {
+		c.JSON(404, gin.H{"error": "User not found"})
+		return
+	}
+
+	user.Role = "user"
+	if err := models.DB.Save(&user).Error; err != nil {
+		c.JSON(500, gin.H{"error": "Failed to demote user"})
+		return
+	}
+
+	c.JSON(200, gin.H{"message": "Admin demoted to user"})
+}
+
+
 
 

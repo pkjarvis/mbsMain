@@ -9,7 +9,7 @@ import axiosInstance from "../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
-  const [movies, setMovies] = useState([]);
+  // const [movies, setMovies] = useState([]);
   const navigate = useNavigate();
 
   const username = localStorage.getItem("userName");
@@ -21,40 +21,91 @@ const Dashboard = () => {
   //   }
   // });
 
+  // useEffect(() => {
+  //   axiosInstance
+  //     .get("/get-movies", { withCredentials: true })
+  //     .then((res) => {
+  //       console.log(res.data);
+  //       setMovies(res.data);
+  //     })
+  //     .catch((err) =>
+  //       console.log("Error fetching movies", err.response?.data || err.message)
+  //     );
+  // }, []);
+
+  const [filteredshowtimes, setFilteredShowtimes] = useState([]);
+  const [allshowtime, setAllShowtimes] = useState([]);
+
+  const [selectedCity, setSelectedCity] = useState(true);
+
   useEffect(() => {
     axiosInstance
-      .get("/get-movies", { withCredentials: true })
+      .get("/get-showtime", { withCredentials: true })
       .then((res) => {
-        console.log(res.data);
-        setMovies(res.data);
+        // console.log("showtime response",res.data);
+        const allShowtimes = res.data;
+        const uniqueMap = new Map();
+
+        allShowtimes.forEach((item) => {
+          const key = `${item.movieId}-${item.theatreId}`;
+          if (!uniqueMap.has(key)) {
+            uniqueMap.set(key, {
+              id: item.movieId,
+              movie: item.moviename,
+              file: item.Movie?.file || item.movieFile || "",
+              genre: item.Movie?.genre || "",
+              language: item.Movie?.language || [],
+              theatreId: item.theatreId,
+              theatrename: item.theatrename,
+              theatreAddress: item.Theatre?.address || "",
+              state: item.Theatre.stateName,
+            });
+          }
+        });
+        const uniqueMovies = Array.from(uniqueMap.values());
+        setFilteredShowtimes(uniqueMovies);
+        setAllShowtimes(uniqueMovies);
       })
-      .catch((err) =>
-        console.log("Error fetching movies", err.response?.data || err.message)
-      );
+      .catch((err) => console.log(err));
   }, []);
+
+
+  console.log("filter showtie", allshowtime);
 
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredMovies = movies.filter((movie) =>
-    movie.movie?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredCombos = filteredshowtimes.filter((item) => {
+    const matchesSearch =
+      searchTerm.trim() === "" ||
+      item.movie?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCity =
+      !selectedCity?.name ||
+      item.state?.toLowerCase() === selectedCity.name.toLowerCase();
+    return matchesSearch && matchesCity;
+  });
+  const bollywoodMovies = filteredCombos.slice(0, 3);
 
   return (
     <div>
       <div>
-        <NavBar1 title={username} />
+        <NavBar1
+          title={username}
+          selectedCity={selectedCity}
+          setSelectedCity={setSelectedCity}
+        />
+        
         <section>
           <ImageContainer setSearchTerm={setSearchTerm} />
         </section>
         <section>
           <MovieCardSection
             title="Watch latest movie"
-            movies={filteredMovies.slice(0, 4)}
+            movies={filteredCombos.slice(0, 4)}
             // imgTitle={"../src/assets/aliceWonderland.png"}
           />
         </section>
         <section>
-          <NowShowingTheatre />
+          <NowShowingTheatre  movies={bollywoodMovies }/>
         </section>
 
         <section className="mx-[3vw] bg-white">
@@ -123,7 +174,7 @@ const Dashboard = () => {
         </section>
 
         <section>
-          <Bollywood movies={movies.slice(0, 4)} />
+          <Bollywood movies={filteredCombos.slice(0, 4)} />
         </section>
 
         <section className="mx-[3vw]  h-[14vw]  my-[4vw]">

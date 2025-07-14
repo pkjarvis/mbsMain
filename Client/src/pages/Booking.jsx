@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
 import NavBar1 from "../components/NavBar1";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
 
 const Booking = () => {
+
+  const navigate=useNavigate();
   const username = localStorage.getItem("userName");
   useEffect(() => {
     console.log(username);
@@ -55,6 +57,15 @@ const Booking = () => {
 
 
   const handlePayment = async () => {
+
+    const username = localStorage.getItem("userName");
+    const token = localStorage.getItem("userToken");
+
+    if (!username && !token) {
+      navigate("/root");
+      return;
+    }
+  
     if(price===60) return;
     try{
       const res = await axiosInstance.post(

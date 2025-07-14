@@ -24,7 +24,11 @@ const Profile = () => {
   const handleLogout = () => {
     localStorage.clear();
     Cookies.remove('token');
-    navigate("/root");
+    if(!username){
+      navigate("/dashboard");
+    }else{
+      navigate("/root");
+    }
   };
 
   const handleSave = ()=>{
@@ -59,7 +63,7 @@ const Profile = () => {
                   className="w-[3vw] h-[3vw] z-10"
                 />
               </span>
-              <p className="text-xl text-white">Hi, Guest</p>
+              <p className="text-xl text-white">Hi,{username}</p>
             </div>
           </div>
 

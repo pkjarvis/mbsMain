@@ -13,9 +13,9 @@ const ShowBooking = () => {
   const to = state?.to;
   const showId = state?.id;
   console.log("theatre from location.state", theatre);
-
+  const username = localStorage.getItem("userName");
   console.log("Id is", showId);
-
+   const [selectedCity, setSelectedCity] = useState("");
   // seat booked logic
   const [soldTickets, setSoldTickets] = useState([]);
 
@@ -34,26 +34,28 @@ const ShowBooking = () => {
   useEffect(() => {
     soldTickets.forEach((id) => {
       const el = document.getElementById(id);
+      const el1 = document.getElementById(id + "text");
       if (el) {
-        el.style.setProperty("background-color", "#C0C0C0", "important");
-        // el.style.pointerEvents = "none"; // Disable interaction
+        el.style.setProperty("background-color", "#E5E5E5", "important");
+        el.style.setProperty("border", "2px solid #D6D6D6", "important");
+        el.style.setProperty("cursor", "not-allowed", "important");
+        // el.style.setProperty("pointer-events", "none", "important");
+        el.style.zIndex = "1";
+
+        console.log(getComputedStyle(el).pointerEvents);
+        el1.style.setProperty("color", "#FFFFFF", "important");
       }
     });
   }, [soldTickets]);
 
-  const username = localStorage.getItem("userName");
-  useEffect(() => {
-    console.log(username);
-  }, [username]);
+  
 
   const [storeId, setStoreId] = useState([]);
   const [totalprice, setTotalPrice] = useState(0);
 
   const handleMiddleRow = (s, id) => {
-
     var finalId = `${s}${id}`;
 
-   
     const paraId = `${s}${id}${"text"}`;
 
     console.log("final id is:", finalId);
@@ -62,7 +64,7 @@ const ShowBooking = () => {
 
     if (soldTickets.includes(finalId)) {
       console.warn("This seat is already sold:", finalId);
-      alert(`${finalId} seat is already booked!`);
+      // alert(`${finalId} seat is already booked!`);
       return;
     }
 
@@ -151,7 +153,9 @@ const ShowBooking = () => {
     <div id={showId}>
       <div className="show-booking-container">
         <div className="theatre-container font-[Inter]">
-          <NavBar1 title={username} />
+          <NavBar1   title={username}
+          selectedCity={selectedCity}
+          setSelectedCity={setSelectedCity}/>
           <span className="flex items-center justify-start mx-[3vw] gap-1 mt-2">
             <Link
               // href="http://localhost:3000/dashboard"
@@ -205,11 +209,11 @@ const ShowBooking = () => {
         <div className="border-1 border-[#D9D9D9] mx-[3vw]">
           <div className="seat-status flex items-center justify-center gap-6  my-[0.5vw]">
             <span className="flex items-center justify-center gap-2">
-              <p className="w-[1.3vw] h-[1.3vw] bg-white border-1 border-[#59B200] rounded-md"></p>
+              <p className="w-[1.3vw] h-[1.3vw] bg-white border-2 border-[#59B200] rounded-md"></p>
               <h3>Available</h3>
             </span>
             <span className="flex items-center justify-center gap-2">
-              <p className="w-[1.3vw] h-[1.3vw] bg-[#59B200] border-1 border-[#59B200] rounded-md"></p>
+              <p className="w-[1.3vw] h-[1.3vw] bg-[#59B200] border-2 border-[#59B200] rounded-md"></p>
               <h3>Selected</h3>
             </span>
             <span className="flex items-center justify-center gap-2">
@@ -227,88 +231,115 @@ const ShowBooking = () => {
                 <p className="text-[#949494] font-normal">M</p>
                 <div
                   id="M1"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center ml-[12vw]"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center ml-[12vw]"
                   onClick={() => handleMiddleRow("M", 1)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="M1text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="M1text"
+                  >
                     1
                   </p>
                 </div>
                 <div
                   id="M2"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center "
                   onClick={() => handleMiddleRow("M", 2)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="M2text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="M2text"
+                  >
                     2
                   </p>
                 </div>
                 <div
                   id="M3"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center ml-[2vw]"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center ml-[2vw]"
                   onClick={() => handleMiddleRow("M", 3)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="M3text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="M3text"
+                  >
                     3
                   </p>
                 </div>
                 <div
                   id="M4"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center "
                   onClick={() => handleMiddleRow("M", 4)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="M4text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="M4text"
+                  >
                     4
                   </p>
                 </div>
                 <div
                   id="M5"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center ml-[2vw]"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center ml-[2vw]"
                   onClick={() => handleMiddleRow("M", 5)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="M5text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="M5text"
+                  >
                     5
                   </p>
                 </div>
                 <div
                   id="M6"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center "
                   onClick={() => handleMiddleRow("M", 6)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="M6text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="M6text"
+                  >
                     6
                   </p>
                 </div>
                 <div
                   id="M7"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center ml-[2vw]"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center ml-[2vw]"
                   onClick={() => handleMiddleRow("M", 7)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="M7text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="M7text"
+                  >
                     7
                   </p>
                 </div>
                 <div
                   id="M8"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center "
                   onClick={() => handleMiddleRow("M", 8)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="M8text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="M8text"
+                  >
                     8
                   </p>
                 </div>
                 <div
                   id="M9"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center ml-[2vw]"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center ml-[2vw]"
                   onClick={() => handleMiddleRow("M", 9)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="M9text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="M9text"
+                  >
                     9
                   </p>
                 </div>
                 <div
                   id="M10"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center ml-[2vw] "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center ml-[2vw] "
                   onClick={() => handleMiddleRow("M", 10)}
                 >
                   <p
@@ -330,88 +361,115 @@ const ShowBooking = () => {
                 <p className="text-[#949494] font-normal">L</p>
                 <div
                   id="L1"
-                  className="h-[2.4vw] w-[2.4vw]  bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center ml-[4vw] cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw]  bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center ml-[4vw] cursor-pointer"
                   onClick={() => handleMiddleRow("L", 1)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="L1text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="L1text"
+                  >
                     1
                   </p>
                 </div>
                 <div
                   id="L2"
-                  className="h-[2.4vw] w-[2.4vw]  bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center"
+                  className="h-[2.4vw] w-[2.4vw]  bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center"
                   onClick={() => handleMiddleRow("L", 2)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="L2text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="L2text"
+                  >
                     2
                   </p>
                 </div>
                 <div
                   id="L3"
-                  className="h-[2.4vw] w-[2.4vw]  bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center"
+                  className="h-[2.4vw] w-[2.4vw]  bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center"
                   onClick={() => handleMiddleRow("L", 3)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="L3text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="L3text"
+                  >
                     3
                   </p>
                 </div>
                 <div
                   id="L4"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center "
                   onClick={() => handleMiddleRow("L", 4)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="L4text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="L4text"
+                  >
                     4
                   </p>
                 </div>
                 <div
                   id="L5"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center ml-[5vw]"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center ml-[5vw]"
                   onClick={() => handleMiddleRow("L", 5)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="L5text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="L5text"
+                  >
                     5
                   </p>
                 </div>
                 <div
                   id="L6"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center "
                   onClick={() => handleMiddleRow("L", 6)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="L6text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="L6text"
+                  >
                     6
                   </p>
                 </div>
                 <div
                   id="L7"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center"
                   onClick={() => handleMiddleRow("L", 7)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="L7text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="L7text"
+                  >
                     7
                   </p>
                 </div>
                 <div
                   id="L8"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center "
                   onClick={() => handleMiddleRow("L", 8)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="L8text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="L8text"
+                  >
                     8
                   </p>
                 </div>
                 <div
                   id="L9"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center"
                   onClick={() => handleMiddleRow("L", 9)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="L9text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="L9text"
+                  >
                     9
                   </p>
                 </div>
                 <div
                   id="L10"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center"
                   onClick={() => handleMiddleRow("L", 10)}
                 >
                   <p
@@ -423,7 +481,7 @@ const ShowBooking = () => {
                 </div>
                 <div
                   id="L11"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center"
                   onClick={() => handleMiddleRow("L", 11)}
                 >
                   <p
@@ -435,7 +493,7 @@ const ShowBooking = () => {
                 </div>
                 <div
                   id="L12"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center ml-[5vw] "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center ml-[5vw] "
                   onClick={() => handleMiddleRow("L", 12)}
                 >
                   <p
@@ -447,7 +505,7 @@ const ShowBooking = () => {
                 </div>
                 <div
                   id="L13"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center  "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center  "
                   onClick={() => handleMiddleRow("L", 13)}
                 >
                   <p
@@ -459,7 +517,7 @@ const ShowBooking = () => {
                 </div>
                 <div
                   id="L14"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center  "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center  "
                   onClick={() => handleMiddleRow("L", 14)}
                 >
                   <p
@@ -471,7 +529,7 @@ const ShowBooking = () => {
                 </div>
                 <div
                   id="L15"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center  "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center  "
                   onClick={() => handleMiddleRow("L", 15)}
                 >
                   <p
@@ -486,88 +544,115 @@ const ShowBooking = () => {
                 <p className="text-[#949494] font-normal">K</p>
                 <div
                   id="K1"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center ml-[4vw] cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center ml-[4vw] cursor-pointer"
                   onClick={() => handleMiddleRow("K", 1)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="K1text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="K1text"
+                  >
                     1
                   </p>
                 </div>
                 <div
                   id="K2"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  rounded-sm flex items-center justify-center cursor-pointer "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  rounded-sm flex items-center justify-center cursor-pointer "
                   onClick={() => handleMiddleRow("K", 2)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="K2text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="K2text"
+                  >
                     2
                   </p>
                 </div>
                 <div
                   id="K3"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("K", 3)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="K3text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="K3text"
+                  >
                     3
                   </p>
                 </div>
                 <div
                   id="K4"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer "
                   onClick={() => handleMiddleRow("K", 4)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="K4text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="K4text"
+                  >
                     4
                   </p>
                 </div>
                 <div
                   id="K5"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center ml-[5vw] cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center ml-[5vw] cursor-pointer"
                   onClick={() => handleMiddleRow("K", 5)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="K5text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="K5text"
+                  >
                     5
                   </p>
                 </div>
                 <div
                   id="K6"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("K", 6)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="K6text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="K6text"
+                  >
                     6
                   </p>
                 </div>
                 <div
                   id="K7"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("K", 7)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="K7text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="K7text"
+                  >
                     7
                   </p>
                 </div>
                 <div
                   id="K8"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("K", 8)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="K8text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="K8text"
+                  >
                     8
                   </p>
                 </div>
                 <div
                   id="K9"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("K", 9)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="K9text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="K9text"
+                  >
                     9
                   </p>
                 </div>
                 <div
                   id="K10"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("K", 10)}
                 >
                   <p
@@ -579,7 +664,7 @@ const ShowBooking = () => {
                 </div>
                 <div
                   id="K11"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200] rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200] rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("K", 11)}
                 >
                   <p
@@ -591,7 +676,7 @@ const ShowBooking = () => {
                 </div>
                 <div
                   id="K12"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  rounded-sm flex items-center justify-center ml-[5vw] cursor-pointer "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  rounded-sm flex items-center justify-center ml-[5vw] cursor-pointer "
                   onClick={() => handleMiddleRow("K", 12)}
                 >
                   <p
@@ -603,7 +688,7 @@ const ShowBooking = () => {
                 </div>
                 <div
                   id="K13"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center  cursor-pointer "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center  cursor-pointer "
                   onClick={() => handleMiddleRow("K", 13)}
                 >
                   <p
@@ -615,7 +700,7 @@ const ShowBooking = () => {
                 </div>
                 <div
                   id="K14"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center  cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center  cursor-pointer"
                   onClick={() => handleMiddleRow("K", 14)}
                 >
                   <p
@@ -627,7 +712,7 @@ const ShowBooking = () => {
                 </div>
                 <div
                   id="K15"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  rounded-sm flex items-center justify-center  cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  rounded-sm flex items-center justify-center  cursor-pointer"
                   onClick={() => handleMiddleRow("K", 15)}
                 >
                   <p
@@ -642,88 +727,115 @@ const ShowBooking = () => {
                 <p className="text-[#949494] font-normal">J</p>
                 <div
                   id="J1"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  rounded-sm flex items-center justify-center ml-[4vw] cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  rounded-sm flex items-center justify-center ml-[4vw] cursor-pointer"
                   onClick={() => handleMiddleRow("J", 1)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="J1text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="J1text"
+                  >
                     1
                   </p>
                 </div>
                 <div
                   id="J2"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer "
                   onClick={() => handleMiddleRow("J", 2)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="J2text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="J2text"
+                  >
                     2
                   </p>
                 </div>
                 <div
                   id="J3"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("J", 3)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="J3text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="J3text"
+                  >
                     3
                   </p>
                 </div>
                 <div
                   id="J4"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("J", 4)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="J4text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="J4text"
+                  >
                     4
                   </p>
                 </div>
                 <div
                   id="J5"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  rounded-sm flex items-center justify-center ml-[5vw] cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  rounded-sm flex items-center justify-center ml-[5vw] cursor-pointer"
                   onClick={() => handleMiddleRow("J", 5)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="J5text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="J5text"
+                  >
                     5
                   </p>
                 </div>
                 <div
                   id="J6"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("J", 6)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="J6text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="J6text"
+                  >
                     6
                   </p>
                 </div>
                 <div
                   id="J7"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("J", 7)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="J7text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="J7text"
+                  >
                     7
                   </p>
                 </div>
                 <div
                   id="J8"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200] rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200] rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("J", 8)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="J8text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="J8text"
+                  >
                     8
                   </p>
                 </div>
                 <div
                   id="J9"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("J", 9)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="J9text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="J9text"
+                  >
                     9
                   </p>
                 </div>
                 <div
                   id="J10"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("J", 10)}
                 >
                   <p
@@ -735,7 +847,7 @@ const ShowBooking = () => {
                 </div>
                 <div
                   id="J11"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("J", 11)}
                 >
                   <p
@@ -747,7 +859,7 @@ const ShowBooking = () => {
                 </div>
                 <div
                   id="J12"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200] rounded-sm flex items-center justify-center ml-[5vw] cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200] rounded-sm flex items-center justify-center ml-[5vw] cursor-pointer"
                   onClick={() => handleMiddleRow("J", 12)}
                 >
                   <p
@@ -759,7 +871,7 @@ const ShowBooking = () => {
                 </div>
                 <div
                   id="J13"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer "
                   onClick={() => handleMiddleRow("J", 13)}
                 >
                   <p
@@ -771,7 +883,7 @@ const ShowBooking = () => {
                 </div>
                 <div
                   id="J14"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center  cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center  cursor-pointer"
                   onClick={() => handleMiddleRow("J", 14)}
                 >
                   <p
@@ -783,7 +895,7 @@ const ShowBooking = () => {
                 </div>
                 <div
                   id="J15"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center  cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center  cursor-pointer"
                   onClick={() => handleMiddleRow("J", 15)}
                 >
                   <p
@@ -798,88 +910,115 @@ const ShowBooking = () => {
                 <p className="text-[#949494] font-normal">I</p>
                 <div
                   id="I1"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center ml-[4.3vw] cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center ml-[4.3vw] cursor-pointer"
                   onClick={() => handleMiddleRow("I", 1)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="I1text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="I1text"
+                  >
                     1
                   </p>
                 </div>
                 <div
                   id="I2"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("I", 2)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="I2text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="I2text"
+                  >
                     2
                   </p>
                 </div>
                 <div
                   id="I3"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("I", 3)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="I3text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="I3text"
+                  >
                     3
                   </p>
                 </div>
                 <div
                   id="I4"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("I", 4)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="I4text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="I4text"
+                  >
                     4
                   </p>
                 </div>
                 <div
                   id="I5"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  rounded-sm flex items-center justify-center ml-[5vw] cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  rounded-sm flex items-center justify-center ml-[5vw] cursor-pointer"
                   onClick={() => handleMiddleRow("I", 5)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="I5text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="I5text"
+                  >
                     5
                   </p>
                 </div>
                 <div
                   id="I6"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("I", 6)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="I6text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="I6text"
+                  >
                     6
                   </p>
                 </div>
                 <div
                   id="I7"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("I", 7)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="I7text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="I7text"
+                  >
                     7
                   </p>
                 </div>
                 <div
                   id="I8"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  rounded-sm flex items-center justify-center  cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  rounded-sm flex items-center justify-center  cursor-pointer"
                   onClick={() => handleMiddleRow("I", 8)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="I8text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="I8text"
+                  >
                     8
                   </p>
                 </div>
                 <div
                   id="I9"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("I", 9)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="I9text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="I9text"
+                  >
                     9
                   </p>
                 </div>
                 <div
                   id="I10"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("I", 10)}
                 >
                   <p
@@ -891,7 +1030,7 @@ const ShowBooking = () => {
                 </div>
                 <div
                   id="I11"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("I", 11)}
                 >
                   <p
@@ -903,7 +1042,7 @@ const ShowBooking = () => {
                 </div>
                 <div
                   id="I12"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center ml-[5vw]  cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center ml-[5vw]  cursor-pointer"
                   onClick={() => handleMiddleRow("I", 12)}
                 >
                   <p
@@ -915,7 +1054,7 @@ const ShowBooking = () => {
                 </div>
                 <div
                   id="I13"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  rounded-sm flex items-center justify-center  "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  rounded-sm flex items-center justify-center  "
                   onClick={() => handleMiddleRow("I", 13)}
                 >
                   <p
@@ -927,7 +1066,7 @@ const ShowBooking = () => {
                 </div>
                 <div
                   id="I14"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center  "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center  "
                   onClick={() => handleMiddleRow("I", 14)}
                 >
                   <p
@@ -939,7 +1078,7 @@ const ShowBooking = () => {
                 </div>
                 <div
                   id="I15"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center  "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center  "
                   onClick={() => handleMiddleRow("I", 15)}
                 >
                   <p
@@ -952,90 +1091,117 @@ const ShowBooking = () => {
               </div>
               <div className="flex items-center gap-4 justify-start my-[1.3vw]">
                 <p className="text-[#949494] font-normal">H</p>
-                <div
+                {/* <div
                   id="H1"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center ml-[3.8vw]"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center ml-[3.8vw]"
                   onClick={() => handleMiddleRow("H", 1)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="H1text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="H1text"
+                  >
                     1
                   </p>
-                </div>
+                </div> */}
                 <div
                   id="H2"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center ml-[7.2vw]"
                   onClick={() => handleMiddleRow("H", 2)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="H2text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="H2text"
+                  >
                     2
                   </p>
                 </div>
                 <div
                   id="H3"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center"
                   onClick={() => handleMiddleRow("H", 3)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="H3text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="H3text"
+                  >
                     3
                   </p>
                 </div>
                 <div
                   id="H4"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center "
                   onClick={() => handleMiddleRow("H", 4)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="H4text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="H4text"
+                  >
                     4
                   </p>
                 </div>
                 <div
                   id="H5"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center ml-[5vw]"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center ml-[5vw]"
                   onClick={() => handleMiddleRow("H", 5)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="H5text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="H5text"
+                  >
                     5
                   </p>
                 </div>
                 <div
                   id="H6"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center "
                   onClick={() => handleMiddleRow("H", 6)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="H6text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="H6text"
+                  >
                     6
                   </p>
                 </div>
                 <div
                   id="H7"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center"
                   onClick={() => handleMiddleRow("H", 7)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="H7text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="H7text"
+                  >
                     7
                   </p>
                 </div>
                 <div
                   id="H8"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center "
                   onClick={() => handleMiddleRow("H", 8)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="H8text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="H8text"
+                  >
                     8
                   </p>
                 </div>
                 <div
                   id="H9"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center"
                   onClick={() => handleMiddleRow("H", 9)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="H9text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="H9text"
+                  >
                     9
                   </p>
                 </div>
                 <div
                   id="H10"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center"
                   onClick={() => handleMiddleRow("H", 10)}
                 >
                   <p
@@ -1047,7 +1213,7 @@ const ShowBooking = () => {
                 </div>
                 <div
                   id="H11"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center"
                   onClick={() => handleMiddleRow("H", 11)}
                 >
                   <p
@@ -1059,7 +1225,7 @@ const ShowBooking = () => {
                 </div>
                 <div
                   id="H12"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center ml-[5vw] "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center ml-[5vw] "
                   onClick={() => handleMiddleRow("H", 12)}
                 >
                   <p
@@ -1071,7 +1237,7 @@ const ShowBooking = () => {
                 </div>
                 <div
                   id="H13"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center  "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center  "
                   onClick={() => handleMiddleRow("H", 13)}
                 >
                   <p
@@ -1083,7 +1249,7 @@ const ShowBooking = () => {
                 </div>
                 <div
                   id="H14"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center  "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center  "
                   onClick={() => handleMiddleRow("H", 14)}
                 >
                   <p
@@ -1095,7 +1261,7 @@ const ShowBooking = () => {
                 </div>
                 <div
                   id="H15"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center  "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center  "
                   onClick={() => handleMiddleRow("H", 15)}
                 >
                   <p
@@ -1108,90 +1274,117 @@ const ShowBooking = () => {
               </div>
               <div className="flex items-center gap-4 justify-start my-[1.3vw]">
                 <p className="text-[#949494] font-normal">G</p>
-                <div
+                {/* <div
                   id="G1"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center ml-[3.8vw]"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center ml-[3.8vw]"
                   onClick={() => handleMiddleRow("G", 1)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="G1text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="G1text"
+                  >
                     1
                   </p>
-                </div>
+                </div> */}
                 <div
                   id="G2"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center ml-[7.2vw]"
                   onClick={() => handleMiddleRow("G", 2)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="G2text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="G2text"
+                  >
                     2
                   </p>
                 </div>
                 <div
                   id="G3"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center"
                   onClick={() => handleMiddleRow("G", 3)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="G3text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="G3text"
+                  >
                     3
                   </p>
                 </div>
                 <div
                   id="G4"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center "
                   onClick={() => handleMiddleRow("G", 4)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="G4text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="G4text"
+                  >
                     4
                   </p>
                 </div>
                 <div
                   id="G5"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center ml-[5vw]"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center ml-[5vw]"
                   onClick={() => handleMiddleRow("G", 5)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="G5text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="G5text"
+                  >
                     5
                   </p>
                 </div>
                 <div
                   id="G6"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center "
                   onClick={() => handleMiddleRow("G", 6)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="G6text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="G6text"
+                  >
                     6
                   </p>
                 </div>
                 <div
                   id="G7"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center"
                   onClick={() => handleMiddleRow("G", 7)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="G7text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="G7text"
+                  >
                     7
                   </p>
                 </div>
                 <div
                   id="G8"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center "
                   onClick={() => handleMiddleRow("G", 8)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="G8text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="G8text"
+                  >
                     8
                   </p>
                 </div>
                 <div
                   id="G9"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center"
                   onClick={() => handleMiddleRow("G", 9)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="G9text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="G9text"
+                  >
                     9
                   </p>
                 </div>
                 <div
                   id="G10"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center"
                   onClick={() => handleMiddleRow("G", 10)}
                 >
                   <p
@@ -1203,7 +1396,7 @@ const ShowBooking = () => {
                 </div>
                 <div
                   id="G11"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center"
                   onClick={() => handleMiddleRow("G", 11)}
                 >
                   <p
@@ -1215,7 +1408,7 @@ const ShowBooking = () => {
                 </div>
                 <div
                   id="G12"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center ml-[5vw] "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center ml-[5vw] "
                   onClick={() => handleMiddleRow("G", 12)}
                 >
                   <p
@@ -1227,7 +1420,7 @@ const ShowBooking = () => {
                 </div>
                 <div
                   id="G13"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center  "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center  "
                   onClick={() => handleMiddleRow("G", 13)}
                 >
                   <p
@@ -1239,7 +1432,7 @@ const ShowBooking = () => {
                 </div>
                 <div
                   id="G14"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center  "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center  "
                   onClick={() => handleMiddleRow("G", 14)}
                 >
                   <p
@@ -1251,7 +1444,7 @@ const ShowBooking = () => {
                 </div>
                 <div
                   id="G15"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center  "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center  "
                   onClick={() => handleMiddleRow("G", 15)}
                 >
                   <p
@@ -1273,100 +1466,133 @@ const ShowBooking = () => {
                 <p className="text-[#949494] font-normal">A</p>
                 <div
                   id="A1"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center ml-[4vw]"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center ml-[4vw]"
                   onClick={() => handleMiddleRow("A", 1)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="A1text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="A1text"
+                  >
                     1
                   </p>
                 </div>
                 <div
                   id="A2"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center "
                   onClick={() => handleMiddleRow("A", 2)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="A2text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="A2text"
+                  >
                     2
                   </p>
                 </div>
                 <div
                   id="A3"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center"
                   onClick={() => handleMiddleRow("A", 3)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="A3text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="A3text"
+                  >
                     3
                   </p>
                 </div>
                 <div
                   id="A4"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center "
                   onClick={() => handleMiddleRow("A", 4)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="A4text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="A4text"
+                  >
                     4
                   </p>
                 </div>
                 <div
                   id="A5"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center ml-[5vw]"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center ml-[5vw]"
                   onClick={() => handleMiddleRow("A", 5)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="A5text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="A5text"
+                  >
                     5
                   </p>
                 </div>
                 <div
                   id="A6"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center "
                   onClick={() => handleMiddleRow("A", 6)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="A6text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="A6text"
+                  >
                     6
                   </p>
                 </div>
                 <div
                   id="A7"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center"
                   onClick={() => handleMiddleRow("A", 7)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="A7text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="A7text"
+                  >
                     7
                   </p>
                 </div>
                 <div
                   id="A8"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center "
                   onClick={() => handleMiddleRow("A", 8)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="A8text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="A8text"
+                  >
                     8
                   </p>
                 </div>
                 <div
                   id="A9"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center"
                   onClick={() => handleMiddleRow("A", 9)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="A9text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="A9text"
+                  >
                     9
                   </p>
                 </div>
                 <div
                   id="A10"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center"
                   onClick={() => handleMiddleRow("A", 10)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="A10text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="A10text"
+                  >
                     10
                   </p>
                 </div>
                 <div
                   id="A11"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center"
                   onClick={() => handleMiddleRow("A", 11)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="A11text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="A11text"
+                  >
                     11
                   </p>
                 </div>
@@ -1375,100 +1601,133 @@ const ShowBooking = () => {
                 <p className="text-[#949494] font-normal">B</p>
                 <div
                   id="B1"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center ml-[4vw] cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center ml-[4vw] cursor-pointer"
                   onClick={() => handleMiddleRow("B", 1)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="B1text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="B1text"
+                  >
                     1
                   </p>
                 </div>
                 <div
                   id="B2"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  rounded-sm flex items-center justify-center cursor-pointer "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  rounded-sm flex items-center justify-center cursor-pointer "
                   onClick={() => handleMiddleRow("B", 2)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="B2text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="B2text"
+                  >
                     2
                   </p>
                 </div>
                 <div
                   id="B3"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("B", 3)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="B3text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="B3text"
+                  >
                     3
                   </p>
                 </div>
                 <div
                   id="B4"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer "
                   onClick={() => handleMiddleRow("B", 4)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="B4text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="B4text"
+                  >
                     4
                   </p>
                 </div>
                 <div
                   id="B5"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center ml-[5vw] cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center ml-[5vw] cursor-pointer"
                   onClick={() => handleMiddleRow("B", 5)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="B5text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="B5text"
+                  >
                     5
                   </p>
                 </div>
                 <div
                   id="B6"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200] rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200] rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("B", 6)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="B6text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="B6text"
+                  >
                     6
                   </p>
                 </div>
                 <div
                   id="B7"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("B", 7)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="B7text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="B7text"
+                  >
                     7
                   </p>
                 </div>
                 <div
                   id="B8"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("B", 8)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="B8text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="B8text"
+                  >
                     8
                   </p>
                 </div>
                 <div
                   id="B9"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("B", 9)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="B9text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="B9text"
+                  >
                     9
                   </p>
                 </div>
                 <div
                   id="B10"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("B", 10)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="B10text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="B10text"
+                  >
                     10
                   </p>
                 </div>
                 <div
                   id="B11"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("B", 11)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="B11text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="B11text"
+                  >
                     11
                   </p>
                 </div>
@@ -1477,100 +1736,133 @@ const ShowBooking = () => {
                 <p className="text-[#949494] font-normal">C</p>
                 <div
                   id="C1"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center ml-[3.9vw] cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center ml-[3.9vw] cursor-pointer"
                   onClick={() => handleMiddleRow("C", 1)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="C1text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="C1text"
+                  >
                     1
                   </p>
                 </div>
                 <div
                   id="C2"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer "
                   onClick={() => handleMiddleRow("C", 2)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="C2text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="C2text"
+                  >
                     2
                   </p>
                 </div>
                 <div
                   id="C3"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("C", 3)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="C3text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="C3text"
+                  >
                     3
                   </p>
                 </div>
                 <div
                   id="C4"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("C", 4)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="C4text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="C4text"
+                  >
                     4
                   </p>
                 </div>
                 <div
                   id="C5"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200] rounded-sm flex items-center justify-center ml-[5vw] cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200] rounded-sm flex items-center justify-center ml-[5vw] cursor-pointer"
                   onClick={() => handleMiddleRow("C", 5)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="C5text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="C5text"
+                  >
                     5
                   </p>
                 </div>
                 <div
                   id="C6"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("C", 6)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="C6text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="C6text"
+                  >
                     6
                   </p>
                 </div>
                 <div
                   id="C7"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("C", 7)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="C7text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="C7text"
+                  >
                     7
                   </p>
                 </div>
                 <div
                   id="C8"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("C", 8)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="C8text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="C8text"
+                  >
                     8
                   </p>
                 </div>
                 <div
                   id="C9"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("C", 9)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="C9text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="C9text"
+                  >
                     9
                   </p>
                 </div>
                 <div
                   id="C10"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("C", 10)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="C10text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="C10text"
+                  >
                     10
                   </p>
                 </div>
                 <div
                   id="C11"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("C", 11)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="C11text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="C11text"
+                  >
                     11
                   </p>
                 </div>
@@ -1579,100 +1871,133 @@ const ShowBooking = () => {
                 <p className="text-[#949494] font-normal">D</p>
                 <div
                   id="D1"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center ml-[3.9vw] cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center ml-[3.9vw] cursor-pointer"
                   onClick={() => handleMiddleRow("D", 1)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="D1text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="D1text"
+                  >
                     1
                   </p>
                 </div>
                 <div
                   id="D2"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("D", 2)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="D2text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="D2text"
+                  >
                     2
                   </p>
                 </div>
                 <div
                   id="D3"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("D", 3)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="D3text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="D3text"
+                  >
                     3
                   </p>
                 </div>
                 <div
                   id="D4"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("D", 4)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="D4text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="D4text"
+                  >
                     4
                   </p>
                 </div>
                 <div
                   id="D5"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  rounded-sm flex items-center justify-center ml-[5vw] cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  rounded-sm flex items-center justify-center ml-[5vw] cursor-pointer"
                   onClick={() => handleMiddleRow("D", 5)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="D5text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="D5text"
+                  >
                     5
                   </p>
                 </div>
                 <div
                   id="D6"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("D", 6)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="D6text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="D6text"
+                  >
                     6
                   </p>
                 </div>
                 <div
                   id="D7"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("D", 7)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="D7text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="D7text"
+                  >
                     7
                   </p>
                 </div>
                 <div
                   id="D8"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center  cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center  cursor-pointer"
                   onClick={() => handleMiddleRow("D", 8)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="D8text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="D8text"
+                  >
                     8
                   </p>
                 </div>
                 <div
                   id="D9"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("D", 9)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="D9text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="D9text"
+                  >
                     9
                   </p>
                 </div>
                 <div
                   id="D10"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("D", 10)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="D10text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="D10text"
+                  >
                     10
                   </p>
                 </div>
                 <div
                   id="D11"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]   rounded-sm flex items-center justify-center cursor-pointer"
                   onClick={() => handleMiddleRow("D", 11)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="D11text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="D11text"
+                  >
                     11
                   </p>
                 </div>
@@ -1681,202 +2006,268 @@ const ShowBooking = () => {
                 <p className="text-[#949494] font-normal">E</p>
                 <div
                   id="E1"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center ml-[4vw]"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center ml-[4vw]"
                   onClick={() => handleMiddleRow("E", 1)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="E1text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="E1text"
+                  >
                     1
                   </p>
                 </div>
                 <div
                   id="E2"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center "
                   onClick={() => handleMiddleRow("E", 2)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="E2text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="E2text"
+                  >
                     2
                   </p>
                 </div>
                 <div
                   id="E3"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center"
                   onClick={() => handleMiddleRow("E", 3)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="E3text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="E3text"
+                  >
                     3
                   </p>
                 </div>
                 <div
                   id="E4"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center "
                   onClick={() => handleMiddleRow("E", 4)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="E4text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="E4text"
+                  >
                     4
                   </p>
                 </div>
                 <div
                   id="E5"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center ml-[5vw]"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center ml-[5vw]"
                   onClick={() => handleMiddleRow("E", 5)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="E5text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="E5text"
+                  >
                     5
                   </p>
                 </div>
                 <div
                   id="E6"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center "
                   onClick={() => handleMiddleRow("E", 6)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="E6text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="E6text"
+                  >
                     6
                   </p>
                 </div>
                 <div
                   id="E7"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center"
                   onClick={() => handleMiddleRow("E", 7)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="E7text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="E7text"
+                  >
                     7
                   </p>
                 </div>
                 <div
                   id="E8"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center "
                   onClick={() => handleMiddleRow("E", 8)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="E8text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="E8text"
+                  >
                     8
                   </p>
                 </div>
                 <div
                   id="E9"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center"
                   onClick={() => handleMiddleRow("E", 9)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="E9text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="E9text"
+                  >
                     9
                   </p>
                 </div>
                 <div
                   id="E10"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center"
                   onClick={() => handleMiddleRow("E", 10)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="E10text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="E10text"
+                  >
                     10
                   </p>
                 </div>
                 <div
                   id="E11"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center"
                   onClick={() => handleMiddleRow("E", 11)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="E11text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="E11text"
+                  >
                     11
                   </p>
                 </div>
               </div>
               <div className="flex items-center gap-4 justify-start my-[1.3vw]">
                 <p className="text-[#949494] font-normal">F</p>
-                <div
+                {/* <div
                   id="F1"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center ml-[4vw]"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center ml-[4vw]"
                   onClick={() => handleMiddleRow("F", 1)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="F1text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="F1text"
+                  >
                     1
                   </p>
-                </div>
+                </div> */}
                 <div
                   id="F2"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center ml-[7.3vw]"
                   onClick={() => handleMiddleRow("F", 2)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="F2text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="F2text"
+                  >
                     2
                   </p>
                 </div>
                 <div
                   id="F3"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center"
                   onClick={() => handleMiddleRow("F", 3)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="F3text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="F3text"
+                  >
                     3
                   </p>
                 </div>
                 <div
                   id="F4"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center "
                   onClick={() => handleMiddleRow("F", 4)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="F4text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="F4text"
+                  >
                     4
                   </p>
                 </div>
                 <div
                   id="F5"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center ml-[5vw]"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center ml-[5vw]"
                   onClick={() => handleMiddleRow("F", 5)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="F5text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="F5text"
+                  >
                     5
                   </p>
                 </div>
                 <div
                   id="F6"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center "
                   onClick={() => handleMiddleRow("F", 6)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="F6text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="F6text"
+                  >
                     6
                   </p>
                 </div>
                 <div
                   id="F7"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center"
                   onClick={() => handleMiddleRow("F", 7)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="F7text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="F7text"
+                  >
                     7
                   </p>
                 </div>
                 <div
                   id="F8"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center "
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center "
                   onClick={() => handleMiddleRow("F", 8)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="F8text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="F8text"
+                  >
                     8
                   </p>
                 </div>
                 <div
                   id="F9"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center"
                   onClick={() => handleMiddleRow("F", 9)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="F9text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="F9text"
+                  >
                     9
                   </p>
                 </div>
                 <div
                   id="F10"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center"
                   onClick={() => handleMiddleRow("F", 10)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="F10text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="F10text"
+                  >
                     10
                   </p>
                 </div>
                 <div
                   id="F11"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-1 border-[#59B200]  cursor-pointer rounded-sm flex items-center justify-center"
+                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center"
                   onClick={() => handleMiddleRow("F", 11)}
                 >
-                  <p className="text-center text-base  text-[#59B200]" id="F11text">
+                  <p
+                    className="text-center text-base  text-[#59B200]"
+                    id="F11text"
+                  >
                     11
                   </p>
                 </div>

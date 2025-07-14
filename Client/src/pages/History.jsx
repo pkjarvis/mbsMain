@@ -13,6 +13,7 @@ const History = () => {
   }, [username]);
 
   const [visible,setVisible]=useState(false); 
+  const [selectedCity, setSelectedCity] = useState("");
 
 
   const handlePopup=()=>{
@@ -23,7 +24,7 @@ const History = () => {
   useEffect(()=>{
     axiosInstance.get("/get-paid-ticket",{withCredentials:true})
     .then(res=>{
-      
+      console.log("res",res.data);
       setTickets(res.data.tickets  || [])
       console.log(tickets);
     })
@@ -36,7 +37,9 @@ const History = () => {
   return (
     <div>
       <div className="profile-container">
-        <NavBar1 title={username} />
+        <NavBar1  title={username}
+          selectedCity={selectedCity}
+          setSelectedCity={setSelectedCity}/>
         <div className="bg-[#E2E0E0] p-2">
           <div className="flex items-center gap-[3vw] mx-[2.4vw]">
             <Link to="/profile">Profile</Link>

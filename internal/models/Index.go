@@ -7,6 +7,7 @@ import (
     // "os"
     "gorm.io/driver/postgres"
     "gorm.io/gorm"
+   
 )
 
 type Config struct {
@@ -58,6 +59,9 @@ func InitDB(cfg Config) {
 
     DB = db
 
+   
+    
+
     // dsn := os.Getenv("DATABASE_URL") // Load from .env or Render environment
 
 	// db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
@@ -75,3 +79,5 @@ func InitDB(cfg Config) {
 
 	// DB = db
 }
+
+

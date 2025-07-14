@@ -30,6 +30,7 @@ import Login1 from "./pages/Login1";
 import Booking from "./pages/Booking";
 import History from "./pages/History";
 import PaymentStatus from "./pages/PaymentStatus";
+import PromoteDemoteUser from "./pages/PromoteDemote";
 
 
 function App() {
@@ -90,6 +91,7 @@ function App() {
                     path="/admin-addnewshows"
                     element={<AddNewShowtime />}
                   />
+                  <Route path="/admin/promote-demote" element={<PromoteDemoteUser />} />
                  
                 </Routes>
               </ShowTimeProvider>

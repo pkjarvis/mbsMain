@@ -92,7 +92,7 @@ const Theatres = ({ theatre,movies,timearray ,date}) => {
         timearray && timearray.length>0?(
           timearray.map((item,index)=>(
            <div key={index} className="font-medium border-1 border-[#ACACAC] p-2 w-[10vw] text-center rounded-2xl cursor-pointer" onClick={()=>handleClick(item.val1,item.val2,`${movies.id}-${theatre.id}-${date}-${item.val1}-${item.val2}`)}>
-                <p key={index} className="text-[#008610] " >{item.val1}:{item.val2}</p>
+                <p key={index} className="text-[#008610] " >{item.val1}-{item.val2}</p>
            </div>
         ))
         )

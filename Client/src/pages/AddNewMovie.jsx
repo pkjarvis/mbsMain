@@ -22,6 +22,8 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
+
+
 const AddNewMovie = () => {
   const [movie, setMovie] = useState("");
   const [description, setDescription] = useState("");
@@ -44,6 +46,7 @@ const AddNewMovie = () => {
     { name: "German", code: "GER" },
   ];
 
+  
   const { addMovie, updateMovie } = useContext(MoviesContext);
 
   const { state } = useLocation();

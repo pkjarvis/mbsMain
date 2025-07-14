@@ -6,7 +6,6 @@ import (
 	"go-auth/routes"
 	"log"
 	"os"
-
 	// "os"
 	"time"
 	"github.com/gin-contrib/cors"
@@ -47,8 +46,10 @@ func main() {
 		SSLMode:  os.Getenv("DB_SSLMODE"),
 	}
 
-	// Initialize DB
+	// Initialize DB , as well as seeder
 	models.InitDB(config)
+
+
 
 	// Load the routes
 	routes.AuthRoutes(r)

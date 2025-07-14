@@ -22,5 +22,5 @@ type Transaction struct {
 	Date           string `json:"date"`
 	StartTime      string `json:"from"`
 	EndTime        string `json:"to"`
-	ShowID         string   `json:"showId"`
+	ShowID         string   `gorm:"column:show_id" json:"showId"`
 }

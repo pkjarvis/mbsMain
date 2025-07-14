@@ -8,6 +8,7 @@ import Theatres from "../components/Theatres";
 import axiosInstance from "../utils/axiosInstance";
 import Stack from "@mui/material/Stack";
 import Alert from "@mui/material/Alert";
+import axios from "axios";
 
 // theatre-> id,theatrename,address,cityName,stateName,status,totalscreens,theatrefile,value
 
@@ -47,7 +48,8 @@ const Showtime = () => {
 
   const { state } = useLocation();
   const movie = state?.movie;
-  // console.log("movies", movie);
+
+  console.log("movies", movie);
   // console.log("movieId:",movie.id)
 
   // const NavigateDashboard = () => {
@@ -59,6 +61,9 @@ const Showtime = () => {
   const [datebooked, setDateBooked] = useState([]);
   const [showtime, setShowTime] = useState([]);
   const [theatrenames,setTheatreNames]=useState([]);
+
+
+    const [selectedCity, setSelectedCity] = useState("");
 
   // useEffect(() => {
   //   axiosInstance
@@ -98,27 +103,21 @@ const Showtime = () => {
 
   console.log("Booked ",datebooked);
 
+  const [startDate,setStartDate]=useState("");
+  const [endDate,setEndDate]=useState("");
 
-
-  // get state api
-  const [userselectedstate,setUserSelectedState]=useState("");
-  useEffect(()=>{
-      axiosInstance.get("/get-state",{withCredentials:true})
-      .then(res=>{
-        console.log("States are",res.data.state.at(-1)["city_name"]);
-        setUserSelectedState(res.data.state.at(-1)["city_name"]);
-        
-      }).catch(err=>console.log(err));
-  },[])
-
+ useEffect(()=>{
+  if(!movie ) return;
   
-
-
+   axiosInstance.get("/get-movie-byid",{params:{movieId:movie.id}},{withCredentials:true})
+   .then((res)=>{
+    console.log("response of moviebyid",res.data.movie);
+    setStartDate(res.data.movie[0].startDate);
+    setEndDate(res.data.movie[0].endDate);
+   }).catch(err=>console.log(err))
+ },[])
   
-
-  const startDate = movie.startDate;
-  const endDate = movie.endDate;
-
+ 
   //showing  current day only
 
   const curDate = new Date();
@@ -225,7 +224,8 @@ const filteredShowtime = useMemo(() => {
     <div>
       <div className="showtime-container">
         <div className="theatre-container font-[Inter]">
-          <NavBar1 title={username} />
+          <NavBar1 title={username}  selectedCity={selectedCity}
+          setSelectedCity={setSelectedCity}/>
           <span className="flex items-center justify-start mx-[3vw] gap-1 mt-2">
             <Link
               to="/dashboard"
@@ -289,10 +289,10 @@ const filteredShowtime = useMemo(() => {
               <span className="text-black ">2h 49m</span> {movie.genre} | UA13+
               |{" "}
               {movie.language?.map((lang, index) => (
-                <p key={index} className="inline-block flex-wrap">
+                <span key={index} className="inline-block flex-wrap">
                   {lang.name}
                   {index < movie.language.length - 1 && ", "}
-                </p>
+                </span>
               ))}
             </p>
             <div className="date-container max-w-[60%] h-[28%]  rounded-xl border-1 border-[#EBEBEB] flex items-center justify-start mt-4 ">
@@ -371,6 +371,8 @@ const filteredShowtime = useMemo(() => {
         movies={show.Movie}
         timearray={show.timearray}
         date={curdate}
+       
+
         // setShowDataWarning={setShowDataWarning}
       />
     ))
