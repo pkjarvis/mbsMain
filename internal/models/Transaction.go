@@ -24,3 +24,5 @@ type Transaction struct {
 	EndTime        string `json:"to"`
 	ShowID         string   `gorm:"column:show_id" json:"showId"`
 }
+
+

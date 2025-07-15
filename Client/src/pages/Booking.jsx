@@ -24,12 +24,14 @@ const Booking = () => {
   const to = state?.to ;
   const showId = state?.showId ;
 
+
   // useEffect(() => {
   //   if (!movie.id || store.length === 0 || !theatreval.theatrename) {
   //     console.warn("Invalid or missing booking state, redirecting...");
   //     navigate("/dashboard");
   //   }
   // }, []);
+
 
   console.log("seats", store);
   console.log("totalprice", price);

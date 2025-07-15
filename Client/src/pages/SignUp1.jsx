@@ -50,14 +50,43 @@ const SignUp1 = () => {
 
       localStorage.setItem("flag", false);
 
+     localStorage.setItem("userToken", response.data.token);
+      localStorage.setItem("userName", response.data.username);
+      localStorage.setItem("userId", response.data.userId);
+      localStorage.setItem("email", response.data.email);
+
       const redirectPath = location.state?.from;
-      const bookingState = location.state?.bookingState;
       const movie = location.state?.movie;
       const reviewState = location.state?.reviewState;
 
-      navigate("/login", {
-        state: location.state, // pass everything forward
-      });
+      
+      // if (redirectPath === "/booking") {
+      //   const compressedState = localStorage.getItem("bookingState");
+      //   console.log(compressedState);
+      //   if (compressedState) {
+      //     const decompressed = LZString.decompress(compressedState);
+      //     const bookingState = JSON.parse(decompressed);
+
+         
+      //     navigate("/booking", { state: bookingState });
+      //     return;
+      //   }
+      // }
+
+     
+      if (redirectPath === "/movie" && movie) {
+        navigate("/movie", {
+          state: {
+            movie: movie,
+            reviewState: reviewState,
+          },
+        });
+        return;
+      }
+
+      
+      navigate("/dashboard");
+      return;
     } catch (error) {
       // handle error while login
       console.log(error);

@@ -3,6 +3,7 @@ import NavBar1 from "../components/NavBar1";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
 
+
 const ShowBooking = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -30,7 +31,6 @@ const ShowBooking = () => {
       })
       .catch((err) => console.error("Error fetching paid tickets:", err));
   }, []);
-
 
   useEffect(() => {
     soldTickets.forEach((id) => {
@@ -141,6 +141,12 @@ const ShowBooking = () => {
       alert("All seats booked can't proceed to pay!");
       return;
     }
+
+    if(!username){
+      return;
+    }
+
+    totalprice+=60;
     navigate("/booking", {
       state: { storeId, totalprice, movie, theatre, date, from, to, showId },
     });
@@ -2295,7 +2301,7 @@ const ShowBooking = () => {
           >
             <p className="font-bold text-xl">{storeId.length} seat selected</p>
             <button
-              className="bg-[#FF5295]  text-md w-[12vw] h-[2vw]  rounded-lg text-white font-semibold text-center cursor-pointer mx-[1vw]"
+              className={`bg-[#FF5295]  text-md w-[12vw] h-[2vw]  rounded-lg text-white font-semibold text-center  mx-[1vw] ${!username?"cursor-not-allowed":"cursor-pointer"}`}
               onClick={handleSubmit}
             >
               Submit

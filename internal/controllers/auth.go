@@ -98,6 +98,9 @@ func LoginWithRole(c *gin.Context, expectedRole string) {
 	c.Set("role",claims.Role)
 
 
+
+
+
 	fmt.Print("existingUser.Id", existingUser.Id)
 	c.JSON(200, gin.H{
 		"msg":      "logged in",
@@ -117,12 +120,27 @@ func SignupWithRole(c *gin.Context, role string) {
 		return
 	}
 
+
 	// Check if user exists
 	var existingUser models.User
 	models.DB.Where("email = ?", user.Email).First(&existingUser)
 	if existingUser.ID != 0 {
 		c.JSON(400, gin.H{"error": "user already exists"})
 		return
+	}
+
+	expirationTime := time.Now().Add(7 * 24 * time.Hour)
+
+	claims := &models.Claims{
+		UserId: existingUser.Id,
+		Name:   existingUser.Name,
+		Email:  existingUser.Email,
+		Role:   existingUser.Role,
+		StandardClaims: jwt.StandardClaims{
+			Subject:   existingUser.Email,
+			ExpiresAt: expirationTime.Unix(),
+			IssuedAt:  time.Now().Unix(),
+		},
 	}
 
 	// Hash password
@@ -132,6 +150,32 @@ func SignupWithRole(c *gin.Context, role string) {
 		return
 	}
 
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	secret := os.Getenv("SECRET")
+
+	tokenString, err := token.SignedString([]byte(secret))
+	if err != nil {
+		c.JSON(500, gin.H{"error": "could not generate token"})
+		return
+	}
+
+	
+
+	log.Println("CP-1")
+	c.SetCookie("token", tokenString, 365*24*60*60, "", "", true, true)
+	c.Header("Set-Cookie", fmt.Sprintf(
+		"token=%s; Path=/; Domain=%s; Max-Age=%d; Secure; HttpOnly; SameSite=None",
+		tokenString,
+		"",
+		365*24*60*60,
+	))
+	log.Println("CP-2", tokenString)
+
+	c.Set("userId", claims.UserId)
+	c.Set("userToken", tokenString)
+	c.Set("role",claims.Role)
+
+
 	user.Password = hashedPwd
 	user.Role = role
 
@@ -140,7 +184,16 @@ func SignupWithRole(c *gin.Context, role string) {
 		return
 	}
 
-	c.JSON(200, gin.H{"message": "signup successful", "role": role})
+	// c.JSON(200, gin.H{"message": "signup successful", "role": role})
+	c.JSON(200,gin.H{
+		"msg":      "signed in",
+		"token":    tokenString,
+		"username": user.Name,
+		"role":     user.Role,
+		"userId":   user.Id,
+		"email":    user.Email,
+	})
+
 }
 
 // func Signup(c *gin.Context) {
