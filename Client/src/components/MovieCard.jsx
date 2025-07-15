@@ -20,7 +20,6 @@ const MovieCard = ({id,movie,description,startDate,endDate,genre,language,status
   const [check,setCheck]=useState(false);
 
   const handleClick = () => {
-    
     setVisible(!visible);
   };
 

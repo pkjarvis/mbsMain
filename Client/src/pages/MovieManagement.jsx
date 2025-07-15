@@ -98,7 +98,7 @@ const MovieManagement = () => {
                 setShowDataWarning(false);
               }}
             >
-              {"Update the corresponding showtime as movie is edited"}
+              {"Update the corresponding showtime if movie is edited or add showtime if movie is just added"}
             </Alert>
           </Stack>
         )}

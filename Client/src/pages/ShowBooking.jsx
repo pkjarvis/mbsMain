@@ -31,6 +31,7 @@ const ShowBooking = () => {
       .catch((err) => console.error("Error fetching paid tickets:", err));
   }, []);
 
+
   useEffect(() => {
     soldTickets.forEach((id) => {
       const el = document.getElementById(id);
@@ -51,7 +52,7 @@ const ShowBooking = () => {
   
 
   const [storeId, setStoreId] = useState([]);
-  const [totalprice, setTotalPrice] = useState(0);
+  var [totalprice, setTotalPrice] = useState(0);
 
   const handleMiddleRow = (s, id) => {
     var finalId = `${s}${id}`;

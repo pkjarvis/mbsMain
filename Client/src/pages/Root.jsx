@@ -3,6 +3,7 @@ import Blocks from "../components/Blocks";
 import GoogleLogo from "../assets/GoogleLogo.png";
 import EmailLogo from "../assets/email.png"
 import { Link } from "react-router-dom";
+
 const baseUrl=import.meta.env.VITE_ROUTE;
 
 const Root = () => {
@@ -14,8 +15,8 @@ const Root = () => {
           <div className="left w-[50%] flex flex-col gap-7">
             <img src="/assets/Logo.png" alt="Logo" className="w-[4rem]"/>
             <img src="/assets/Welcome.png" alt="Welcome" className="w-[16rem] mx-auto mt-22 mb-6" />
-            <Blocks icon={GoogleLogo} name="Google" />
-            <Link to="/admin-signup"><Blocks icon={EmailLogo} name="Email" /></Link>
+            {/* <Blocks icon={GoogleLogo} name="Google" /> */}
+            <Link to="/admin-login"><Blocks icon={EmailLogo} name="Email" /></Link>
             <p className="text-gray-600 mt-[19rem] mx-auto">I agree to the Terms & Conditions & Privacy Policy</p>
           </div>
           <div className="right w-[50%]">

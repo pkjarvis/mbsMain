@@ -72,3 +72,31 @@ html,body{
 .p-multiselect.p-multiselect-chip .p-multiselect-token {
     padding: 0.1rem 0.2rem;
 }
+
+
+:root {
+  --black-border: 1px solid black;
+}
+
+/* Scope to only the dropdown with the class */
+.dropdown-black-border.p-dropdown {
+  padding-left: 0.5rem; /* Tailwind px-2 */
+  padding-right: 0.5rem;
+  border: 1px solid #d1d5db; /* base gray border */
+  border-radius: 3rem;
+  box-shadow: none !important;
+  transition: border 0.2s ease;
+}
+
+/* Override hover & focus */
+.dropdown-black-border.p-dropdown:hover,
+.dropdown-black-border.p-dropdown:focus,
+.dropdown-black-border.p-dropdown.p-focus {
+  border: var(--black-border) !important;
+  box-shadow: none !important;
+}
+
+/* Remove internal input box-shadow (if any) */
+.dropdown-black-border.p-dropdown .p-inputtext:focus {
+  box-shadow: none !important;
+}

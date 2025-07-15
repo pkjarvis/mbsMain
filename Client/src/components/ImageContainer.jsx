@@ -37,19 +37,13 @@ const ImageContainer = ({ setSearchTerm }) => {
 
         setMovies(formattedMovies);
         setContainerMovie(res.data);
-        if(res.data.length>0){
+        if (res.data.length > 0) {
           setCurrentMovie(res.data[0]);
           setBgImage(res.data[0].file);
         }
       })
       .catch((err) => console.log(err));
   }, []);
-
-
-
-
-
-
 
   useEffect(() => {
     if (!moviename) return;
@@ -81,7 +75,6 @@ const ImageContainer = ({ setSearchTerm }) => {
     navigate("/movie", { state: { movie: currentmovie } });
   };
 
-
   return (
     <div>
       <div className=" flex items-center w-[40%] h-[12vw] absolute top-[31vw] right-0 overflow-hidden object-fill">
@@ -91,9 +84,6 @@ const ImageContainer = ({ setSearchTerm }) => {
         >
           <img src="/assets/Bg-2.png" alt="Bg-2" />
         </span> */}
-        
-
-
 
         {containermovie?.slice(0, 3).map((item, index) => (
           <span
@@ -134,11 +124,12 @@ const ImageContainer = ({ setSearchTerm }) => {
             options={movies}
             optionLabel="name"
             placeholder="Select a Movie"
-            className="w-full md:w-14rem rounded-2xl"
+            className="w-full md:w-14rem rounded-2xl dropdown-black-border"
             checkmark={true}
             highlightOnSelect={false}
             filter
           />
+          
         </div>
 
         <span className="flex flex-col absolute top-[17vw] left-[8.4vw] max-w-[18vw] gap-6">

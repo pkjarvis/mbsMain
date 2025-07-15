@@ -2,39 +2,45 @@ import React, { useEffect } from "react";
 import NavBar1 from "../components/NavBar1";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
+import LZString from "lz-string";
 
 const Booking = () => {
-
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const username = localStorage.getItem("userName");
   useEffect(() => {
     console.log(username);
   }, [username]);
 
-  const { state } = useLocation();
+  const location = useLocation();
+  const state =
+    location.state || JSON.parse(localStorage.getItem("bookingState")) || {};
   console.log("state", state);
-  const store = state?.storeId;
-  const price = state?.totalprice;
-  const movie = state?.movie;
-  const theatreval=state?.theatre;
-  const date=state?.date;
-  const from=state?.from;
-  const to=state?.to;
-  const showId=state?.showId;
+  const store = state?.storeId || [];
+  const price = state?.totalprice || 0;
+  const movie = state?.movie ;
+  const theatreval = state?.theatre ;
+  const date = state?.date ;
+  const from = state?.from ;
+  const to = state?.to ;
+  const showId = state?.showId ;
+
+  // useEffect(() => {
+  //   if (!movie.id || store.length === 0 || !theatreval.theatrename) {
+  //     console.warn("Invalid or missing booking state, redirecting...");
+  //     navigate("/dashboard");
+  //   }
+  // }, []);
 
   console.log("seats", store);
   console.log("totalprice", price);
 
   const movieId = movie.id;
-  const moviename=movie.movie;
-  const moviefile=movie.file;
-  const theatrename=theatreval.theatrename;
-  const theatreaddress=theatreval.address;
-
-
+  const moviename = movie.movie;
+  const moviefile = movie.file;
+  const theatrename = theatreval.theatrename;
+  const theatreaddress = theatreval.address;
 
   const submitToPayU = (payUData) => {
-
     const { payuFormFields, actionURL } = payUData;
 
     const form = document.createElement("form");
@@ -51,42 +57,64 @@ const Booking = () => {
 
     document.body.appendChild(form);
     form.submit();
-
   };
 
-
-
   const handlePayment = async () => {
-
     const username = localStorage.getItem("userName");
-    const token = localStorage.getItem("userToken");
+    const token = localStorage.getItem("token");
 
     if (!username && !token) {
-      navigate("/root");
+      const bookingState = {
+        store,
+        totalprice: price,
+        movieId: movie?.id,
+        moviename: movie?.movie,
+        moviefile: movie?.file, 
+        theatrename: theatreval?.theatrename,
+        theatreaddress: theatreval?.address,
+        date,
+        from,
+        to,
+        showId,
+      };
+      const compressedState = LZString.compress(JSON.stringify(bookingState));
+      localStorage.setItem("bookingState", compressedState);
+
+      navigate("/root", { state: { from: "/booking" } });
       return;
     }
-  
-    if(price===60) return;
-    try{
-      const res = await axiosInstance.post(
-      "/api-payu",
-      { store, price, movieId,moviename,moviefile,theatrename,theatreaddress,date,from,to,showId },
-      { withCredentials: true }
-    );
-      const  payUData  = res.data?.payUData;
-      console.log("Api response",res.data);
 
-      if(!payUData || !payUData.payuFormFields || !payUData.actionURL){
-        console.error("Invalid PayuData",payUData);
+    if (price === 60) return;
+    try {
+      const res = await axiosInstance.post(
+        "/api-payu",
+        {
+          store,
+          price,
+          movieId,
+          moviename,
+          moviefile,
+          theatrename,
+          theatreaddress,
+          date,
+          from,
+          to,
+          showId,
+        },
+        { withCredentials: true }
+      );
+      const payUData = res.data?.payUData;
+      console.log("Api response", res.data);
+
+      if (!payUData || !payUData.payuFormFields || !payUData.actionURL) {
+        console.error("Invalid PayuData", payUData);
         return;
       }
 
       submitToPayU(payUData);
-
-    }catch(error){
-      console.error("Payment Api failed",error);
+    } catch (error) {
+      console.error("Payment Api failed", error);
     }
-    
   };
 
   return (
@@ -102,19 +130,23 @@ const Booking = () => {
           </Link>
           <Link
             to="/movie"
-            state={{movie:movie}}
+            state={{ movie: movie }}
             className="cursor-pointer font-light text-zinc-500"
           >
             Movie /
           </Link>
           <Link
             to="/showtime"
-            state={{movie:movie}}
+            state={{ movie: movie }}
             className="cursor-pointer text-zinc-500"
           >
             Showtime /
           </Link>
-          <Link to="/showtime" className="cursor-pointer" state={{storeId:store,totalprice:price,movie:movie}}>
+          <Link
+            to="/showtime"
+            className="cursor-pointer"
+            state={{ storeId: store, totalprice: price, movie: movie }}
+          >
             Show Booking
           </Link>
         </span>
@@ -122,19 +154,22 @@ const Booking = () => {
         <div className="h-[auto] bg-[rgba(248, 248, 248, 0.55)] mx-[20vw] mt-[2vw] shadow-2xl p-[2.4vw] flex flex-col rounded-xl ">
           <span className="flex gap-2 items-center justify-start">
             <img
-              src={theatreval.theatrefile  || "/assets/pvr.png"}
+              src={theatreval.theatrefile || "/assets/pvr.png"}
               alt="PVR"
               className="w-[5%] h-[3vw] rounded-full"
             />
             <span>
               <h1 className="text-2xl font-bold">{movie.movie}</h1>
               <p className="text-base font-normal text-[#5E5E5E]">
-               {theatreval.theatrename} | {theatreval.address} | {theatreval.cityName} | {theatreval.stateName}
+                {theatreval.theatrename} | {theatreval.address} |{" "}
+                {theatreval.cityName} | {theatreval.stateName}
               </p>
             </span>
           </span>
           <span className="border-1 border-[#A7A7A7] rounded-2xl p-2 mt-[1.2vw]">
-            <h1 className="my-1 text-sm ml-1">Date:{date},From:{from},To:{to} </h1>
+            <h1 className="my-1 text-sm ml-1">
+              Date:{date},From:{from},To:{to}{" "}
+            </h1>
             <hr className="1px solid text-[#A7A7A7] my-1 w-[98%] mx-[0.4vw]" />
             <span>
               <h1 className="text-sm ml-1 my-1">{store.length} Tickets</h1>

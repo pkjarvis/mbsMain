@@ -10,17 +10,16 @@ import axiosInstance from "../utils/axiosInstance";
 import { useLocation } from "react-router-dom";
 
 const Dashboard1 = () => {
-   const [movies, setMovies] = useState([]);
-  
-  var username=localStorage.getItem("userName");
-
-  useEffect(()=>{
-    username=localStorage.getItem("userName");
-  },[])
-
+  const [movies, setMovies] = useState([]);
+  const [selectedCity, setSelectedCity] = useState(false);
+  const location = useLocation();
+  var username = localStorage.getItem("userName");
 
   useEffect(() => {
-    
+    username = localStorage.getItem("userName");
+  }, []);
+
+  useEffect(() => {
     axiosInstance
       .get("/get-movies", { withCredentials: true })
       .then((res) => {
@@ -29,36 +28,37 @@ const Dashboard1 = () => {
       })
       .catch((err) =>
         console.log("Error fetching movies", err.response?.data || err.message)
-      )
-      
-  },[]);
-
-
+      );
+  }, []);
 
   return (
     <div>
       <div>
-        <NavBar1 title={username} />
-        
-      
-          <>
-            {/* Backdrop overlay, inset0 make's top,bottom,left,right to 0 . Hence making it entirely cover parent div */}
-            <div className="fixed inset-0 bg-black opacity-50 z-40"></div>
-            {/* Popup component */}
-            <div className="fixed inset-0 z-50 flex items-center justify-center">
-              <RegisterPopUp
-              //  val={flag} func={setFlag} 
-               />
-            </div>
-          </>
-        
+        <NavBar1
+          title={username}
+          selectedCity={selectedCity}
+          setSelectedCity={setSelectedCity}
+        />
+
+        <>
+          {/* Backdrop overlay, inset0 make's top,bottom,left,right to 0 . Hence making it entirely cover parent div */}
+          <div className="fixed inset-0 bg-black opacity-50 z-40"></div>
+          {/* Popup component */}
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <RegisterPopUp
+              state={location.state}
+              //  val={flag} func={setFlag}
+            />
+          </div>
+        </>
+
         <section>
           <ImageContainer />
         </section>
         <section>
           <MovieCardSection
             title="Watch latest movie"
-            movies={movies.slice(0,4)}
+            movies={movies.slice(0, 4)}
             // imgTitle={"../src/assets/aliceWonderland.png"}
           />
         </section>
@@ -132,7 +132,7 @@ const Dashboard1 = () => {
         </section>
 
         <section>
-          <Bollywood movies={movies.slice(0,4)} />
+          <Bollywood movies={movies.slice(0, 4)} />
         </section>
 
         <section className="mx-[3vw]  h-[14vw]  my-[4vw]">
@@ -149,6 +149,6 @@ const Dashboard1 = () => {
       </div>
     </div>
   );
-}
+};
 
-export default Dashboard1
+export default Dashboard1;

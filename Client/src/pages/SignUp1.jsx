@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { isEmailValid } from "../utils/helper.js";
 import PasswordInput from "../components/PasswordInput.jsx";
 import axiosInstance from "../utils/axiosInstance.js";
-
+import LZString from "lz-string";
 
 const SignUp1 = () => {
   const [name, setName] = useState("");
@@ -12,6 +12,7 @@ const SignUp1 = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
 
+  const location = useLocation();
   const navigate = useNavigate();
 
   const handleSignup = async (e) => {
@@ -41,14 +42,22 @@ const SignUp1 = () => {
       // posting login method to axiosInstance
       console.log("No error1");
       const response = await axiosInstance.post("/user/signup", {
-        name: name? name.toUpperCase():"",
+        name: name ? name.toUpperCase() : "",
         email: email,
         password: password,
       });
       console.log(response);
 
-      localStorage.setItem("flag",false);
-      navigate("/login");
+      localStorage.setItem("flag", false);
+
+      const redirectPath = location.state?.from;
+      const bookingState = location.state?.bookingState;
+      const movie = location.state?.movie;
+      const reviewState = location.state?.reviewState;
+
+      navigate("/login", {
+        state: location.state, // pass everything forward
+      });
     } catch (error) {
       // handle error while login
       console.log(error);
@@ -94,13 +103,17 @@ const SignUp1 = () => {
 
           <button
             type="submit"
-            className="bg-[#FF5295]  w-[50%] p-2 rounded-sm text-md font-light items-center  mx-auto cursor-pointer"
+            className="bg-[#FF5295]  w-[50%] p-2 text-white font-normal rounded-sm text-md  items-center  mx-auto cursor-pointer"
           >
             Create Account
           </button>
           <p className="text-sm text-center mt-4">
             Already have an account?{" "}
-            <Link to="/login" className="font-medium text-primary underline">
+            <Link
+              to="/login"
+              state={location.state}
+              className="font-medium text-primary underline"
+            >
               Login
             </Link>
           </p>
@@ -108,6 +121,6 @@ const SignUp1 = () => {
       </div>
     </div>
   );
-}
+};
 
-export default SignUp1
+export default SignUp1;

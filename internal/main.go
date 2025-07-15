@@ -6,6 +6,7 @@ import (
 	"go-auth/routes"
 	"log"
 	"os"
+	"go-auth/seeder"
 	// "os"
 	"time"
 	"github.com/gin-contrib/cors"
@@ -46,8 +47,11 @@ func main() {
 		SSLMode:  os.Getenv("DB_SSLMODE"),
 	}
 
-	// Initialize DB , as well as seeder
+	// Initialize DB 
 	models.InitDB(config)
+
+	// Seeder 
+	seeder.SeedDefaultAdmin()
 
 
 

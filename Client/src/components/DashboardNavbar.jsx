@@ -4,11 +4,8 @@ const baseUrl = import.meta.env.VITE_ROUTE;
 import Cookies from "js-cookie";
 
 const Navbar = (props) => {
-  const username = localStorage.getItem("adminName");
-  useEffect(() => {
-    console.log(username);
-  }, [username]);
-
+ 
+  const username=localStorage.getItem("userName");
   const [visible, setVisible] = useState(false);
 
   const handleClick = () => {
@@ -19,7 +16,7 @@ const Navbar = (props) => {
   const handleLogout = () => {
     localStorage.clear();
     Cookies.remove("token");
-    navigate("/admin");
+    navigate("/admin-login");
   };
 
   return (

@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const RegisterPopUp = () => {
   
+  const location=useLocation();
+
   const navigate=useNavigate("");
 
   // const handleClick=()=>{
@@ -10,7 +12,7 @@ const RegisterPopUp = () => {
   // }
 
   const handleRoute=()=>{
-    navigate("/signup");
+    navigate("/signup",{state:location.state});
   }
 
   return (
@@ -23,7 +25,7 @@ const RegisterPopUp = () => {
           <img src="/assets/Welcome.png" alt="Welcome" />
         </div>
         <div className="w-[100%] flex flex-col items-center justify-center gap-7 ">
-          <span className="flex items-center justify-center gap-2 border-1 border-[#898888] rounded-xl w-[75%] h-[4vw] p-[2vw]">
+          {/* <span className="flex items-center justify-center gap-2 border-1 border-[#898888] rounded-xl w-[75%] h-[4vw] p-[2vw]">
             <img
               src="/assets/GoogleLogo.png"
               alt="Google"
@@ -32,7 +34,7 @@ const RegisterPopUp = () => {
             <p className="text-2xl font-medium text-[#626262]">
               Continue with Google
             </p>
-          </span>
+          </span> */}
           <span className="flex items-center justify-center gap-2 border-1 border-[#898888] rounded-xl w-[75%] h-[4vw] p-[2vw]" onClick={handleRoute}>
             <img
               src="/assets/email.png"

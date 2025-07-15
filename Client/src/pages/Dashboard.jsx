@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import SearchBox from '../components/Navbar'
 import DashboardCard from '../components/DashboardCard'
 import DashboardNavbar from '../components/DashboardNavbar'
@@ -7,6 +7,12 @@ import DCard2 from '../assets/DCard2.png'
 import DCard3 from '../assets/DCard3.png'
 
 const Dashboard = () => {
+
+  // const username=localStorage.getItem("username");
+  // useEffect(()=>{
+  //   console.log("username",username)
+  // },[username]);
+
   return (
     <div className='dashboard-container'>
       <div className="content p-2">

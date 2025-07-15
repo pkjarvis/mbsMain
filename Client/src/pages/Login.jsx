@@ -98,16 +98,16 @@ const Login = () => {
 
           <button
             type="submit"
-            className="bg-[#FF5295]  w-[50%] p-2 rounded-sm text-md font-light items-center  mx-auto cursor-pointer"
+            className="bg-[#FF5295]  text-white w-[50%] p-2 rounded-sm text-md font-normal items-center  mx-auto cursor-pointer"
           >
             Login
           </button>
-          <p className="text-sm text-center mt-4">
+          {/* <p className="text-sm text-center mt-4">
             Already have an account?{" "}
             <Link to="/admin-signup" className="font-medium text-primary underline">
               SignUp
             </Link>
-          </p>
+          </p> */}
         </form>
       </div>
     </div>

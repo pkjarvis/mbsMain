@@ -93,7 +93,7 @@ const Theatres = () => {
                 setShowDataWarning(false);
               }}
             >
-              {"Update the corresponding showtime as theatre is edited"}
+              {"Update the corresponding showtime if theatre is edited or add theatre in showtime if new theatre is added"}
             </Alert>
           </Stack>
         )}

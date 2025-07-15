@@ -1,74 +1,100 @@
 import React, { useState } from "react";
 
-import { Link, useNavigate } from "react-router-dom";
-
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { isEmailValid } from "../utils/helper.js";
 import axiosInstance from "../utils/axiosInstance.js";
 import PasswordInput from "../components/PasswordInput.jsx";
-
+import LZString from "lz-string";
 
 const Login1 = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
 
-  const navigate = useNavigate("");
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!isEmailValid(email)) {
-      setError("Please enter a valid email address.");
-      return;
-    }
-    if (!password) {
-      setError("Please enter the password");
-      return;
-    }
-    setError("");
-    // signup api call
+  if (!isEmailValid(email)) {
+    setError("Please enter a valid email address.");
+    return;
+  }
+  if (!password) {
+    setError("Please enter the password");
+    return;
+  }
+  setError("");
 
-    try {
-      // posting login method to axiosInstance
-      const response = await axiosInstance.post("/user/login", {
-        email,
-        password,
-      });
+  try {
+    const response = await axiosInstance.post("/user/login", {
+      email,
+      password,
+    });
 
-      // handle successful register
-      if (response.data && response.data.token) {
-        console.log("response",response);
-        localStorage.setItem("userToken", response.data.token);
-        localStorage.setItem("userName", response.data.username);
-        localStorage.setItem("userId",response.data.userId);
-        localStorage.setItem("email",response.data.email)
+    if (response.data && response.data.token) {
+      console.log("response", response);
+      localStorage.setItem("userToken", response.data.token);
+      localStorage.setItem("userName", response.data.username);
+      localStorage.setItem("userId", response.data.userId);
+      localStorage.setItem("email", response.data.email);
 
-        
-        console.log("Logging with flag variable true");
-        navigate("/dashboard");
-        console.log("Logging with flag variable false");
+      const redirectPath = location.state?.from;
+      const movie = location.state?.movie;
+      const reviewState = location.state?.reviewState;
+
+      
+      if (redirectPath === "/booking") {
+        const compressedState = localStorage.getItem("bookingState");
+        console.log(compressedState);
+        if (compressedState) {
+          const decompressed = LZString.decompress(compressedState);
+          const bookingState = JSON.parse(decompressed);
+
+         
+          navigate("/booking", { state: bookingState });
+          return;
+        }
+      }
+
+     
+      if (redirectPath === "/movie" && movie) {
+        navigate("/movie", {
+          state: {
+            movie: movie,
+            reviewState: reviewState,
+          },
+        });
         return;
       }
 
-      if (response.data && response.data.error) {
-        setError(response.data.message);
-        return;
-      }
-    } catch (error) {
-      // handle error while login
-      console.log("Logging error:", error);
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        setError(error.response.data.error);
-      } else {
-        setError("An unexpected error occurred. Please try again!");
-      }
+      
+      navigate("/dashboard");
+      return;
     }
-  };
+
+    if (response.data && response.data.error) {
+      setError(response.data.message);
+      return;
+    }
+  } catch (error) {
+    console.log("Logging error:", error);
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.message
+    ) {
+      setError(error.response.data.error);
+    } else {
+      setError("An unexpected error occurred. Please try again!");
+    }
+  }
+};
+
+
+ 
 
   return (
     <div className="flex items-center justify-center mt-[9vw] font-[inter]">
@@ -101,14 +127,18 @@ const Login1 = () => {
 
           <button
             type="submit"
-            className="bg-[#FF5295]  w-[50%] p-2 rounded-sm text-md font-light items-center  mx-auto cursor-pointer"
+            className="bg-[#FF5295] text-white  w-[50%] p-2 rounded-sm text-md font-normal items-center  mx-auto cursor-pointer"
             onSubmit={handleLogin}
           >
             Login
           </button>
           <p className="text-sm text-center mt-4">
             Already have an account?{" "}
-            <Link to="/signup" className="font-medium text-primary underline">
+            <Link
+              to="/signup"
+              state={location.state}
+              className="font-medium text-primary underline"
+            >
               SignUp
             </Link>
           </p>
@@ -116,7 +146,6 @@ const Login1 = () => {
       </div>
     </div>
   );
-  
-}
+};
 
-export default Login1
+export default Login1;

@@ -332,7 +332,7 @@ const filteredShowtime = useMemo(() => {
               </div>
             </div>
 
-            <div className="flex items-center mt-[2vw] gap-[2vw]">
+            {/* <div className="flex items-center mt-[2vw] gap-[2vw]">
               <div className="card flex justify-content-center">
                 <Dropdown
                   value={language}
@@ -353,7 +353,7 @@ const filteredShowtime = useMemo(() => {
                   className="w-full md:w-14rem"
                 />
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
         {/* Time Slots Section */}

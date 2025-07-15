@@ -1,14 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import Barcode from "react-barcode";
 
 const BookingCard = (props) => {
-  const handlePopup = () => {
-    props.func(!props.val);
-  };
 
-  const handleCancel=()=>{
-    props.func(!props.val);
-  }
+   const [visible, setVisible] = useState(false);
+
+  const handlePopup = () => setVisible(true);
+  const handleCancel = () => setVisible(false);
+
 
   console.log(props.ticketData);
   const {amount,tickets,transactionId,ID,date,from,to,movieName,theatreName,theatreAddress,movieFile}=props.ticketData || {};
@@ -19,7 +18,7 @@ const BookingCard = (props) => {
     <>
       <div className="card-container h-[90%] flex items-center border-1 border-[#E0DFDF] rounded-md overflow-hidden gap-1 my-2">
         {/* Popup */}
-        {props.val && (
+        {visible && (
           <>
             <div className="fixed inset-0 bg-black opacity-45 z-30"></div>
             <div className="absolute  w-[50%] h-[18vw] left-[26vw] top-[10vw] bg-white shadow-2xl z-50  flex items-center justify-evenly">

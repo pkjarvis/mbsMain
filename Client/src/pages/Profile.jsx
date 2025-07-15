@@ -12,6 +12,7 @@ const Profile = () => {
   const emailAddress = localStorage.getItem("email");
 
   const [name, setName] = useState(username);
+  const [selectedCity, setSelectedCity] = useState(false);
   
   const [email, setEmail] = useState(emailAddress);
 
@@ -29,6 +30,7 @@ const Profile = () => {
     }else{
       navigate("/root");
     }
+    
   };
 
   const handleSave = ()=>{
@@ -46,7 +48,8 @@ const Profile = () => {
   return (
     <div>
       <div className="profile-container">
-        <NavBar1 title={username} />
+        <NavBar1 title={username}  selectedCity={selectedCity}
+          setSelectedCity={setSelectedCity} />
         <div className="bg-[#E2E0E0] p-2">
           <div className="flex items-center gap-[3vw] mx-[2.4vw]">
             <a href={baseUrl+"/profile"}>Profile</a>
