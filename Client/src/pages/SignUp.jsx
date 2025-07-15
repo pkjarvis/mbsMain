@@ -48,9 +48,11 @@ const SignUp = () => {
      }
     );
       
-      console.log("REsponse: ",response);
-      console.log("Signup successfull!")
-      navigate("/admin-login");
+      localStorage.setItem("adminToken", response.data.token);
+      localStorage.setItem("adminName", response.data.username);
+      localStorage.setItem("adminId", response.data.userId);
+     
+      navigate("/admin-dashboard");
     } catch (error) {
       // handle error while login
       console.log("Full Error",error);

@@ -83,7 +83,7 @@ const MovieCard = ({id,movie,description,startDate,endDate,genre,language,status
               <p className="font-semibold">{movie}</p>
               <span className="tags flex gap-2">
                 {language?.map((lang,index)=>(
-                  <p key={index} className="font-normal text-xs border-0.4 rounded-md bg-zinc-300 w-auto p-0.9 text-center">{lang.name}</p>
+                  <p key={index} className="font-normal text-xs border-0.4 rounded-md bg-zinc-300 w-auto py-0.8  px-1 text-center">{lang.name}</p>
                 ))}
               </span>
               <p className="font-light text-sm">{genre}</p>

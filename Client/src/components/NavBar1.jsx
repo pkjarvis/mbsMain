@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Dropdown } from "primereact/dropdown";
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
@@ -10,6 +10,9 @@ const NavBar1 = (props) => {
   const [flag, setFlag] = useState(selectedCity);
 
   const username = localStorage.getItem("userName");
+
+
+  const dropdownRef = useRef(null);
 
   // const [selectedCity, setSelectedCity] = useState("");
   const cities = [
@@ -58,6 +61,27 @@ const NavBar1 = (props) => {
     }
   }, []);
 
+  const getCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          console.log("Current location:", latitude, longitude);
+
+          // You can use reverse geocoding APIs like OpenCage or Google Maps here
+          // For demo, set city manually
+          setSelectedCity({ name: "New Delhi", code: "ND" });
+        },
+        (error) => {
+          console.error("Error getting location", error);
+          alert("Location access denied. Please enable it.");
+        }
+      );
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  };
+
   const handleProfile = () => {
     navigate("/profile");
   };
@@ -69,22 +93,29 @@ const NavBar1 = (props) => {
       <div
         className={`${
           flag === true
-            ? "absolute w-[48%] h-[auto] bg-white top-[12vw] p-4 shadow-2xl z-10 "
+            ? "fixed w-[48%] h-[auto] bg-white top-[12vw] p-4 shadow-2xl z-10 "
             : "hidden"
         }`}
       >
         <p className="text-xl font-semibold">Select Location</p>
         <div className="card flex justify-content-center mt-3">
           <Dropdown
+            ref={dropdownRef}
             value={selectedCity}
-            onChange={(e) => setSelectedCity(e.value)}
+            onChange={(e) => {
+              setSelectedCity(e.value);
+              setFlag(false);
+            }}
             options={cities}
             optionLabel="name"
             placeholder="Select a City"
             className="w-full md:w-14rem"
           />
         </div>
-        <span className="flex items-center my-3 gap-1">
+        <span
+          className="flex items-center my-3 gap-1 cursor-pointer"
+          onClick={getCurrentLocation}
+        >
           <img
             src="/assets/location.png"
             alt="Location"
@@ -95,7 +126,13 @@ const NavBar1 = (props) => {
         <p className="text-lg font-medium text-center mt-6">Popular cities</p>
 
         <div className="flex items-center justify-evenly mt-3">
-          <span className="flex flex-col items-center">
+          <span
+            className="flex flex-col items-center cursor-pointer"
+            onClick={() => {
+              setSelectedCity({ name: "Hyderabad", code: "HYD" });
+              setFlag(false);
+            }}
+          >
             <img
               src="/assets/charMinar.png"
               alt="CharMinar"
@@ -103,7 +140,13 @@ const NavBar1 = (props) => {
             />
             <p className="text-base text-[#6F6F6F]">Hyderabad</p>
           </span>
-          <span className="flex flex-col items-center">
+          <span
+            className="flex flex-col items-center cursor-pointer"
+            onClick={() => {
+              setSelectedCity({ name: "Agra", code: "AGR" });
+              setFlag(false);
+            }}
+          >
             <img
               src="/assets/TajMahal.png"
               alt="TajMahal"
@@ -111,7 +154,12 @@ const NavBar1 = (props) => {
             />
             <p className="text-base text-[#6F6F6F]">Agra</p>
           </span>
-          <span className="flex flex-col items-center">
+          <span className="flex flex-col items-center cursor-pointer" 
+             onClick={() => {
+              setSelectedCity({ name: "New Delhi", code: "ND" });
+              setFlag(false);
+            }}
+          >
             <img
               src="/assets/IndiaGate.png"
               alt="IndiaGate"
@@ -119,7 +167,12 @@ const NavBar1 = (props) => {
             />
             <p className="text-base text-[#6F6F6F]">Delhi</p>
           </span>
-          <span className="flex flex-col items-center">
+          <span className="flex flex-col items-center cursor-pointer" 
+             onClick={() => {
+              setSelectedCity( { name: "Mumbai", code: "MB" });
+              setFlag(false);
+            }}
+          >
             <img
               src="/assets/MumbaiGate.png"
               alt="CharMinar"
@@ -128,7 +181,10 @@ const NavBar1 = (props) => {
             <p className="text-base text-[#6F6F6F]">Mumbai</p>
           </span>
         </div>
-        <p className="text-center text-base font-normal text-[#6F6F6F] mt-[0.4vw]">
+        <p
+          className="text-center text-base font-normal text-[#6F6F6F] mt-[0.4vw] cursor-pointer"
+          onClick={() => dropdownRef.current?.show()}
+        >
           View all cities
         </p>
       </div>

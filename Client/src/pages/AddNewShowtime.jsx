@@ -76,7 +76,6 @@ const AddNewShowtime = () => {
       })
       .catch((err) => console.log(err));
   }, []);
-  
 
   const [movieId, setMovieId] = useState(null);
   useEffect(() => {
@@ -466,14 +465,14 @@ const AddNewShowtime = () => {
               />
             </Box> */}
 
-            <div className="card flex justify-content-center items-center h-[2.4vw]">
+            <div className="card flex justify-content-center items-center h-[2.4vw] ">
               <Dropdown
                 value={moviename}
                 onChange={(e) => setMovieName(e.value)}
                 options={movies}
                 optionLabel="name"
                 placeholder="Select a Movie"
-                className="w-full md:w-14rem"
+                className="w-full md:w-14rem showtime-movie"
                 checkmark={true}
                 highlightOnSelect={false}
                 filter
@@ -536,14 +535,14 @@ const AddNewShowtime = () => {
               />
             </Box> */}
 
-            <div className="card flex justify-content-center h-[2.4vw] items-center">
+            <div className="card flex justify-content-center h-[2.4vw] items-center ">
               <Dropdown
                 value={theatrename}
                 onChange={(e) => setTheatreName(e.value)}
                 options={theatres}
                 optionLabel="name"
                 placeholder="Select a Theatre"
-                className="w-full md:w-14rem"
+                className="w-full md:w-14rem showtime-theatre"
                 checkmark={true}
                 highlightOnSelect={false}
                 filter
@@ -587,7 +586,7 @@ const AddNewShowtime = () => {
                   options={cities}
                   optionLabel="name"
                   placeholder="Select a Language"
-                  className="w-full md:w-14rem"
+                  className="w-full md:w-14rem showtime-language"
                   checkmark={true}
                   highlightOnSelect={false}
                   filter
@@ -614,6 +613,8 @@ const AddNewShowtime = () => {
                     onChange={(e) => setDateTime12h(e.value)}
                     showTime
                     hourFormat="12"
+                    className="custom-calendar"
+                    
                   />
                 </div>
                 <div className="w-[11vw]">
@@ -629,6 +630,7 @@ const AddNewShowtime = () => {
                     // onChange={(e) => setDateTime(e.value)}
                     showTime
                     hourFormat="12"
+                    className="custom-calendar"
                   />
                 </div>
               </div>

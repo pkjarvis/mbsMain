@@ -33,6 +33,8 @@ const AddNewTheatre = () => {
 
   const [value, setValue] = useState([]); // multi input state
 
+  const [fileInputKey, setFileInputKey] = useState(Date.now());
+
   const navigate = useNavigate();
   const { addTheatre, updateTheatre } = useContext(TheatreContext);
 
@@ -105,8 +107,19 @@ const AddNewTheatre = () => {
   };
 
   const handleRemoveFile = () => {
-    theatrefile = "";
-    setTheatreFile(theatrefile);
+    
+    setTheatreFile("");
+    if(fileInputRef.current){
+      fileInputRef.current.value="";
+    }
+
+    const bg = document.getElementById("ImageBg");
+    if (bg) {
+      bg.style.background = "";
+    }
+    setFileInputKey(Date.now());
+
+
   };
 
   const handleSubmit = async (e) => {
@@ -717,6 +730,7 @@ const AddNewTheatre = () => {
               {/* <img src="../src/assets/Upload.png" alt="Upload.png" className='w-[1.4vw] h-[1.4vw]' />
                 <p className=' text-gray-500 text-sm'>Upload file here</p> */}
               <input
+                key={fileInputKey}
                 type="file"
                 className="hidden"
                 ref={fileInputRef}

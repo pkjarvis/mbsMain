@@ -84,9 +84,9 @@ const SignUp1 = () => {
         return;
       }
 
-      
       navigate("/dashboard");
       return;
+      
     } catch (error) {
       // handle error while login
       console.log(error);

@@ -4,7 +4,7 @@ const baseUrl=import.meta.env.VITE_ROUTE
 import Cookies from 'js-cookie';
 
 const Navbar = (props) => {
-  const username = localStorage.getItem("userName");
+  const username = localStorage.getItem("adminName");
   useEffect(() => {
     console.log(username);
   }, [username]);

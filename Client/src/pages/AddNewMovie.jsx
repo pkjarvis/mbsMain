@@ -22,8 +22,6 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
-
-
 const AddNewMovie = () => {
   const [movie, setMovie] = useState("");
   const [description, setDescription] = useState("");
@@ -33,6 +31,8 @@ const AddNewMovie = () => {
   const [status, setStatus] = useState("");
   var [file, setFile] = useState("");
   const [duration, setDuration] = useState(null);
+
+  const [fileInputKey, setFileInputKey] = useState(Date.now());
 
   const [language, setLanguage] = useState("");
   const cities = [
@@ -46,7 +46,6 @@ const AddNewMovie = () => {
     { name: "German", code: "GER" },
   ];
 
-  
   const { addMovie, updateMovie } = useContext(MoviesContext);
 
   const { state } = useLocation();
@@ -74,25 +73,23 @@ const AddNewMovie = () => {
   }, [editingMovie]);
 
   // handling auto status
-  useEffect(()=>{
-    const currentTime=new Date();
-    if(!startDate && !endDate) return;
+  useEffect(() => {
+    const currentTime = new Date();
+    if (!startDate && !endDate) return;
 
-    const newstart=new Date(startDate);
-    const newend=new Date(endDate);
+    const newstart = new Date(startDate);
+    const newend = new Date(endDate);
 
-    if(currentTime>=newstart && currentTime<=newend){
+    if (currentTime >= newstart && currentTime <= newend) {
       setStatus("Now Showing");
-    }else if(currentTime>newend && currentTime>newstart){
+    } else if (currentTime > newend && currentTime > newstart) {
       setStatus("Expired");
-    }else if(currentTime<newstart && currentTime<newend){
+    } else if (currentTime < newstart && currentTime < newend) {
       setStatus("Upcoming");
-    }else{
+    } else {
       setStatus("");
     }
-
-  },[startDate,endDate])
-  
+  }, [startDate, endDate]);
 
   const fileInputRef = useRef(null);
 
@@ -102,7 +99,9 @@ const AddNewMovie = () => {
 
   const handleFileChange = async (e) => {
     e.preventDefault();
+
     const val = e.target.files[0];
+    if (!val) return;
     const reader = new FileReader();
 
     reader.onloadend = () => {
@@ -138,8 +137,17 @@ const AddNewMovie = () => {
   };
 
   const handleRemoveFile = () => {
-    file = "";
-    setFile(file);
+    setFile("");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+
+    // Step 2: Clear the background image
+    const bg = document.getElementById("ImageBg");
+    if (bg) {
+      bg.style.background = "";
+    }
+    setFileInputKey(Date.now());
   };
 
   const navigate = useNavigate();
@@ -194,12 +202,10 @@ const AddNewMovie = () => {
         toastMessage: editingMovie
           ? "Movie has been updated successfully"
           : "Movie has been added successfully",
-        setShowDataWarning:false,
+        setShowDataWarning: false,
       },
     });
   };
-
-
 
   return (
     <div>
@@ -400,15 +406,15 @@ const AddNewMovie = () => {
               <option id="upcoming">Upcoming</option>
             </select> */}
 
-            <Box 
-            component="form"
+            <Box
+              component="form"
               sx={{ "& > :not(style)": { width: "30vw", margin: "0.2vw 0" } }}
               noValidate
               autoComplete="off"
             >
-              <FormControl 
-              fullWidth
-              sx={{
+              <FormControl
+                fullWidth
+                sx={{
                   "& .MuiOutlinedInput-root": {
                     // Default border color for outlined input
                     height: "2.2vw",
@@ -450,7 +456,7 @@ const AddNewMovie = () => {
                   id="demo-simple-select"
                   value={status}
                   label="Age"
-                  onChange={(e)=>setStatus(e.target.value)}
+                  onChange={(e) => setStatus(e.target.value)}
                 >
                   <MenuItem value={"Now Showing"}>Now Showing</MenuItem>
                   <MenuItem value={"Expired"}>Expired</MenuItem>
@@ -526,8 +532,6 @@ const AddNewMovie = () => {
               </FormControl>
             </Box>
 
-
-
             <p className="font-semibold text-zinc-600 text-base my-2">
               Upload Poster
             </p>
@@ -567,6 +571,7 @@ const AddNewMovie = () => {
               )}
 
               <input
+                key={fileInputKey}
                 type="file"
                 className=" text-gray-500 text-sm mx-auto hidden"
                 ref={fileInputRef}

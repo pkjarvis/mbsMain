@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 
 const Navbar = (props) => {
  
-  const username=localStorage.getItem("userName");
+  const username=localStorage.getItem("adminName");
   const [visible, setVisible] = useState(false);
 
   const handleClick = () => {

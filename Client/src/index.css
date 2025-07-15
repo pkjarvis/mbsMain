@@ -100,3 +100,48 @@ html,body{
 .dropdown-black-border.p-dropdown .p-inputtext:focus {
   box-shadow: none !important;
 }
+
+/* .showtime-movie .p-dropdown:hover,.showtime-movie .p-dropdown:focus,.showtime-movie .p-dropdown .p-focus{
+     border: var(--black-border) !important;
+  box-shadow: none !important;
+} */
+
+.showtime-movie.p-dropdown:hover{
+    border-color: black !important;
+}
+.showtime-movie.p-dropdown.p-focus{
+    box-shadow: none !important;
+    border-color: black !important;
+}
+
+.showtime-theatre.p-dropdown:hover{
+    border-color: black !important;
+}
+.showtime-theatre.p-dropdown.p-focus{
+    box-shadow: none !important;
+    border-color: black !important;
+}
+
+.showtime-language.p-dropdown:hover{
+    border-color: black !important;
+}
+.showtime-language.p-dropdown.p-focus{
+    box-shadow: none !important;
+    border-color: black !important;
+}
+
+
+
+
+.custom-calendar .p-inputtext {
+  /* border: 1px solid black !important; */
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.custom-calendar .p-inputtext:hover,
+.custom-calendar .p-inputtext:focus {
+  border: 1px solid black !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
