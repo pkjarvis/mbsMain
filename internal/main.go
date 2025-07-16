@@ -17,7 +17,6 @@ import (
 	// "github.com/joho/godotenv"
 )
 
-
 func main() {
 	// Create a new gin instance
 
@@ -32,7 +31,11 @@ func main() {
 	r.POST("/payment-success", controllers.PaymentSuccess)
 	r.POST("/payment-failure", controllers.PaymentFailure)
 
-	url:=os.Getenv("FRONTEND_DOMAIN")
+	url := os.Getenv("FRONTEND_DOMAIN")
+	if url == "" {
+		url = "mbsmain-hksv.onrender.com" // fallback during dev
+	}
+	fmt.Println("url is",url)
 
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{url},
@@ -44,8 +47,6 @@ func main() {
 	}))
 
 	// Load .env file and Create a new connection to the database , while running through docker we don't need to add godotenv.Load()
-
-	
 
 	// config := models.Config{
 	// 	Host:     os.Getenv("DB_HOST"),
