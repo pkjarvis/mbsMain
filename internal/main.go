@@ -33,13 +33,13 @@ func main() {
 
 	url := os.Getenv("FRONTEND_DOMAIN")
 	if url == "" {
-		url = "mbsmain-hksv.onrender.com" // fallback during dev
+		url = "https://mbsmain-hksv.onrender.com/" // fallback during dev
 	}
 	fmt.Println("url is",url) // this url should be passed in alloworigins
 
 
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"mbsmain-hksv.onrender.com"},
+		AllowOrigins:     []string{"https://mbsmain-hksv.onrender.com"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length", "Set-Cookie"},
