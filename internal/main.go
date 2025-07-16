@@ -22,11 +22,19 @@ func main() {
 
 	r := gin.Default()
 
+	fmt.Println("before loading env file")
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	r.POST("/payment-success", controllers.PaymentSuccess)
 	r.POST("/payment-failure", controllers.PaymentFailure)
 
+	url:=os.Getenv("ALLOWED_ORIGIN1")
+
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173", "http://localhost:3000", "https://mbsmain-hksv.onrender.com"},
+		AllowOrigins:     []string{url},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length", "Set-Cookie"},
@@ -36,11 +44,7 @@ func main() {
 
 	// Load .env file and Create a new connection to the database , while running through docker we don't need to add godotenv.Load()
 
-	fmt.Println("before loading env file")
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+	
 
 	config := models.Config{
 		Host:     os.Getenv("DB_HOST"),

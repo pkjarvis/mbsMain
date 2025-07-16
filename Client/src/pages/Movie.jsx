@@ -49,9 +49,9 @@ const Movie = () => {
   const handleClick = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
 
-    if (!username) {
-      setVisible(true);
-    }
+    
+    setVisible(true);
+    
   };
   const handleCancel = () => {
     setVisible(false);
@@ -103,7 +103,8 @@ const Movie = () => {
     const username = localStorage.getItem("userName");
     const token = localStorage.getItem("userToken");
 
-    navigate("/root", {
+    if(!username || !token){
+      navigate("/root", {
       state: {
         from: "/movie",
         movie: m,
@@ -114,6 +115,10 @@ const Movie = () => {
         },
       },
     });
+    return;
+    }
+
+    
 
     if (!userwatchedmovie) {
       setShowDataWarning(true);

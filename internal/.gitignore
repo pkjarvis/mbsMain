@@ -6,3 +6,4 @@
 temp/
 cache/
 go.sum
+internal/.env

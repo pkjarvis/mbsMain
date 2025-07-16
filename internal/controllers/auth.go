@@ -932,13 +932,15 @@ func generatePayuPayment(tx models.Transaction) map[string]interface{} {
 	hash := sha512.Sum512([]byte(hashString))
 	hashHex := hex.EncodeToString(hash[:])
 
+	successurl:=os.Getenv("SUCCESS_URL")
+
 	return map[string]interface{}{
 		"payuFormFields": map[string]string{
 			"key":         key,
 			"city":        "city",
-			"furl":        "http://localhost:8080/payment-failure",
+			"furl":        successurl+"payment-failure",
 			"hash":        hashHex,
-			"surl":        "http://localhost:8080/payment-success",
+			"surl":        successurl+"payment-success",
 			"email":       email,
 			"phone":       "phone number",
 			"state":       "state",
@@ -981,11 +983,13 @@ func Payment(c *gin.Context) {
 		c.JSON(401, gin.H{"error": "User Id not found in context"})
 		return
 	}
+	
 	userId, ok := userIdVal.(uint)
 	if !ok {
 		c.JSON(400, gin.H{"error": "UserId is not in correct format"})
 		return
 	}
+	
 
 	// Create transaction
 	payment := models.Transaction{
@@ -1006,7 +1010,7 @@ func Payment(c *gin.Context) {
 
 	// Save to DB
 	if err := models.DB.Create(&payment).Error; err != nil {
-		c.JSON(500, gin.H{"error": "Could not create transaction"})
+		c.JSON(500, gin.H{"error": "Could not create transaction","details":err.Error()})
 		return
 	}
 

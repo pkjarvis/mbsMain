@@ -67,9 +67,9 @@ func UserAuthorized() gin.HandlerFunc{
         }
 
         // 3. Set context values
+        c.Set("claims", claims)
         c.Set("userId", claims.UserId)
         c.Set("role", claims.Role)
-        c.Set("claims", claims)
 
         fmt.Printf("Authorized user - ID: %v, Role: %v\n", claims.UserId, claims.Role)
 
