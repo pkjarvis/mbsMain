@@ -3,30 +3,30 @@
 package models
 
 import (
-    "fmt"
-    // "os"
-    "gorm.io/driver/postgres"
-    "gorm.io/gorm"
-   
+	"fmt"
+	"os"
+	// "os"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
-
-type Config struct {
-    Host     string
-    Port     string
-    User     string
-    Password string
-    DBName   string
-    SSLMode  string
-}
+// type Config struct {
+//     Host     string
+//     Port     string
+//     User     string
+//     Password string
+//     DBName   string
+//     SSLMode  string
+// }
 
 var DB *gorm.DB
 
-func InitDB(cfg Config) {
+func InitDB() {
 
-    dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s", cfg.Host, cfg.User, cfg.Password, cfg.DBName, cfg.Port, cfg.SSLMode)
-    fmt.Println("Inside initdb");
+    // dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s", cfg.Host, cfg.User, cfg.Password, cfg.DBName, cfg.Port, cfg.SSLMode)
 
+    fmt.Println("Inside initdb")
+    dsn:=os.Getenv("DATABASE_URL")
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
         panic(err)
