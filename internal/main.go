@@ -17,6 +17,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
+
 func main() {
 	// Create a new gin instance
 
@@ -31,7 +32,7 @@ func main() {
 	r.POST("/payment-success", controllers.PaymentSuccess)
 	r.POST("/payment-failure", controllers.PaymentFailure)
 
-	url:=os.Getenv("ALLOWED_ORIGIN1")
+	url:=os.Getenv("FRONTEND_DOMAIN")
 
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{url},
@@ -71,6 +72,7 @@ func main() {
 
 	// Start server on the correct port
 	err1 := r.Run(":" + port)
+
 	if err1 != nil {
 		log.Fatal("Server failed to start:", err1)
 	}
