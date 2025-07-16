@@ -108,7 +108,7 @@ const MovieManagement = () => {
           title="Manage Movies"
           btncontent="+Add New Movie"
           headerlink="Movie Management"
-          btnlink={baseUrl + "/admin-addnewmovie"}
+          btnlink="/admin-addnewmovie"
           onSearch={setSearchQuery}
           searchValue={searchQuery}
         />

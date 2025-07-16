@@ -81,7 +81,7 @@ const Shows = () => {
         title="Schedule Showtimes"
         btncontent="+Add New Showtime"
         headerlink="Showtime Scheduling"
-        btnlink={baseUrl + "/admin-addnewshows"}
+        btnlink="/admin-addnewshows"
         onSearch={setSearchQuery}
         searchValue={searchQuery}
       />

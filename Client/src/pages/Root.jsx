@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 const baseUrl=import.meta.env.VITE_ROUTE;
 
 const Root = () => {
-  console.log(baseUrl);
+ 
   return (
      <div className="container h-[100vh] max-w-[100%] bg-white place-items-center">
         

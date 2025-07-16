@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import NavBar1 from "../components/NavBar1";
 import Footer from "../components/Footer";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
 import Cookies from 'js-cookie';
 
@@ -43,7 +43,7 @@ const Profile = () => {
     .catch(err=>console.log(err))
   }
 
-  
+
 
   return (
     <div>
@@ -52,8 +52,8 @@ const Profile = () => {
           setSelectedCity={setSelectedCity} />
         <div className="bg-[#E2E0E0] p-2">
           <div className="flex items-center gap-[3vw] mx-[2.4vw]">
-            <a href={baseUrl+"/profile"}>Profile</a>
-            <a href={baseUrl+"/history"}>History</a>
+            <Link to="/profile">Profile</Link>
+            <Link to="/history">History</Link>
           </div>
         </div>
         <div className="bg-[#F1F1F1] mx-[3vw] h-[70vh] pt-[2vw] mt-[1.6vw]">

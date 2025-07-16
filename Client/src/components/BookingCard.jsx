@@ -3,7 +3,7 @@ import Barcode from "react-barcode";
 
 const BookingCard = (props) => {
 
-   const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(false);
 
   const handlePopup = () => setVisible(true);
   const handleCancel = () => setVisible(false);

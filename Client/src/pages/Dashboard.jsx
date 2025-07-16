@@ -8,11 +8,6 @@ import DCard3 from '../assets/DCard3.png'
 
 const Dashboard = () => {
 
-  // const username=localStorage.getItem("username");
-  // useEffect(()=>{
-  //   console.log("username",username)
-  // },[username]);
-
   return (
     <div className='dashboard-container'>
       <div className="content p-2">

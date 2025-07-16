@@ -102,7 +102,7 @@ const Theatres = () => {
         title="Manage Theatres"
         btncontent="+Add New Theatres"
         headerlink="Theatre Management"
-        btnlink={baseUrl + "/admin-addnewtheatre"}
+        btnlink="/admin-addnewtheatre"
         onSearch={setSearchQuery}
         searchValue={searchQuery}
       />
