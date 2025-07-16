@@ -915,9 +915,9 @@ func generatePayuPayment(tx models.Transaction) map[string]interface{} {
 		"payuFormFields": map[string]string{
 			"key":         key,
 			"city":        "city",
-			"furl":        fmt.Sprintf("%spayment-failure", successurl),
+			"furl":        fmt.Sprintf("%s/payment-failure", successurl),
 			"hash":        hashHex,
-			"surl":        fmt.Sprintf("%spayment-success", successurl),
+			"surl":        fmt.Sprintf("%s/payment-success", successurl),
 			"email":       email,
 			"phone":       "phone number",
 			"state":       "state",
