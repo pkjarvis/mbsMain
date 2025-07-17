@@ -1121,7 +1121,7 @@ func GetBookedSeats(c *gin.Context) {
 
 	var transactions []models.Transaction
 	if err := models.DB.Where("show_id = ? AND status = ?", showIdParam, "paid").Find(&transactions).Error; err != nil {
-		log.Println("🔥 DB ERROR:", err) // print full error
+		log.Println("DB ERROR:", err) // print full error
 		c.JSON(500, gin.H{"error": "Failed to fetch transactions"})
 		return
 	}

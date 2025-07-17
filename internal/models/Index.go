@@ -5,7 +5,6 @@ package models
 import (
 	"fmt"
 	"os"
-	// "os"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

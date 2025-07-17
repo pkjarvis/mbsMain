@@ -5,16 +5,15 @@ import { useLocation, useNavigate } from "react-router-dom";
 // theatre-> id,theatrename,address,cityName,stateName,status,totalscreens,theatrefile,value
 // showtime -> id:Date.now(),theatrename,startDate,moviename,datetime12h,datetime,timearray,selectedCities,
 
-const Theatres = ({ theatre,movies,timearray ,date}) => {
+const Theatres = ({ theatre, movies, timearray, date }) => {
   const [showtime, setShowTime] = useState([]);
-//   const [movies,setMovies]=useState([]);
-  const navigate=useNavigate("");
+  //   const [movies,setMovies]=useState([]);
+  const navigate = useNavigate("");
 
   // const {state}=useLocation();
   // const movie=state?.movie;
-  
+
   // console.log("movie from location.state",movie)
- 
 
   // useEffect(() => {
   //   axiosInstance
@@ -27,18 +26,18 @@ const Theatres = ({ theatre,movies,timearray ,date}) => {
   //       console.log("Error fetching movies", err.response?.data || err.message)
   //     );
   // }, []);
-//    useEffect(() => {
-//     axiosInstance
-//       .get("/get-showtime", { withCredentials: true })
-//       .then((res) => {
-//         console.log(res.data);
-//         setShowTime(res.data);
-//       })
-//       .catch((err) =>
-//         console.log("Error fetching movies", err.response?.data || err.message)
-//       );
-//   }, []);
-  const location=useLocation();
+  //    useEffect(() => {
+  //     axiosInstance
+  //       .get("/get-showtime", { withCredentials: true })
+  //       .then((res) => {
+  //         console.log(res.data);
+  //         setShowTime(res.data);
+  //       })
+  //       .catch((err) =>
+  //         console.log("Error fetching movies", err.response?.data || err.message)
+  //       );
+  //   }, []);
+  const location = useLocation();
 
   // useEffect(()=>{
   //   if (location.state){
@@ -46,19 +45,38 @@ const Theatres = ({ theatre,movies,timearray ,date}) => {
   // }
   // },[location])
 
-  
-  
-  console.log("showtime", showtime);
-  console.log("theatreval",theatre);
+  // const d=new Date();
+  // const h=d.toLocaleTimeString();
 
-  const handleClick = (from,to,id) => {
-    if(!date){
+  // console.log("date now hour",h);
+
+  console.log("showtime", showtime);
+  console.log("theatreval", theatre);
+
+
+  const filteredShowtimes = showtime.filter(
+    (item) => item.theatre.cityName === selectedCity
+  );
+
+  
+
+  const handleClick = (from, to, id) => {
+    if (!date) {
       // alert("Please select the date first!")
       setShowDataWarning(true);
       return;
     }
-    console.log("id is",id);
-    navigate("/showbooking",{state:{movie:movies,theatreval:theatre,date:date,from:from,to:to,id}});
+    console.log("id is", id);
+    navigate("/showbooking", {
+      state: {
+        movie: movies,
+        theatreval: theatre,
+        date: date,
+        from: from,
+        to: to,
+        id,
+      },
+    });
   };
 
   return (
@@ -78,17 +96,8 @@ const Theatres = ({ theatre,movies,timearray ,date}) => {
         </span>
       </span>
       <div className="h-[auto] mt-2 grid grid-cols-7 px-2 gap-4 ">
-        {
-        // showtime && showtime.length > 0 ? (
-        //   // Inner map: Elements generated here need a key.
-        //   showtime.map((shows)=>(
-        //     shows.timearray?.map((item,index)=>(
-        //         <div key={index} className="font-medium border-1 border-[#ACACAC] p-2 w-[10vw] text-center rounded-2xl cursor-pointer" onClick={()=>handleClick}>
-        //             <p key={index} className="text-[#008610] " onClick={handleClick}>{item.val1}:{item.val2}</p>
-        //         </div>
-        //     ))
-        //   )) 
-        // ) 
+        {/* {
+      
         timearray && timearray.length>0?(
           timearray.map((item,index)=>(
            <div key={index} className="font-medium border-1 border-[#ACACAC] p-2 w-[10vw] text-center rounded-2xl cursor-pointer" onClick={()=>handleClick(item.val1,item.val2,`${movies.id}-${theatre.id}-${date}-${item.val1}-${item.val2}`)}>
@@ -101,7 +110,42 @@ const Theatres = ({ theatre,movies,timearray ,date}) => {
         
           <p className="text-gray-500 text-xs">No times available</p>
           // Or simply: null
-        )}
+        )} */}
+
+        {
+        timearray
+          .filter((item) => {
+            // 1. Skip past time slots for today
+            if (date === new Date().toISOString().slice(0, 10)) {
+              // Construct a full datetime string
+              const timeStr = `${date}T${item.val1.padStart(
+                2,
+                "0"
+              )}:${item.val2.padStart(2, "0")}:00`;
+              const slotDate = new Date(timeStr);
+              return slotDate.getTime() > Date.now();
+            }
+            return true; // future dates — show all times
+          })
+          .map((item, index) => (
+            <div
+              key={index}
+              className="font-medium border-1 border-[#ACACAC] p-2 w-[10vw] text-center rounded-2xl cursor-pointer"
+              onClick={() =>
+                handleClick(
+                  item.val1,
+                  item.val2,
+                  `${movies.id}-${theatre.id}-${date}-${item.val1}-${item.val2}`
+                )
+              }
+            >
+              <p className="text-[#008610]">
+                {item.val1}-{item.val2}
+              </p>
+            </div>
+          ))
+          }
+
         {/* <div className="font-medium border-1 border-[#ACACAC] p-2 w-[10vw] text-center rounded-2xl cursor-pointer" onClick={handleClick}>
                     <p className="text-[#008610] ">2:40 PM</p>
                   </div> */}

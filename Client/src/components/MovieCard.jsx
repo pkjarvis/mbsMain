@@ -41,6 +41,15 @@ const MovieCard = ({id,movie,description,startDate,endDate,genre,language,status
     navigate("/admin-addnewmovie",{state:{movie:{id,movie,description,startDate,endDate,genre,language,status,file}}});
   }
 
+  const date=Date.now();
+  if(date>=startDate && date<=endDate){
+    status="Now Showing";
+  }else if(date>endDate && date>startDate){
+    status="Expired"
+  }else if(date<startDate && date<endDate){
+    status="Upcoming"
+  }
+
 
   return (
     <div>

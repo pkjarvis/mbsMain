@@ -65,6 +65,11 @@ const MovieManagement = () => {
     movie.movie.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  
+
+
+
+
 
   return (
     <div>

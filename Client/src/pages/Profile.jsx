@@ -75,7 +75,7 @@ const Profile = () => {
               Personal Details
             </h2>
             <span className="flex justify-between items-center gap-[7vw] mt-[1vw]">
-              <p className="text-md max-w-[18%]"> Name</p>
+              <p className="text-md max-w-[18%] "> Name</p>
               <input
                 type="text"
                 placeholder="Enter first name here"
@@ -86,13 +86,13 @@ const Profile = () => {
             </span>
             
             <span className="flex justify-between items-center gap-[3.7vw] mt-[1vw]">
-              <p className="text-md max-w-[18%]">Email Address</p>
+              <p className="text-md max-w-[18%] opacity-15">Email Address</p>
               <input
                 type="email"
                 placeholder="Enter your email"
                 value={email}
-                className="w-[30vw] h-[2vw] p-1 bg-white border-1 border-[#CCCCCC] focus:outline-none rounded-md"
-                onChange={(e) => setEmail(e.target.value)}
+                className="w-[30vw] h-[2vw] p-1 bg-white border-1 border-[#CCCCCC] focus:outline-none rounded-md opacity-45"
+                // onChange={(e) => setEmail(e.target.value)}
               />
             </span>
           
@@ -100,11 +100,17 @@ const Profile = () => {
 
           <div className="flex items-center justify-end mt-[4vw] gap-5 max-w-[68%]">
             <span className="w-[10%] h-[2vw] border-1 border-[#FF1414] rounded-sm flex items-center justify-center p-3 cursor-pointer">
-              <p className=" text-md text-[#FF1414]" onClick={handleLogout}>
+              <p
+               className=" text-md text-[#FF1414] " 
+               onClick={handleLogout}
+               >
                 Log out
               </p>
             </span>
-            <span className="w-[10%] h-[2vw]  bg-[#FF5295] rounded-sm flex items-center justify-center p-3 cursor-pointer" onClick={handleSave}>
+            <span 
+            className="w-[10%] h-[2vw]  bg-[#FF5295] rounded-sm flex items-center justify-center p-3 cursor-pointer" 
+            onClick={handleSave}
+            >
               <p className=" text-md text-white">Save</p>
             </span>
           </div>

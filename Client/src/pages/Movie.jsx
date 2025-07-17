@@ -25,9 +25,12 @@ const Movie = () => {
   const m = state?.movie;
 
   console.log("state of movie page is:", m);
+  console.log("movieId is", m.id);
 
   const [selectedCity, setSelectedCity] = useState("");
   const username = localStorage.getItem("userName");
+
+  const [movieenddate, setMovieEndDate] = useState();
 
   // if(!movie){
   //   return <p>Movie data not available</p>
@@ -48,14 +51,35 @@ const Movie = () => {
 
   const handleClick = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
-
-    
     setVisible(true);
-    
   };
+
   const handleCancel = () => {
     setVisible(false);
   };
+
+  useEffect(() => {
+    axiosInstance
+      .get(
+        "/get-movie-byid",
+        { params: { movieId: m.id } },
+        { withCredentials: true }
+      )
+      .then((res) => {
+        console.log("Movie fetched by id", res.data.movie[0].endDate);
+        setMovieEndDate(res.data.movie[0].startDate);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  const inputTime = movieenddate;
+  const inputDate = new Date(inputTime);
+  const now = new Date();
+
+  // console.log("startdate", movieenddate);
+  // const today = new Date();
+
+  // console.log("date is", today);
 
   const [movies, setMovies] = useState([]);
 
@@ -93,6 +117,7 @@ const Movie = () => {
       })
       .catch((err) => console.log(err));
   }, []);
+  
 
   const handleSubmit = async () => {
     setVisible(false);
@@ -103,23 +128,23 @@ const Movie = () => {
     const username = localStorage.getItem("userName");
     const token = localStorage.getItem("userToken");
 
-    if(!username || !token){
+    if (!username || !token) {
       navigate("/root", {
-      state: {
-        from: "/movie",
-        movie: m,
-        reviewState: {
-          visible: true,
-          star,
-          text,
+        state: {
+          from: "/movie",
+          movie: m,
+          reviewState: {
+            visible: true,
+            star,
+            text,
+          },
         },
-      },
-    });
-    return;
+      });
+      return;
     }
-
-    
-
+    if (inputDate > now) {
+      return;
+    } 
     if (!userwatchedmovie) {
       setShowDataWarning(true);
       return;

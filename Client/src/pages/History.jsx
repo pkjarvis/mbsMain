@@ -72,7 +72,7 @@ const History = () => {
                   tickets: transaction.tickets, 
                 }}
               />
-            ))
+            )).sort((a,b)=>a-b).reverse()
           ) : (
             <p className="text-gray-500">No booked tickets</p>
           )}

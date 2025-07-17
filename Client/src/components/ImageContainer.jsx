@@ -9,14 +9,7 @@ const ImageContainer = ({ setSearchTerm }) => {
 
   const [currentmovie, setCurrentMovie] = useState("");
 
-  // const handleClick = (path,movie) => {
-  //   setBgImage(path);
-  //   setCurrentMovie(movie);
-  // };
-
-  // const handleSubmit=()=>{
-  //   navigate("/movie",{state:{movie:currentmovie}});
-  // }
+  
 
   const [moviename, setMovieName] = useState("");
   const [movies, setMovies] = useState("");
@@ -95,24 +88,6 @@ const ImageContainer = ({ setSearchTerm }) => {
           </span>
         ))}
 
-        {/* <span
-          onClick={() => handleClick("/assets/Bg-3.png")}
-          className="w-[25%] overflow-hidden object-cover"
-        >
-          <img src="/assets/Bg-3.png" alt="Bg-3" />
-        </span> */}
-        {/* <span
-          onClick={() => handleClick("/assets/Bg-4.png")}
-          className="w-[25%] overflow-hidden object-cover h-[8.5vw]"
-        >
-          <img src="/assets/Bg-4.png" alt="Bg-4" />
-        </span>
-        <span
-          onClick={() => handleClick("/assets/Bg-1.png")}
-          className="w-[25%] overflow-hidden object-cover h-[6vw]"
-        >
-          <img src="/assets/Bg-1.png" alt="Bg-4" />
-        </span> */}
       </div>
 
       <div className="bg-white mt-5  w-[100%] h-[70vh] overflow-hidden ">

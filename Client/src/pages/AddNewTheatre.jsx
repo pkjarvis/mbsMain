@@ -168,6 +168,13 @@ const AddNewTheatre = () => {
     });
   };
 
+  const cityStateMap = {
+  "New Delhi": "New Delhi",
+  "Mumbai": "Maharashtra",
+  "Pune": "Maharashtra",
+  "Hyderabad": "Telangana",
+  "Agra": "Uttar Pradesh",
+};
  
 
   const handleStatusChange = (event) => {
@@ -318,7 +325,7 @@ const AddNewTheatre = () => {
                 onChange={(e) => setCityName(e.target.value)}
                 className="w-[47%] text-sm text-zinc-400 border-1 border-gray-300 rounded-sm p-2 flex items-center justify-between outline-none"
               /> */}
-              <Box
+              {/* <Box
                 component="form"
                 sx={{ "& > :not(style)": { width: "14vw", margin: "0.2vw 0" } }}
                 noValidate
@@ -363,7 +370,97 @@ const AddNewTheatre = () => {
                     },
                   }}
                 />
+              </Box> */}
+
+               <Box 
+                sx={{ "& > :not(style)": { width: "14vw", margin: "0 0" ,} }}
+                noValidate
+                autoComplete="off"
+                
+              >
+                <FormControl 
+               
+                 sx={{
+                  "& .MuiOutlinedInput-root": {
+                    // Default border color for outlined input
+                    height:"2.2vw",
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#A1A2A4", // Grey border by default
+                      borderWidth: "1px",
+                      height:"3rem",
+                      alignItems:"center",
+                    },
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#A1A2A4", // Keep grey on hover if not focused
+                    },
+                    // Styles when the input itself is focused
+                    "&.Mui-focused": {
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#000", // Black border when focused
+                        borderWidth: "1px", // Keep border width consistent
+                      },
+                    },
+                  },
+                  // Target the label component directly
+                  "& .MuiInputLabel-root": {
+                    color: "#A1A2A4", // Default label color (grey)
+                    fontWeight: "normal",// Assuming default is normal, if you want bold when focused
+                    "&.Mui-focused": {
+                      color: "#000", // Black label when focused
+                      fontWeight: "light", // Bold label when focused
+                    },
+                    // Optional: Keep label black when it has a value (shrunk) and is not focused
+                    "&.MuiInputLabel-shrink": {
+                      color: "#000", // Black label when shrunk (has value)
+                    },
+                  },
+                }}
+                >
+                  <InputLabel id="demo-simple-select-label">CityName</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={cityName}
+                    label="CityName"
+                    onChange={(e)=>
+                      {
+                        setCityName(e.target.value);
+                        // if(e.target.value==="New Delhi"){
+                        //   setStateName("New Delhi");
+                        // }
+                        // if(e.target.value==="Mumbai"){
+                        //   setStateName("Maharashtra");
+                        // }
+                        // if(e.target.value==="Pune"){
+                        //   setStateName("Maharashtra");
+                        // }
+                        // if(e.target.value==="Hyderabad"){
+                        //   setStateName("Telangana");
+                        // }
+                        // if(e.target.value==="Agra"){
+                        //   setStateName("Uttar Pradesh");
+                        // }
+                        
+                        if(e.target.value!=""){
+                          const state=e.target.value;
+                          setStateName(cityStateMap[state]);
+                        }
+
+                      }}
+                    
+                  >
+                    <MenuItem value={"New Delhi"}>New Delhi</MenuItem>
+                    <MenuItem value={"Mumbai"}>Mumbai</MenuItem>
+                    <MenuItem value={"Pune"}>Pune</MenuItem>
+                    <MenuItem value={"Agra"}>Agra</MenuItem>
+                    <MenuItem value={"Hyderabad"}>Hyderabad</MenuItem>
+                    
+                  </Select>
+                </FormControl>
               </Box>
+
+
+
               {/* <input
                 placeholder="State Name"
                 value={stateName}
@@ -381,7 +478,7 @@ const AddNewTheatre = () => {
                   label="State Name"
                   variant="outlined"
                   value={stateName}
-                  onChange={(e) => setStateName(e.target.value)}
+                  // onChange={(e) => setStateName(e.target.value)}
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       // Default border color for outlined input
@@ -473,7 +570,9 @@ const AddNewTheatre = () => {
                 />
               </Box> */}
 
-              <Box 
+              {/*  Status change needs to be removed */}
+
+              {/* <Box 
                 sx={{ "& > :not(style)": { width: "14vw", margin: "0 0" ,} }}
                 noValidate
                 autoComplete="off"
@@ -531,7 +630,9 @@ const AddNewTheatre = () => {
                     
                   </Select>
                 </FormControl>
-              </Box>
+              </Box> */}
+
+
 
               {/* <input
                 type="number"
@@ -742,7 +843,6 @@ const AddNewTheatre = () => {
               address &&
               cityName &&
               stateName &&
-              status &&
               totalscreens &&
               value &&
               theatrefile) ||

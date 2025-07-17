@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import NavBar1 from "../components/NavBar1";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
-
+import Tooltip from "@mui/material/Tooltip";
 
 const ShowBooking = () => {
   const navigate = useNavigate();
@@ -16,7 +16,7 @@ const ShowBooking = () => {
   console.log("theatre from location.state", theatre);
   const username = localStorage.getItem("userName");
   console.log("Id is", showId);
-   const [selectedCity, setSelectedCity] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
   // seat booked logic
   const [soldTickets, setSoldTickets] = useState([]);
 
@@ -48,8 +48,6 @@ const ShowBooking = () => {
       }
     });
   }, [soldTickets]);
-
-  
 
   const [storeId, setStoreId] = useState([]);
   var [totalprice, setTotalPrice] = useState(0);
@@ -142,11 +140,11 @@ const ShowBooking = () => {
       return;
     }
 
-    if(!username){
+    if (!username) {
       return;
     }
 
-    totalprice+=60;
+    totalprice += 60;
     navigate("/booking", {
       state: { storeId, totalprice, movie, theatre, date, from, to, showId },
     });
@@ -160,9 +158,11 @@ const ShowBooking = () => {
     <div id={showId}>
       <div className="show-booking-container">
         <div className="theatre-container font-[Inter]">
-          <NavBar1   title={username}
-          selectedCity={selectedCity}
-          setSelectedCity={setSelectedCity}/>
+          <NavBar1
+            title={username}
+            selectedCity={selectedCity}
+            setSelectedCity={setSelectedCity}
+          />
           <span className="flex items-center justify-start mx-[3vw] gap-1 mt-2">
             <Link
               // href="http://localhost:3000/dashboard"
@@ -847,7 +847,7 @@ const ShowBooking = () => {
                 >
                   <p
                     className="text-center text-base  text-[#59B200]"
-                    id="10text"
+                    id="J10text"
                   >
                     10
                   </p>
@@ -2300,12 +2300,33 @@ const ShowBooking = () => {
             // onClick={handlePopUP}
           >
             <p className="font-bold text-xl">{storeId.length} seat selected</p>
-            <button
-              className={`bg-[#FF5295]  text-md w-[12vw] h-[2vw]  rounded-lg text-white font-semibold text-center  mx-[1vw] ${!username?"cursor-not-allowed":"cursor-pointer"}`}
-              onClick={handleSubmit}
-            >
-              Submit
-            </button>
+
+            {
+            username ?
+              (<Tooltip >
+              <button
+                className={`bg-[#FF5295]  text-md w-[12vw] h-[2vw]  rounded-lg text-white font-semibold text-center  mx-[1vw] ${
+                  !username ? "cursor-not-allowed" : "cursor-pointer"
+                }`}
+                onClick={handleSubmit}
+              >
+                Submit
+              </button>
+            </Tooltip>):
+            (<Tooltip title="Login First">
+              <button
+                className={`bg-[#FF5295]  text-md w-[12vw] h-[2vw]  rounded-lg text-white font-semibold text-center  mx-[1vw] ${
+                  !username ? "cursor-not-allowed" : "cursor-pointer"
+                }`}
+                onClick={handleSubmit}
+              >
+                Submit
+              </button>
+            </Tooltip>)
+
+            }
+            
+            
           </div>
         </div>
       </div>

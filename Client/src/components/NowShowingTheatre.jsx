@@ -11,7 +11,7 @@ const NowShowingTheatre = ({ movies = [] }) => {
             see all{" "}
           </a>
         </span>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-start gap-[3vw]">
           {movies.length > 0 ? (
             movies.map((movie) => (
               <TheatreCard1

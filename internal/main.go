@@ -14,7 +14,7 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	// "github.com/joho/godotenv"
+	"github.com/joho/godotenv"
 )
 
 func main() {
@@ -23,15 +23,16 @@ func main() {
 	r := gin.Default()
 
 	fmt.Println("before loading env file")
-	// err := godotenv.Load()
-	// if err != nil {
-	// 	log.Fatal("Error loading .env file")
-	// }
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 
 	r.POST("/payment-success", controllers.PaymentSuccess)
 	r.POST("/payment-failure", controllers.PaymentFailure)
 
 	url := os.Getenv("FRONTEND_DOMAIN")
+
 	if url == "" {
 		url = "https://mbsmain-hksv.onrender.com/" // fallback during dev
 	}
@@ -39,7 +40,7 @@ func main() {
 
 
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"https://mbsmain-hksv.onrender.com"},
+		AllowOrigins:     []string{url},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length", "Set-Cookie"},
@@ -47,7 +48,7 @@ func main() {
 		MaxAge:           12 * time.Hour,
 	}))
 
-	// Load .env file and Create a new connection to the database , while running through docker we don't need to add godotenv.Load()
+	// // Load .env file and Create a new connection to the database , while running through docker we don't need to add godotenv.Load()
 
 	// config := models.Config{
 	// 	Host:     os.Getenv("DB_HOST"),

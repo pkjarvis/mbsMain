@@ -42,7 +42,7 @@ const Dashboard = () => {
     axiosInstance
       .get("/get-showtime", { withCredentials: true })
       .then((res) => {
-        // console.log("showtime response",res.data);
+        console.log("showtime response",res.data);
         const allShowtimes = res.data;
         const uniqueMap = new Map();
 
@@ -59,6 +59,7 @@ const Dashboard = () => {
               theatrename: item.theatrename,
               theatreAddress: item.Theatre?.address || "",
               state: item.Theatre.stateName,
+              city:item.Theatre.cityName,
             });
           }
         });
@@ -80,7 +81,7 @@ const Dashboard = () => {
       item.movie?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCity =
       !selectedCity?.name ||
-      item.state?.toLowerCase() === selectedCity.name.toLowerCase();
+      item.city?.toLowerCase() === selectedCity.name.toLowerCase();
     return matchesSearch && matchesCity;
   });
   const bollywoodMovies = filteredCombos.slice(0, 3);
@@ -99,9 +100,8 @@ const Dashboard = () => {
         </section>
         <section>
           <MovieCardSection
-            title="Watch latest movie"
+            title="Watch latest movie"  
             movies={filteredCombos.slice(0, 4)}
-            // imgTitle={"../src/assets/aliceWonderland.png"}
           />
         </section>
         <section>
@@ -174,7 +174,7 @@ const Dashboard = () => {
         </section>
 
         <section>
-          <Bollywood movies={filteredCombos.slice(0, 4)} />
+          <Bollywood movies={filteredCombos.slice(0, 4)} />  
         </section>
 
         <section className="mx-[3vw]  h-[14vw]  my-[4vw]">

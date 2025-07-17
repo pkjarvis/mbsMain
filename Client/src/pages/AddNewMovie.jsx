@@ -406,7 +406,8 @@ const AddNewMovie = () => {
               <option id="upcoming">Upcoming</option>
             </select> */}
 
-            <Box
+            {/*  Removed Status From the Add movie as not needed  */}
+            {/* <Box
               component="form"
               sx={{ "& > :not(style)": { width: "30vw", margin: "0.2vw 0" } }}
               noValidate
@@ -463,7 +464,9 @@ const AddNewMovie = () => {
                   <MenuItem value={"Upcoming"}>Upcoming</MenuItem>
                 </Select>
               </FormControl>
-            </Box>
+            </Box> */}
+
+
 
             <Box
               component="form"

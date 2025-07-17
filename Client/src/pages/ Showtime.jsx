@@ -50,32 +50,12 @@ const Showtime = () => {
   const movie = state?.movie;
 
   console.log("movies", movie);
-  // console.log("movieId:",movie.id)
-
-  // const NavigateDashboard = () => {
-  //   navigate("/");
-  // };
-
-  // api call for get theatre & showtime
 
   const [datebooked, setDateBooked] = useState([]);
   const [showtime, setShowTime] = useState([]);
-  const [theatrenames,setTheatreNames]=useState([]);
+  const [theatrenames, setTheatreNames] = useState([]);
 
-
-    const [selectedCity, setSelectedCity] = useState("");
-
-  // useEffect(() => {
-  //   axiosInstance
-  //     .get("/get-theatres", { withCredentials: true })
-  //     .then((res) => {
-  //       console.log(res.data);
-  //       setTheatres(res.data);
-  //     })
-  //     .catch((err) =>
-  //       console.log("Error fetching movies", err.response?.data || err.message)
-  //     );
-  // }, []);
+  const [selectedCity, setSelectedCity] = useState("");
 
   useEffect(() => {
     if (!movie.id) return;
@@ -93,43 +73,37 @@ const Showtime = () => {
         console.log("Error fetching movies", err.response?.data || err.message)
       );
 
-      showtime.map((item)=>(
-        setTheatreNames(item.Theatre.theatrename)
-      ))
+    showtime.map((item) => setTheatreNames(item.Theatre.theatrename));
 
     // alert("First Select The Date You Want To Watch Show, then showtime  would fetch")
   }, []);
 
+  console.log("Booked ", datebooked);
 
-  console.log("Booked ",datebooked);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
-  const [startDate,setStartDate]=useState("");
-  const [endDate,setEndDate]=useState("");
+  useEffect(() => {
+    if (!movie) return;
 
- useEffect(()=>{
-  if(!movie ) return;
-  
-   axiosInstance.get("/get-movie-byid",{params:{movieId:movie.id}},{withCredentials:true})
-   .then((res)=>{
-    console.log("response of moviebyid",res.data.movie);
-    setStartDate(res.data.movie[0].startDate);
-    setEndDate(res.data.movie[0].endDate);
-   }).catch(err=>console.log(err))
- },[])
-  
- 
-  //showing  current day only
+    axiosInstance
+      .get(
+        "/get-movie-byid",
+        { params: { movieId: movie.id } },
+        { withCredentials: true }
+      )
+      .then((res) => {
+        console.log("response of moviebyid", res.data.movie);
+        setStartDate(res.data.movie[0].startDate);
+        setEndDate(res.data.movie[0].endDate);
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
   const curDate = new Date();
   const curweekday = curDate.toLocaleString("en-US", { weekday: "short" });
   let day = curDate.getDate();
   let month = curDate.getMonth() + 1;
-
-  // console.log("Today's date",day);
-  // console.log("month",month);
-  // console.log("weekday",curweekday);
-
-  // ------------------
 
   const getDatesBetween = (start, end) => {
     var startDate = new Date(start);
@@ -161,7 +135,9 @@ const Showtime = () => {
     return dateList;
   };
 
-
+  useEffect(() => {
+    console.log("selected", selectedCity.name);
+  }, []);
 
   const datelist = getDatesBetween(startDate, endDate);
 
@@ -171,61 +147,81 @@ const Showtime = () => {
     setCurDate(val);
   };
 
-
   function parseCurDateToLocalDateStr(dateStr) {
-  const [weekday, day, monthStr] = dateStr.split(" ");
+    const [weekday, day, monthStr] = dateStr.split(" ");
 
-  const monthMap = {
-    JAN: 0, FEB: 1, MAR: 2, APR: 3, MAY: 4, JUN: 5,
-    JUL: 6, AUG: 7, SEP: 8, OCT: 9, NOV: 10, DEC: 11,
-  };
+    const monthMap = {
+      JAN: 0,
+      FEB: 1,
+      MAR: 2,
+      APR: 3,
+      MAY: 4,
+      JUN: 5,
+      JUL: 6,
+      AUG: 7,
+      SEP: 8,
+      OCT: 9,
+      NOV: 10,
+      DEC: 11,
+    };
 
-  const year = new Date().getFullYear();
-  const month = monthMap[monthStr.toUpperCase()];
-  const dateObj = new Date(year, month, parseInt(day));
+    const year = new Date().getFullYear();
+    const month = monthMap[monthStr.toUpperCase()];
+    const dateObj = new Date(year, month, parseInt(day));
 
-  return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-}
+    return `${year}-${String(month + 1).padStart(2, "0")}-${String(
+      day
+    ).padStart(2, "0")}`;
+  }
 
-// Parses backend's startDate to local date string like "2025-07-10"
-function parseBackendStartDateToLocalDateStr(isoString) {
-  const dateObj = new Date(isoString); // UTC parsed
-  const year = dateObj.getFullYear();
-  const month = dateObj.getMonth(); // already 0-indexed
-  const day = dateObj.getDate();
+  // Parses backend's startDate to local date string like "2025-07-10"
+  function parseBackendStartDateToLocalDateStr(isoString) {
+    const dateObj = new Date(isoString); // UTC parsed
+    const year = dateObj.getFullYear();
+    const month = dateObj.getMonth(); // already 0-indexed
+    const day = dateObj.getDate();
 
-  return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-}
+    return `${year}-${String(month + 1).padStart(2, "0")}-${String(
+      day
+    ).padStart(2, "0")}`;
+  }
 
+  // Final filtered showtime array based on selected date
+  
+  const filteredShowtime = useMemo(() => {
+    if (!curdate) return [];
 
+    const selectedDateStr = parseCurDateToLocalDateStr(curdate);
 
-// Final filtered showtime array based on selected date
-const filteredShowtime = useMemo(() => {
-  if (!curdate) return [];
+    return showtime.filter((show) => {
+      if (!show?.startDate || !show?.Theatre?.cityName) return false;
 
-  const selectedDateStr = parseCurDateToLocalDateStr(curdate);
+      const showDateStr = parseBackendStartDateToLocalDateStr(show.startDate);
 
-  return showtime.filter((show) => {
-    if (!show.startDate) return false;
+      // Match both date and city (if selected)
+      const isSameDate = selectedDateStr === showDateStr;
+      const isSameCity = selectedCity?.name
+        ? show.Theatre.cityName.trim().toLowerCase() ===
+          selectedCity.name.trim().toLowerCase()
+        : true;
 
-    const showDateStr = parseBackendStartDateToLocalDateStr(show.startDate);
-
-    return selectedDateStr === showDateStr;
-  });
-}, [curdate, showtime]);
+      return isSameDate && isSameCity;
+    });
+  }, [curdate, selectedCity, showtime]);
 
 
   // console.log("curdate is ",curdate);
   console.log("showtime details", showtime);
 
-    
-
   return (
     <div>
       <div className="showtime-container">
         <div className="theatre-container font-[Inter]">
-          <NavBar1 title={username}  selectedCity={selectedCity}
-          setSelectedCity={setSelectedCity}/>
+          <NavBar1
+            title={username}
+            selectedCity={selectedCity}
+            setSelectedCity={setSelectedCity}
+          />
           <span className="flex items-center justify-start mx-[3vw] gap-1 mt-2">
             <Link
               to="/dashboard"
@@ -248,28 +244,6 @@ const filteredShowtime = useMemo(() => {
             </Link>
           </span>
         </div>
-
-        {/* {showDateWarning && (
-          <Stack
-            sx={{
-              width: "60%",
-              position: "absolute",
-              zIndex: "1020",
-              marginLeft: "18vw",
-            }}
-            spacing={2}
-          >
-            <Alert
-              severity="warning"
-              variant="filled"
-              onClose={() => {
-                setShowDataWarning(false);
-              }}
-            >
-              {"First Select The Date You Want To Watch Show"}
-            </Alert>
-          </Stack>
-        )} */}
 
         {/* Header Section */}
         <div className="flex items-center justify-start  h-[30vw] p-2 mt-[3vw]">
@@ -331,57 +305,31 @@ const filteredShowtime = useMemo(() => {
                 ))}
               </div>
             </div>
-
-            {/* <div className="flex items-center mt-[2vw] gap-[2vw]">
-              <div className="card flex justify-content-center">
-                <Dropdown
-                  value={language}
-                  onChange={(e) => setLanguage(e.value)}
-                  options={languagesArray}
-                  optionLabel="name"
-                  placeholder="Language"
-                  className="w-full md:w-14rem"
-                />
-              </div>
-              <div className="card flex justify-content-center ">
-                <Dropdown
-                  value={preferredslot}
-                  onChange={(e) => setPreferredSlot(e.value)}
-                  options={timeslotArray}
-                  optionLabel="name"
-                  placeholder="Preffered time slots"
-                  className="w-full md:w-14rem"
-                />
-              </div>
-            </div> */}
           </div>
         </div>
         {/* Time Slots Section */}
         <div className="time-slots bg-[#F9F9F9] mx-[3vw] flex flex-col mt-[-6vw]">
-         {
-  !curdate ? (
-    <p className="text-md font-medium text-gray-500 ml-[3vw]">
-      Please select a date to see available shows.
-    </p>
-  ) : filteredShowtime.length > 0 ? (
-    filteredShowtime.map((show) => (
-      <Theatres
-        key={show.id}
-        theatre={show.Theatre}
-        movies={show.Movie}
-        timearray={show.timearray}
-        date={curdate}
-       
+          {!curdate ? (
+            <p className="text-md font-medium text-gray-500 ml-[3vw]">
+              Please select a date to see available shows.
+            </p>
+          ) : filteredShowtime.length > 0 ? (
+            filteredShowtime.map((show) => (
+              <Theatres
+                key={show.id}
+                theatre={show.Theatre}
+                movies={show.Movie}
+                timearray={show.timearray}
+                date={curdate}
 
-        // setShowDataWarning={setShowDataWarning}
-      />
-    ))
-  ) : (
-    <p className="text-md font-medium text-gray-500 ml-[3vw]">
-      No shows available for selected date.
-    </p>
-  )
-}
+                // setShowDataWarning={setShowDataWarning}
+              />
+            ))
+          ) : (
+            <p className="text-md font-medium text-gray-500 ml-[3vw]">
+              No shows available for selected date.
+            </p>
+          )}
         </div>
 
         {/* Footer Section */}

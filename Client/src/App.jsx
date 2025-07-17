@@ -35,11 +35,13 @@ import PromoteDemoteUser from "./pages/PromoteDemote";
 
 function App() {
   const adminToken=localStorage.getItem("adminToken");
-  const userToken=localStorage.getItem("userToken");
+  const adminName=localStorage.getItem("adminName");
+  const adminId=localStorage.getItem("adminId");
+  const email=localStorage.getItem("email");
   // const name=localStorage.getItem("adminName");
    useEffect(()=>{
     console.log("Protected route for admin use only")
-   },[adminToken,userToken])
+   },[adminToken,adminName,adminId])
 
   return (
     <>
@@ -75,7 +77,7 @@ function App() {
 
                 {/* admin route */}
                   <Route path="/admin" element={<Root />} />
-                  <Route path="/admin-signup" element={<SignUp />} />
+                  {adminId && adminToken && adminName && email ? <Route path="/admin-signup" element={<SignUp />} /> : <Route path="/admin" element={<Root />} />}  
                   <Route path="/admin-login" element={<Login />} />
                   <Route path="/admin-logout" element={<Logout />} />
                   <Route path="/admin-dashboard" element={<Dashboard />} />

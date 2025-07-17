@@ -1,4 +1,4 @@
-import React,{useContext, useRef,useState} from "react";
+import React,{useContext, useEffect, useRef,useState} from "react";
 import { TheatreContext } from "../context/TheatreContext";
 import DeleteBox from "./DeleteBox";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +12,10 @@ const TheatreCard = ({id,theatrename,address,cityName,stateName,status,totalscre
     const [check,setCheck]=useState(false);
 
     const navigate=useNavigate("");
+
+    useEffect(()=>{
+      status="Active"
+    },[])
   
     const handleClick=()=>{
         setVisible(!visible);
@@ -33,10 +37,14 @@ const TheatreCard = ({id,theatrename,address,cityName,stateName,status,totalscre
       navigate("/admin-addnewtheatre",{state:{theatre:{id,theatrename,address,cityName,stateName,status,totalscreens,theatrefile,value}}})
     }
 
+    
+    status="Active";
+   
+
   return (
     <div>
-      <div className="card-container h-25 w-[100%]  px-6 pt-7  mb-5">
-        <div className="content flex items-center justify-start border-1 rounded-xl border-zinc-300 py-1 h-[4.6vw]">
+      <div className="card-container h-25 w-[100%]  px-6 pt-7  mb-2">
+        <div className="content flex items-center justify-start border-1 rounded-xl border-zinc-300  h-[4.8vw]">
           <div className="left w-[4%] ml-2">
             <img
               src={theatrefile}
