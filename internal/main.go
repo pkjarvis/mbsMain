@@ -40,7 +40,7 @@ func main() {
 
 
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{url},
+		AllowOrigins:     []string{"https://mbsmain-hksv.onrender.com"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length", "Set-Cookie"},
