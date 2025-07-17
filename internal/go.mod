@@ -13,7 +13,10 @@ require (
 	gorm.io/gorm v1.30.0
 )
 
-require github.com/golang-jwt/jwt/v5 v5.2.2
+require (
+	github.com/golang-jwt/jwt/v5 v5.2.2
+	github.com/joho/godotenv v1.5.1
+)
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
