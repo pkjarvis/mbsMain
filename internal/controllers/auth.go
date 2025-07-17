@@ -909,6 +909,11 @@ func generatePayuPayment(tx models.Transaction) map[string]interface{} {
 	hashHex := hex.EncodeToString(hash[:])
 
 	successurl := os.Getenv("SUCCESS_URL")
+
+	if successurl=="" {
+		successurl="https://moviebookingsystem-ta6i.onrender.com"
+	}
+	
 	fmt.Println("successurl is", successurl)
 
 	return map[string]interface{}{
@@ -966,6 +971,7 @@ func Payment(c *gin.Context) {
 		c.JSON(400, gin.H{"error": "UserId is not in correct format"})
 		return
 	}
+	fmt.Println("userIdVal is:",userIdVal);
 
 	// Create transaction
 	payment := models.Transaction{
