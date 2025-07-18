@@ -56,12 +56,12 @@ func LoginWithRole(c *gin.Context, expectedRole string) {
 	expirationTime := time.Now().Add(7 * 24 * time.Hour)
 
 	claims := &models.Claims{
-		UserId: existingUser.Id,
-		Name:   existingUser.Name,
-		Email:  existingUser.Email,
-		Role:   existingUser.Role,
+		UserId: user.Id,
+		Name:   user.Name,
+		Email:  user.Email,
+		Role:   user.Role,
 		StandardClaims: jwt.StandardClaims{
-			Subject:   existingUser.Email,
+			Subject:   user.Email,
 			ExpiresAt: expirationTime.Unix(),
 			IssuedAt:  time.Now().Unix(),
 		},
@@ -101,10 +101,10 @@ func LoginWithRole(c *gin.Context, expectedRole string) {
 	c.JSON(200, gin.H{
 		"msg":      "logged in",
 		"token":    tokenString,
-		"username": existingUser.Name,
-		"role":     existingUser.Role,
-		"userId":   existingUser.Id,
-		"email":    existingUser.Email,
+		"username": user.Name,
+		"role":     user.Role,
+		"userId":   user.Id,
+		"email":    user.Email,
 	})
 }
 
@@ -127,10 +127,10 @@ func SignupWithRole(c *gin.Context, role string) {
 	expirationTime := time.Now().Add(7 * 24 * time.Hour)
 
 	claims := &models.Claims{
-		UserId: existingUser.Id,
-		Name:   existingUser.Name,
-		Email:  existingUser.Email,
-		Role:   existingUser.Role,
+		UserId: user.Id,
+		Name:   user.Name,
+		Email:  user.Email,
+		Role:   user.Role,
 		StandardClaims: jwt.StandardClaims{
 			Subject:   existingUser.Email,
 			ExpiresAt: expirationTime.Unix(),
