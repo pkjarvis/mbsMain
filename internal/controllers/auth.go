@@ -56,12 +56,12 @@ func LoginWithRole(c *gin.Context, expectedRole string) {
 	expirationTime := time.Now().Add(7 * 24 * time.Hour)
 
 	claims := &models.Claims{
-		UserId: user.Id,
-		Name:   user.Name,
-		Email:  user.Email,
-		Role:   user.Role,
+		UserId: existingUser.Id,
+		Name:   existingUser.Name,
+		Email:  existingUser.Email,
+		Role:   existingUser.Role,
 		StandardClaims: jwt.StandardClaims{
-			Subject:   user.Email,
+			Subject:   existingUser.Email,
 			ExpiresAt: expirationTime.Unix(),
 			IssuedAt:  time.Now().Unix(),
 		},
@@ -101,10 +101,10 @@ func LoginWithRole(c *gin.Context, expectedRole string) {
 	c.JSON(200, gin.H{
 		"msg":      "logged in",
 		"token":    tokenString,
-		"username": user.Name,
-		"role":     user.Role,
-		"userId":   user.Id,
-		"email":    user.Email,
+		"username": existingUser.Name,
+		"role":     existingUser.Role,
+		"userId":   existingUser.Id,
+		"email":    existingUser.Email,
 	})
 }
 
@@ -119,7 +119,8 @@ func SignupWithRole(c *gin.Context, role string) {
 	// Check if user exists
 	var existingUser models.User
 	models.DB.Where("email = ?", user.Email).First(&existingUser)
-	if existingUser.ID != 0 {
+	
+	if existingUser.Id != 0 {
 		c.JSON(400, gin.H{"error": "user already exists"})
 		return
 	}
