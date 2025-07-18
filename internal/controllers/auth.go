@@ -119,9 +119,24 @@ func SignupWithRole(c *gin.Context, role string) {
 	// Check if user exists
 	var existingUser models.User
 	models.DB.Where("email = ?", user.Email).First(&existingUser)
-	
+
 	if existingUser.Id != 0 {
 		c.JSON(400, gin.H{"error": "user already exists"})
+		return
+	}
+
+	// Hash password
+	hashedPwd, err := utils.GenerateHashPassword(user.Password)
+	if err != nil {
+		c.JSON(500, gin.H{"error": "could not hash password"})
+		return
+	}
+
+	user.Password = hashedPwd
+	user.Role = role
+
+	if err := models.DB.Create(&user).Error; err != nil {
+		c.JSON(500, gin.H{"error": "could not create user"})
 		return
 	}
 
@@ -137,13 +152,6 @@ func SignupWithRole(c *gin.Context, role string) {
 			ExpiresAt: expirationTime.Unix(),
 			IssuedAt:  time.Now().Unix(),
 		},
-	}
-
-	// Hash password
-	hashedPwd, err := utils.GenerateHashPassword(user.Password)
-	if err != nil {
-		c.JSON(500, gin.H{"error": "could not hash password"})
-		return
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -168,14 +176,6 @@ func SignupWithRole(c *gin.Context, role string) {
 	c.Set("userId", claims.UserId)
 	c.Set("userToken", tokenString)
 	c.Set("role", claims.Role)
-
-	user.Password = hashedPwd
-	user.Role = role
-
-	if err := models.DB.Create(&user).Error; err != nil {
-		c.JSON(500, gin.H{"error": "could not create user"})
-		return
-	}
 
 	// c.JSON(200, gin.H{"message": "signup successful", "role": role})
 	c.JSON(200, gin.H{
@@ -911,10 +911,10 @@ func generatePayuPayment(tx models.Transaction) map[string]interface{} {
 
 	successurl := os.Getenv("SUCCESS_URL")
 
-	if successurl=="" {
-		successurl="https://moviebookingsystem-ta6i.onrender.com"
+	if successurl == "" {
+		successurl = "https://moviebookingsystem-ta6i.onrender.com"
 	}
-	
+
 	fmt.Println("successurl is", successurl)
 
 	return map[string]interface{}{
@@ -972,7 +972,7 @@ func Payment(c *gin.Context) {
 		c.JSON(400, gin.H{"error": "UserId is not in correct format"})
 		return
 	}
-	fmt.Println("userIdVal is:",userIdVal);
+	fmt.Println("userIdVal is:", userIdVal)
 
 	// Create transaction
 	payment := models.Transaction{
@@ -1047,7 +1047,6 @@ func PaymentFailure(c *gin.Context) {
 	if frontend == "" {
 		frontend = "https://mbsmain-hksv.onrender.com"
 	}
-	
 
 	c.Redirect(302, fmt.Sprintf("%s/payment-status?success=false", frontend))
 
