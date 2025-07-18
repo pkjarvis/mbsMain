@@ -36,6 +36,9 @@ const Dashboard = () => {
   const [filteredshowtimes, setFilteredShowtimes] = useState([]);
   const [allshowtime, setAllShowtimes] = useState([]);
 
+  const [nowshowing,setNowShowing]=useState([]);
+  const [upcoming,setUpComing]=useState([]);
+
   const [selectedCity, setSelectedCity] = useState(true);
 
   useEffect(() => {
@@ -60,12 +63,20 @@ const Dashboard = () => {
               theatreAddress: item.Theatre?.address || "",
               state: item.Theatre.stateName,
               city:item.Theatre.cityName,
+              category:item.Movie?.status || "",
+              showId:item.id,
             });
           }
         });
         const uniqueMovies = Array.from(uniqueMap.values());
         setFilteredShowtimes(uniqueMovies);
         setAllShowtimes(uniqueMovies);
+
+        //segregate
+        setNowShowing(uniqueMovies.filter(movie=>movie.category==="Now Showing"));
+        setUpComing(uniqueMovies.filter(movie=>movie.category==="Upcoming"));
+
+
       })
       .catch((err) => console.log(err));
   }, []);
@@ -101,11 +112,11 @@ const Dashboard = () => {
         <section>
           <MovieCardSection
             title="Watch latest movie"  
-            movies={filteredCombos.slice(0, 4)}
+            movies={upcoming.slice(0, 4)}
           />
         </section>
         <section>
-          <NowShowingTheatre  movies={bollywoodMovies }/>
+          <NowShowingTheatre  movies={nowshowing.slice(0,3) }/>
         </section>
 
         <section className="mx-[3vw] bg-white">

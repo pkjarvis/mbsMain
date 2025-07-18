@@ -26,11 +26,14 @@ const Movie = () => {
 
   console.log("state of movie page is:", m);
   console.log("movieId is", m.id);
+  console.log("show id of movie is:",m.showId);
 
   const [selectedCity, setSelectedCity] = useState("");
   const username = localStorage.getItem("userName");
 
   const [movieenddate, setMovieEndDate] = useState();
+
+  const [currentmovieshow,setCurrentMovieShow]=useState([]);
 
   // if(!movie){
   //   return <p>Movie data not available</p>
@@ -66,7 +69,7 @@ const Movie = () => {
         { withCredentials: true }
       )
       .then((res) => {
-        console.log("Movie fetched by id", res.data.movie[0].endDate);
+        console.log("Movie fetched by id", res.data.movie[0]);
         setMovieEndDate(res.data.movie[0].startDate);
       })
       .catch((err) => console.log(err));
@@ -117,6 +120,26 @@ const Movie = () => {
       })
       .catch((err) => console.log(err));
   }, []);
+
+
+
+  useEffect(()=>{
+
+    axiosInstance.get("/get-showtime",{
+        withCredentials: true,
+      })
+    .then((res)=>{
+      console.log("response of current movie show",res.data);
+      const allshowsofmovie=res.data;
+      console.log("allshows",allshowsofmovie);
+      const curmovieshow=allshowsofmovie.map((shows)=>shows).filter((show)=>show.id===m.showId);
+      setCurrentMovieShow(curmovieshow[0]);
+    })
+    .catch(err=>console.log(err))
+
+  },[])
+
+  console.log("movie show",currentmovieshow);
   
 
   const handleSubmit = async () => {
@@ -142,13 +165,14 @@ const Movie = () => {
       });
       return;
     }
-    if (inputDate > now) {
-      return;
-    } 
+    
     if (!userwatchedmovie) {
       setShowDataWarning(true);
       return;
     }
+    if (inputDate > now) {
+      return;
+    } 
     await axiosInstance
       .post("/add-review", { text, star, movieId }, { withCredentials: "true" })
       .then((res) => console.log(res.data))
