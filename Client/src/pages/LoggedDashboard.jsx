@@ -109,13 +109,13 @@ const Dashboard = () => {
         <section>
           <ImageContainer setSearchTerm={setSearchTerm} />
         </section>
-        <section>
+        {/* <section>
           <MovieCardSection
             title="Watch latest movie"  
             movies={upcoming.slice(0, 4)}
           />
-        </section>
-        <section>
+        </section> */}
+        <section className="mt-[2vw]">
           <NowShowingTheatre  movies={nowshowing.slice(0,3) }/>
         </section>
 

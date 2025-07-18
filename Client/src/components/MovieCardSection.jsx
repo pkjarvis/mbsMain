@@ -17,11 +17,13 @@ const MovieCardSection = ({ title, movies = [] }) => {
   //     .catch((err) =>
   //       console.log("Error fetching movies", err.response?.data || err.message)
   //     )
-
   // },[]);
+
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
 
   return (
     <div>
@@ -33,7 +35,7 @@ const MovieCardSection = ({ title, movies = [] }) => {
           </Link>
         </span>
 
-        <div className="grid grid-cols-4 gap-[3vw]">
+        <div className="flex gap-[3vw]">
           {/* {movies.map((movie) => (
             <MovieCard1 key={movie.id} movie={movie} />
           ))} */}
