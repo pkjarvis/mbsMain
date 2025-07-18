@@ -32,6 +32,7 @@ const Movie = () => {
   const username = localStorage.getItem("userName");
 
   const [movieenddate, setMovieEndDate] = useState();
+  const [showstartdate,setShowStartDate]=useState();
 
   const [currentmovieshow,setCurrentMovieShow]=useState([]);
 
@@ -75,7 +76,7 @@ const Movie = () => {
       .catch((err) => console.log(err));
   }, []);
 
-  const inputTime = movieenddate;
+  const inputTime = showstartdate;
   const inputDate = new Date(inputTime);
   const now = new Date();
 
@@ -134,6 +135,7 @@ const Movie = () => {
       console.log("allshows",allshowsofmovie);
       const curmovieshow=allshowsofmovie.map((shows)=>shows).filter((show)=>show.id===m.showId);
       setCurrentMovieShow(curmovieshow[0]);
+      setShowStartDate(curmovieshow[0].startDate);
     })
     .catch(err=>console.log(err))
 
