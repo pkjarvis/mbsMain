@@ -35,6 +35,7 @@ func IsAuthorized() gin.HandlerFunc {
         c.Set("claims", claims)
         c.Set("userId", claims.UserId)
         c.Set("role", claims.Role)
+        
 
         fmt.Printf("Authorized - UserID: %v, Role: %v\n", claims.UserId, claims.Role)
 
