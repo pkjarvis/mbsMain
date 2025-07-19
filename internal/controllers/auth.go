@@ -912,7 +912,7 @@ func generatePayuPayment(tx models.Transaction) map[string]interface{} {
 	successurl := os.Getenv("SUCCESS_URL")
 
 	if successurl == "" {
-		successurl = "https://moviebookingsystem-ta6i.onrender.com"
+		successurl = "http://localhost:8080"
 	}
 
 	fmt.Println("successurl is", successurl)
@@ -1020,17 +1020,17 @@ func PaymentSuccess(c *gin.Context) {
 			c.Abort()
 			return
 		}
-
 	}
 	fmt.Println("redirect message")
-	frontend := os.Getenv("FRONTEND_DOMAIN")
+	frontend := os.Getenv("ALLOWED_ORIGIN1")
 	if frontend == "" {
-		frontend = "https://mbsmain-hksv.onrender.com"
+		frontend = "http://localhost:5173"
 	}
 
 	c.Redirect(302, fmt.Sprintf("%s/payment-status?success=true", frontend))
 
 }
+
 
 func PaymentFailure(c *gin.Context) {
 	txnId := c.PostForm("txnid")
@@ -1043,14 +1043,15 @@ func PaymentFailure(c *gin.Context) {
 
 	fmt.Println("Passed 2")
 
-	frontend := os.Getenv("FRONTEND_DOMAIN")
+	frontend := os.Getenv("ALLOWED_ORIGIN1")
 	if frontend == "" {
-		frontend = "https://mbsmain-hksv.onrender.com"
+		frontend = "http://localhost:5173"
 	}
 
 	c.Redirect(302, fmt.Sprintf("%s/payment-status?success=false", frontend))
 
 }
+
 
 //------------------------
 
