@@ -15,11 +15,11 @@ const DeleteBox = (props) => {
   const navigate=useNavigate("");
 
   const handleDelete = (id) => {
+
     if (props.type === "theatre") {
 
       props.func(!props.val);
-      // deleteTheatre(id);
-      // delete call
+    
       axiosInstance
       .post("/delete-theatre", id, {
         withCredentials: true,
@@ -30,10 +30,8 @@ const DeleteBox = (props) => {
       }) 
       .catch(err => console.log(err));
     
-      
-      
-      
     }
+
     if (props.type === "movie") {
       // deleteMovie(id);
       props.func(!props.val)
@@ -46,15 +44,12 @@ const DeleteBox = (props) => {
             
           })
           .catch(err=>console.log(err))
-
-      
-
-      
     }
+
     if (props.type === "blur") {
       props.func(!props.val);
-      archive(id);
-       axiosInstance.post("/archive-showtime",id,{
+      // archive(id);
+       axiosInstance.post("/archive-showtime",{id},{
       withCredentials:true
       })
       .then(res=>{

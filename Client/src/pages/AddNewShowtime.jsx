@@ -36,6 +36,16 @@ const AddNewShowtime = () => {
   const [showDateWarning, setShowDataWarning] = useState(false);
   const [message, setMessage] = useState("");
 
+  const [today, setToday] = useState("");
+  useEffect(() => {
+    const currentDate = new Date();
+    const formatted = currentDate.toISOString().split("T")[0];
+    setToday(formatted);
+  }, []);
+
+  const { state } = useLocation();
+  const editingNewShowTime = state?.showtime;
+
   // movie label options through get movies
   const [movies, setMovies] = useState([]);
   const [allmoviesData, setAllMoviesData] = useState([]);
@@ -47,13 +57,19 @@ const AddNewShowtime = () => {
     axiosInstance
       .get("/get-movies", { withCredentials: true })
       .then((res) => {
-        const formattedMovies = res.data.map((item) => ({
+        const today = new Date();
+        // Filter movies where endDate is today or in the future
+        const activeMovies = res.data.filter((item) => {
+          const endDate = new Date(item.endDate);
+          return endDate >= today;
+        });
+
+        const formattedMovies = activeMovies.map((item) => ({
           name: item.movie,
           code: item.movie.substring(0, 3).toUpperCase(),
         }));
         console.log(res.data);
         setAllMoviesData(res.data);
-
         setMovies(formattedMovies);
       })
       .catch((err) => console.log(err));
@@ -66,7 +82,10 @@ const AddNewShowtime = () => {
     axiosInstance
       .get("/get-theatres", { withCredentials: true })
       .then((res) => {
-        const formattedTheatre = res.data.map((item) => ({
+        const activeTheatres = res.data.filter(
+          (item) => item.status === "Active"
+        );
+        const formattedTheatre = activeTheatres.map((item) => ({
           name: item.theatrename,
           code: item.theatrename.substring(0, 3).toUpperCase(),
         }));
@@ -78,6 +97,7 @@ const AddNewShowtime = () => {
   }, []);
 
   const [movieId, setMovieId] = useState(null);
+
   useEffect(() => {
     if (!moviename) return;
 
@@ -96,6 +116,23 @@ const AddNewShowtime = () => {
       })
       .catch((err) => console.log(err));
   }, [moviename]);
+
+  const [currentheatrestatus, setCurrentTheatreStatus] = useState("");
+  useEffect(() => {
+    if (!theatrename) return;
+    axiosInstance
+      .get("/get-theatre-byname", {
+        params: { theatrename: theatrename.name },
+        withCredentials: true,
+      })
+      .then((res) => {
+        console.log("Theatre by name is", res.data.theatre[0]);
+        console.log("status is", res.data.theatre[0].status);
+        setCurrentTheatreStatus(res.data.theatre[0].status);
+      });
+  }, [theatrename]);
+
+  const formattedEndDate = end ? new Date(end).toISOString().split("T")[0] : "";
 
   // get shows
 
@@ -125,6 +162,35 @@ const AddNewShowtime = () => {
     const dateObj = new Date(inputDate);
     return isNaN(dateObj) ? null : dateObj.toISOString().split("T")[0];
   };
+
+  useEffect(() => {
+    if (
+      !editingNewShowTime ||
+      movies.length === 0 ||
+      theatres.length === 0 ||
+      allmoviesData.length === 0
+    )
+      return;
+
+    const matchedMovie = movies.find(
+      (m) => m.name === editingNewShowTime.moviename
+    );
+    const matchedTheatre = theatres.find(
+      (t) => t.name === editingNewShowTime.theatrename
+    );
+
+    if (matchedMovie) setMovieName(matchedMovie);
+    if (matchedTheatre) setTheatreName(matchedTheatre);
+
+    // setMovieName(editingNewShowTime?.moviename);
+    setDateTime(editingNewShowTime?.datetime);
+    setDateTime12h(editingNewShowTime?.datetime12h);
+    setStartDate(editingNewShowTime?.startDate);
+    // setTheatreName(editingNewShowTime?.theatrename);
+    setTimeArray(editingNewShowTime?.timearray || []);
+    setSelectedCities(editingNewShowTime?.language);
+    console.log("editing newshowtime", editingNewShowTime);
+  }, [editingNewShowTime, movies, theatres, allmoviesData]);
 
   // start date
   useEffect(() => {
@@ -160,8 +226,15 @@ const AddNewShowtime = () => {
     }
   }, [startDate]);
 
-  const { state } = useLocation();
-  const editingNewShowTime = state?.showtime;
+  const isToday = (dateStr) => {
+    const today = new Date();
+    const date = new Date(dateStr);
+    return (
+      today.getFullYear() === date.getFullYear() &&
+      today.getMonth() === date.getMonth() &&
+      today.getDate() === date.getDate()
+    );
+  };
 
   const navigate = useNavigate("");
 
@@ -187,6 +260,15 @@ const AddNewShowtime = () => {
       // alert("Pick startdate correct such that no collision occur");
       return;
     }
+    const now = new Date();
+    const selected = new Date(datetime12h);
+
+    if (isToday(startDate) && selected < now) {
+      setShowDataWarning(true);
+      setMessage("Start time cannot be in the past.");
+      return;
+    }
+
     if (datetime < datetime12h) {
       setShowDataWarning(true);
       setMessage("Add endtime greater than starttime!");
@@ -230,26 +312,32 @@ const AddNewShowtime = () => {
     setDateTime("");
   };
 
-  useEffect(() => {
-    if (editingNewShowTime) {
-      setMovieName(editingNewShowTime.moviename);
-      setDateTime(editingNewShowTime.datetime);
-      setDateTime12h(editingNewShowTime.datetime12h);
-      setStartDate(editingNewShowTime.startDate);
-      setTheatreName(editingNewShowTime.theatrename);
-      setTimeArray(editingNewShowTime.timearray);
-      setSelectedCities(editingNewShowTime.language);
-    }
-  }, [editingNewShowTime]);
-
   const handleShowTimeDelete = (id) => {
     setTimeArray((prev) => prev.filter((_, idx) => idx !== id));
   };
 
+  // Adding constraint that can't edit / add shows if theatre is inactive or cur end date is passed.
+  useEffect(() => {
+    const current = new Date();
+    const todayDateOnly = new Date(current.setHours(0, 0, 0, 0));
+    const endDateObj = new Date(end);
+    const endDateOnly = new Date(endDateObj.setHours(0, 0, 0, 0));
+
+    if (moviename && end && todayDateOnly > endDateOnly) {
+      setShowDataWarning(true);
+      setMessage("Cannot add/edit showtime. The movie has already ended.");
+    }
+
+    if (theatrename && currentheatrestatus !== "Active") {
+      setShowDataWarning(true);
+      setMessage("Cannot add showtime. Selected theatre is inactive.");
+    }
+  }, [moviename, end, currentheatrestatus]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const newShowTime = {
-      id: editingNewShowTime ? editingNewShowTime.id : Date.now(),
+      id: editingNewShowTime?.id,
       theatrename: theatrename.name,
       startDate: startDate,
       moviename: moviename.name,
@@ -290,13 +378,7 @@ const AddNewShowtime = () => {
   };
 
   const handleCancel = () => {
-    setDateTime("");
-    setDateTime12h("");
-    setMovieName("");
-    setSelectedCities("");
-    setStartDate("");
-    setTheatreName("");
-    setTimeArray([]);
+    navigate("/admin-shows");
   };
 
   useEffect(() => {
@@ -349,23 +431,9 @@ const AddNewShowtime = () => {
       setMessage(
         "Time slot overlaps with an existing showtime. Please choose another start time."
       );
-      // alert(
-      //   "Time slot overlaps with an existing showtime. Please choose another start time."
-      // );
       setDateTime("");
     }
   }, [datetime12h, duration]);
-
-  // useEffect(()=>{
-  //   if( datetime!="" && datetime<datetime12h){
-  //     alert("Select endtime greater than starttime");
-
-  //   }
-  //   if(datetime12h){
-  //     datetime=datetime12h+duration;
-  //   }
-
-  // },[timearray,datetime])
 
   return (
     <div>
@@ -409,62 +477,6 @@ const AddNewShowtime = () => {
           <div className="flex flex-col justify-between gap-5 ">
             <p className="font-semibold text-base">Basic Info</p>
 
-            {/* <input
-              type="text"
-              placeholder="Movie Name"
-              value={moviename}
-              onChange={(e) => setMovieName(e.target.value)}
-              required
-              className="w-[30vw] h-[2vw] className='text-sm text-gray-500' border-1 border-gray-300 p-2 rounded-sm mb-1 outline-none"
-            /> */}
-
-            {/* <Box
-              component="form"
-              sx={{ "& > :not(style)": { width: "30vw", margin: "0.2vw 0" } }}
-              noValidate
-              autoComplete="off"
-            >
-              <TextField
-                id="outlined-basic"
-                label="Movie Name"
-                variant="outlined"
-                value={moviename}
-                onChange={(e) => setMovieName(e.target.value)}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    // Default border color for outlined input
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#A1A2A4", // Grey border by default
-                      borderWidth: "1px",
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#A1A2A4", // Keep grey on hover if not focused
-                    },
-                    // Styles when the input itself is focused
-                    "&.Mui-focused": {
-                      "& .MuiOutlinedInput-notchedOutline": {
-                        borderColor: "#000", // Black border when focused
-                        borderWidth: "1px", // Keep border width consistent
-                      },
-                    },
-                  },
-                  // Target the label component directly
-                  "& .MuiInputLabel-root": {
-                    color: "#A1A2A4", // Default label color (grey)
-                    fontWeight: "normal", // Assuming default is normal, if you want bold when focused
-                    "&.Mui-focused": {
-                      color: "#000", // Black label when focused
-                      fontWeight: "light", // Bold label when focused
-                    },
-                    // Optional: Keep label black when it has a value (shrunk) and is not focused
-                    "&.MuiInputLabel-shrink": {
-                      color: "#000", // Black label when shrunk (has value)
-                    },
-                  },
-                }}
-              />
-            </Box> */}
-
             <div className="card flex justify-content-center items-center h-[2.4vw] ">
               <Dropdown
                 value={moviename}
@@ -478,62 +490,6 @@ const AddNewShowtime = () => {
                 filter
               />
             </div>
-
-            {/* <input
-              type="text"
-              placeholder="Theatre Name"
-              value={theatrename}
-              onChange={(e) => setTheatreName(e.target.value)}
-              required
-              className="w-[30vw] h-[2vw] className='text-sm text-gray-500' border-1 border-gray-300 p-2 rounded-sm mb-1 outline-none"
-            /> */}
-
-            {/* <Box
-              component="form"
-              sx={{ "& > :not(style)": { width: "30vw", margin: "0.2vw 0" } }}
-              noValidate
-              autoComplete="off"
-            >
-              <TextField
-                id="outlined-basic"
-                label="Theatre Name"
-                variant="outlined"
-                value={theatrename}
-                onChange={(e) => setTheatreName(e.target.value)}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    // Default border color for outlined input
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#A1A2A4", // Grey border by default
-                      borderWidth: "1px",
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#A1A2A4", // Keep grey on hover if not focused
-                    },
-                    // Styles when the input itself is focused
-                    "&.Mui-focused": {
-                      "& .MuiOutlinedInput-notchedOutline": {
-                        borderColor: "#000", // Black border when focused
-                        borderWidth: "1px", // Keep border width consistent
-                      },
-                    },
-                  },
-                  // Target the label component directly
-                  "& .MuiInputLabel-root": {
-                    color: "#A1A2A4", // Default label color (grey)
-                    fontWeight: "normal", // Assuming default is normal, if you want bold when focused
-                    "&.Mui-focused": {
-                      color: "#000", // Black label when focused
-                      fontWeight: "light", // Bold label when focused
-                    },
-                    // Optional: Keep label black when it has a value (shrunk) and is not focused
-                    "&.MuiInputLabel-shrink": {
-                      color: "#000", // Black label when shrunk (has value)
-                    },
-                  },
-                }}
-              />
-            </Box> */}
 
             <div className="card flex justify-content-center h-[2.4vw] items-center ">
               <Dropdown
@@ -553,32 +509,12 @@ const AddNewShowtime = () => {
               <input
                 type="date"
                 value={startDate}
+                min={today}
+                max={formattedEndDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="outline-none border-1 border-zinc-300 rounded-md p-1 text-center w-[13vw] h-[2.6vw]"
+                className="outline-none border-1 border-zinc-300 rounded-md p-1 text-center w-[13vw] h-[2.7vw]"
               />
 
-              {/* <div className="card flex justify-content-center w-[13vw] h-[2.4vw]">
-                <MultiSelect
-                  value={selectedCities}
-                  onChange={(e) => setSelectedCities(e.value)}
-                  options={cities}
-                  optionLabel="name"
-                  display="chip"
-                  placeholder="Language(s)"
-                  maxSelectedLabels={3}
-                  className="w-full md:w-20rem hover:border-none"
-                  pt={{
-                    root: {
-                      onFocus: "outline-none border-none hover:border-none",
-                      focus: "outline-none border-none",
-                      className: "hover:border-none",
-                    },
-                    input: {
-                      onFocus: "outline-none border-zinc-400 border-none",
-                    },
-                  }}
-                />
-              </div> */}
               <div className="card flex justify-content-center h-[2.4vw] items-center w-[13vw]">
                 <Dropdown
                   value={selectedCities}
@@ -613,8 +549,8 @@ const AddNewShowtime = () => {
                     onChange={(e) => setDateTime12h(e.value)}
                     showTime
                     hourFormat="12"
+                    minDate={isToday(startDate) ? new Date() : null}
                     className="custom-calendar"
-                    
                   />
                 </div>
                 <div className="w-[11vw]">
@@ -630,6 +566,7 @@ const AddNewShowtime = () => {
                     // onChange={(e) => setDateTime(e.value)}
                     showTime
                     hourFormat="12"
+                    minDate={isToday(startDate) ? new Date() : null}
                     className="custom-calendar"
                   />
                 </div>

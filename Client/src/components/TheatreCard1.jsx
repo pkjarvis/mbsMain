@@ -2,15 +2,17 @@ import React, { useEffect, useState } from "react";
 import axiosInstance from "../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
 
-const TheatreCard1 = ({ movie }) => {
+const TheatreCard1 = ({ showsData }) => {
   const [review, setReview] = useState([]);
   const navigate=useNavigate();
+
+
 
   useEffect(() => {
     axiosInstance
       .get(
         "get-review-bymovie",
-        { params: { movieId: movie.id } },
+        { params: { movieId: showsData?.Movie?.ID }},
         { withCredentials: true }
       )
       .then((res) => {
@@ -30,7 +32,7 @@ const TheatreCard1 = ({ movie }) => {
   const average = review.length > 0 ? (total / review.length).toFixed(1) : 0;
 
   const handleSubmit=()=>{
-    navigate("/movie",{state:{movie}});
+    navigate(`/movie/${showsData.ID}`,{state:{movie:showsData?.Movie}});
   };
 
   return (
@@ -38,14 +40,14 @@ const TheatreCard1 = ({ movie }) => {
       <div className="card-container w-[100%] h-[32vw]">
         <div className="w-[100%%] h-[26vw] rounded-xl overflow-hidden">
           <img
-            src={movie.file || "/assets/Chaava.png"}
+            src={showsData?.Movie.file || "/assets/Chaava.png"}
             alt="Chaava"
             className="scale-122 w-[100%] h-[109%] ease-in-out hover:scale-100 hover:w-[100%] hover:h-[100%] hover:ease-in-out duration-300"
           />
         </div>
         <div className="flex flex-col mt-4">
           <p className="text-md text-black font-semibold">
-           {movie.movie || "Alice in Wonderland"}
+           {showsData?.Movie.movie || "Alice in Wonderland"}
           </p>
           <span className="flex items-center justify-start gap-2">
             <p className="text-gray-400">{average || 0}</p>
@@ -74,13 +76,13 @@ const TheatreCard1 = ({ movie }) => {
               alt="Star14"
               className="w-[1.16vw] h-[1.18vw]"
             /> */}
-          </span>
+          </span> 
            <p className="text-[#6F6F6F] font-light mx-2 flex-wrap">
-            {movie.genre} | UA13+ |{" "}
-            {movie.language?.map((lang, index) => (
+            {showsData?.Movie.genre} | UA13+ |{" "}
+            {showsData?.Movie?.language?.map((lang, index) => (
               <span key={index} className="inline-block flex-wrap">
                 {lang.name}
-                {index < movie.language.length - 1 && ", "}
+                {index < showsData?.Movie?.language.length - 1 && ", "}
               </span>
             ))}
           </p>

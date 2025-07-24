@@ -41,7 +41,7 @@ export const MoviesProvider = ({children}) => {
   }
 
   const updateMovie=(updatedMovie)=>{
-    setMovies(movies.map(m=>m.id===updatedMovie.id?updatedMovie:m));
+    setMovies(movies.map(m=>m.id===updatedMovie.ID?updatedMovie:m));
   };
 
 

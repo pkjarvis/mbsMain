@@ -35,13 +35,13 @@ func main() {
 	url := os.Getenv("ALLOWED_ORIGIN1")
 
 	if url == "" {
-		url = "http://localhost:5173" // fallback during dev
+		url = "http://34.131.125.137" // fallback during dev
 	}
 	fmt.Println("url is",url) // this url should be passed in alloworigins
 
 
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{url},
+		AllowOrigins:     []string{"http://34.131.125.137"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length", "Set-Cookie"},

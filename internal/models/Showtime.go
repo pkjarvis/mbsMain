@@ -10,16 +10,16 @@ package models
 //       language:selectedCities,
 //       archived:false,
 
+
 import (
 	"time"
-
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
 type Showtime struct {
 	gorm.Model
-	Id          uint           `json:"id" gorm:"primaryKey"`
+	// Id          uint           `json:"id" gorm:"primaryKey"`
 	MovieID     uint           `json:"movieId"`
 	TheatreID   uint           `json:"theatreId"`
 	TheatreName string         `json:"theatrename"`
@@ -31,6 +31,8 @@ type Showtime struct {
 	Movie       Movie          `gorm:"foreignKey:MovieID;constraint:OnDelete:CASCADE,OnUpdate:CASCADE;"`
 	Theatre     Theatre        `gorm:"foreignKey:TheatreID;constraint:OnDelete:CASCADE,OnUpdate:CASCADE;"`
 }
+
+
 
 
 

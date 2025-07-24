@@ -7,10 +7,9 @@ import { MoviesContext } from "../context/MovieContext";
 import axiosInstance from "../utils/axiosInstance";
 import { toast, ToastContainer } from "react-toastify";
 import { replace, useLocation, useNavigate } from "react-router-dom";
+import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import Alert from "@mui/material/Alert";
-
-
 
 const baseUrl = import.meta.env.VITE_ROUTE;
 
@@ -21,6 +20,9 @@ const MovieManagement = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6; 
+
   // The replace: true option replaces the current entry in the history stack, and state: {} clears the state object.
   useEffect(() => {
     if (location.state?.toastMessage) {
@@ -28,15 +30,16 @@ const MovieManagement = () => {
       navigate(location.pathname, { replace: true, state: {} });
     }
   }, [location, navigate]);
-   
-  const [showDateWarning, setShowDataWarning] = useState(false); 
 
-  useEffect(()=>{
-    if (location.state){
+  const [showDateWarning, setShowDataWarning] = useState(false);
+
+  useEffect(() => {
+  if (location.state?.toastMessage && location.state?.type === "update") {
     setShowDataWarning(true);
+  } else {
+    setShowDataWarning(false);
   }
-  },[location])
-  
+}, [location]);
 
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -55,9 +58,6 @@ const MovieManagement = () => {
       .finally(() => setLoading(false));
   }, [location]);
 
-
-  
-
   const [searchQuery, setSearchQuery] = useState("");
 
   // Filter logic
@@ -65,11 +65,10 @@ const MovieManagement = () => {
     movie.movie.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  
-
-
-
-
+  const paginatedMovies = filteredMovies.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   return (
     <div>
@@ -85,14 +84,14 @@ const MovieManagement = () => {
           }
         />
 
-         {showDateWarning && (
+        {/* {showDateWarning && (
           <Stack
             sx={{
               width: "60%",
               position: "absolute",
               zIndex: "1020",
               marginLeft: "18vw",
-              marginTop:"6vw",
+              marginTop: "6vw",
             }}
             spacing={2}
           >
@@ -103,11 +102,12 @@ const MovieManagement = () => {
                 setShowDataWarning(false);
               }}
             >
-              {"Update the corresponding showtime if movie is edited or add showtime if movie is just added"}
+              {
+                "Update the corresponding showtime if movie is edited or add showtime if movie is just added"
+              }
             </Alert>
           </Stack>
-        )}
-
+        )} */}
 
         <MainHeader
           title="Manage Movies"
@@ -121,10 +121,25 @@ const MovieManagement = () => {
         {loading ? (
           <p className="text-center mt-8">Loading Movies ...</p>
         ) : filteredMovies.length > 0 ? (
-          filteredMovies.map((m) => (
+          // filteredMovies.map((m) => (
+          //   <MovieCard
+          //     key={m.id}
+          //     id={m.ID}
+          //     movie={m.movie}
+          //     description={m.description}
+          //     startDate={m.startDate}
+          //     endDate={m.endDate}
+          //     genre={m.genre}
+          //     language={m.language}
+          //     status={m.status}
+          //     file={m.file}
+          //     setShowDataWarning={setShowDataWarning}
+          //   />
+          // ))
+          paginatedMovies.map((m) => (
             <MovieCard
-              key={m.id}
-              id={m.id}
+              key={m.ID}
+              id={m.ID}
               movie={m.movie}
               description={m.description}
               startDate={m.startDate}
@@ -133,6 +148,7 @@ const MovieManagement = () => {
               language={m.language}
               status={m.status}
               file={m.file}
+              duration={m.duration}
               setShowDataWarning={setShowDataWarning}
             />
           ))
@@ -141,6 +157,16 @@ const MovieManagement = () => {
         )}
 
         {/* <MovieCard/> */}
+      </div>
+      <div className="flex justify-center mt-[7vw]">
+        <Pagination
+          count={Math.ceil(filteredMovies.length / itemsPerPage)}
+          page={currentPage}
+          onChange={(e, value) => setCurrentPage(value)}
+          // variant="outlined"
+          // shape="rounded"
+          // color="secondary" // pink theme
+        />
       </div>
     </div>
   );

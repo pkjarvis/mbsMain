@@ -9,8 +9,8 @@ import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
 
 const AllMovies = () => {
-  const username = localStorage.getItem("userName");
-  const [selectedCity, setSelectedCity] = useState("");
+ 
+ 
 
   const [genre, setGenre] = useState(null);
   const genres = [
@@ -32,80 +32,99 @@ const AllMovies = () => {
     { name: "Malyalam", code: "MLY" },
   ];
 
-  // fetch get api's for movies
-  // const [movies, setMovies] = useState([]);
-  // // const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   // polling user side to get latest movie added by admin every 10 seconds
-  //   // const interval=setInterval(()=>{
-  //   axiosInstance
-  //     .get("/get-movies", { withCredentials: true })
-  //     .then((res) => {
-  //       console.log(res.data);
-  //       setMovies(res.data);
-  //     })
-  //     .catch((err) =>
-  //       console.log("Error fetching movies", err.response?.data || err.message)
-  //     );
-  //   // },2000);
+  const username = localStorage.getItem("userName");
+  const token = localStorage.getItem("userToken");
 
-  //   // return ()=>clearInterval(interval);
-  // }, []);
-
-  const [searchTerm, setSearchTerm] = useState("");
   const [filteredshowtimes, setFilteredShowtimes] = useState([]);
   const [allshowtime, setAllShowtimes] = useState([]);
+
+  const [nowshowing, setNowShowing] = useState([]);
+  const [upcoming, setUpComing] = useState([]);
+
+  const toDate = (dateStr) => new Date(new Date(dateStr).toDateString());
+
+  const [selectedCity, setSelectedCity] = useState(true);
 
   useEffect(() => {
     axiosInstance
       .get("/get-showtime", { withCredentials: true })
       .then((res) => {
-        // console.log("showtime response",res.data);
+        console.log("showtime response", res.data);
         const allShowtimes = res.data;
         const uniqueMap = new Map();
 
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
         allShowtimes.forEach((item) => {
-          const key = `${item.movieId}-${item.theatreId}`;
-          if (!uniqueMap.has(key)) {
-            uniqueMap.set(key, {
-              id: item.movieId,
-              movie: item.moviename,
-              file: item.Movie?.file || item.movieFile || "",
-              genre: item.Movie?.genre || "",
-              language: item.Movie?.language || [],
-              theatreId: item.theatreId,
-              theatrename: item.theatrename,
-              theatreAddress: item.Theatre?.address || "",
-              state: item.Theatre.stateName,
-            });
+          const key = `${item.ID}`;
+          const movieStartDate = new Date(item?.startDate);
+          movieStartDate.setHours(0, 0, 0, 0);
+
+          console.log("movie startdate:", movieStartDate);
+          console.log("today", today);
+
+          if (!uniqueMap.has(key) && movieStartDate >= today) {
+            uniqueMap.set(key, item);
           }
         });
+
         const uniqueMovies = Array.from(uniqueMap.values());
+        console.log("unique movies is", uniqueMovies);
         setFilteredShowtimes(uniqueMovies);
         setAllShowtimes(uniqueMovies);
+
+        const nowShowingFiltered = uniqueMovies
+          .filter((show) => show?.Movie?.status === "Now Showing")
+          .reverse();
+        const upComingFiltered = uniqueMovies
+          .filter((show) => show?.Movie?.status === "Upcoming")
+          .reverse();
+
+        //segregate
+        setNowShowing(nowShowingFiltered.slice(0, 3));
+        setUpComing(upComingFiltered.slice(0, 4));
       })
       .catch((err) => console.log(err));
   }, []);
 
+  const [searchTerm, setSearchTerm] = useState("");
+
   const filteredCombos = filteredshowtimes.filter((item) => {
-    const matchesSearch = searchTerm.trim() === "" || item.movie?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch =
+      searchTerm.trim() === "" ||
+      item.movie?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCity =
       !selectedCity?.name ||
-      item.state?.toLowerCase() === selectedCity.name.toLowerCase();
-    const genreMatch = genre ? item.genre === genre.name : true;
-    const languageMatch = language
-      ? item.language?.some((lang) => lang.name === language.name)
-      : true;
-    // const searchMatch = searchTerm
-    //   ? m.movie.toLowerCase().includes(searchTerm.toLowerCase())
-    //   : true;
-
-    return (
-       matchesCity && genreMatch && languageMatch && matchesSearch
-    );
+      item?.Theatre?.cityName?.toLowerCase() === selectedCity.name.toLowerCase();
+    return matchesSearch && matchesCity;
   });
 
+  console.log("filtered combos:",filteredCombos);
+
+  const filteredCombos1 = filteredshowtimes.filter((item) => {
+    const matchesSearch =
+    !searchTerm ||
+    item?.Movie?.movie?.toLowerCase().includes(searchTerm.toLowerCase());
+
+  const matchesCity =
+    !selectedCity?.name ||
+    item?.Theatre?.cityName?.toLowerCase() === selectedCity.name.toLowerCase();
+
+  const matchesGenre =
+    !genre || item?.Movie?.genre?.toLowerCase() === genre.name.toLowerCase();
+
+   const matchesLanguage =
+    !language ||
+    item?.Movie?.language?.some(
+      (lang) => lang.name.toLowerCase() === language.name.toLowerCase()
+    );
+    return (
+       matchesCity && matchesGenre && matchesLanguage && matchesSearch
+    );
+  });
 
   return (
     <div>
@@ -131,7 +150,7 @@ const AllMovies = () => {
           </span>
         </div>
         <section>
-          <ImageContainer setSearchTerm={setSearchTerm} />
+          <ImageContainer setSearchTerm={setSearchTerm} filteredShowtime={filteredCombos} />
         </section>
 
         <div className="card-container mx-[3vw] bg-white h-[auto]">
@@ -158,27 +177,14 @@ const AllMovies = () => {
           </span>
 
           <div className="grid grid-cols-4  gap-[2vw]">
-            {/* {movies.length>0?
-            (
-              movies.map((m)=>(
-                <MovieCard
-                  key={m.id}
-                  movie={m}
-
-
-                />
-              ))
-            ):(<p className="text-md ">No movies added</p>)
-            
-          } */}
-            {filteredCombos.length > 0 ? (
-              filteredCombos.map((m) => <MovieCard1 key={m.id} movie={m} />)
+           
+            {filteredCombos1.length > 0 ? (
+              filteredCombos1.map((show) => <MovieCard1 key={show.ID} showsData={show} />)
             ) : (
               <p className="text-gray-500 text-lg col-span-4 mt-4">
                 No matching movies found.
               </p>
             )}
-            
           </div>
           <div className="  h-[14vw]  my-[4vw]">
             <img

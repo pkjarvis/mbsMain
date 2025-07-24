@@ -5,8 +5,9 @@ import axiosInstance from "../utils/axiosInstance";
 
 // movie-> {id,movie,description,startDate,endDate,genre,language,status,file}
 // "../src/assets/aliceWonderland.png"
-const MovieCard1 = ({ movie }) => {
-  if (!movie || !movie.file) return null;
+const MovieCard1 = ({ showsData }) => {
+  
+  if (!showsData?.Movie?.movie || !showsData?.Movie?.file) return null;
 
   const navigate = useNavigate("");
 
@@ -16,7 +17,7 @@ const MovieCard1 = ({ movie }) => {
     axiosInstance
       .get(
         "get-review-bymovie",
-        { params: { movieId: movie.id } },
+        { params: { movieId: showsData?.Movie?.ID } },
         { withCredentials: true }
       )
       .then((res) => {
@@ -36,7 +37,7 @@ const MovieCard1 = ({ movie }) => {
   const average = review.length > 0 ? (total / review.length).toFixed(1) : 0;
 
   const handleClick = () => {
-    navigate("/movie", { state: { movie } });
+    navigate(`/movie/${showsData?.ID}`, { state: { movie:showsData?.Movie } });
   };
 
   return (
@@ -46,11 +47,11 @@ const MovieCard1 = ({ movie }) => {
         onClick={handleClick}
       >
         {/* <a href="http://localhost:3000/movie"> */}
-        <img src={movie.file} alt={movie.movie} className="w-[100%] h-[23vw]" />
+        <img src={showsData?.Movie?.file} alt={showsData?.Movie?.movie} className="w-[100%] h-[23vw]" />
         {/* </a> */}
         <span className="w-[95%] mt-2">
           <p className="text-md text-black font-semibold mx-2">
-            {movie.movie || "Alice Wonderland"}
+            {showsData?.Movie?.movie || "Alice Wonderland"}
           </p>
           <span className="flex items-center justify-start gap-2 ml-3">
             <p className="text-gray-400">{average || 0}</p>
@@ -81,11 +82,11 @@ const MovieCard1 = ({ movie }) => {
             /> */}
           </span>
           <p className="text-[#6F6F6F] font-light mx-2 flex-wrap">
-            {movie.genre} | UA13+ |{" "}
-            {movie.language?.map((lang, index) => (
+            {showsData?.Movie.genre} | UA13+ |{" "}
+            {showsData?.Movie?.language?.map((lang, index) => (
               <span key={index} className="inline-block flex-wrap">
                 {lang.name}
-                {index < movie.language.length - 1 && ", "}
+                {index < showsData?.Movie?.language?.length - 1 && ", "}
               </span>
             ))}
           </p>

@@ -15,29 +15,13 @@ const Dashboard = () => {
   const username = localStorage.getItem("userName");
   const token = localStorage.getItem("userToken");
 
-  // useEffect(() => {
-  //   if (!username && !token) {
-  //     navigate("/root");
-  //   }
-  // });
-
-  // useEffect(() => {
-  //   axiosInstance
-  //     .get("/get-movies", { withCredentials: true })
-  //     .then((res) => {
-  //       console.log(res.data);
-  //       setMovies(res.data);
-  //     })
-  //     .catch((err) =>
-  //       console.log("Error fetching movies", err.response?.data || err.message)
-  //     );
-  // }, []);
-
   const [filteredshowtimes, setFilteredShowtimes] = useState([]);
   const [allshowtime, setAllShowtimes] = useState([]);
 
-  const [nowshowing,setNowShowing]=useState([]);
-  const [upcoming,setUpComing]=useState([]);
+  const [nowshowing, setNowShowing] = useState([]);
+  const [upcoming, setUpComing] = useState([]);
+
+  const toDate = (dateStr) => new Date(new Date(dateStr).toDateString());
 
   const [selectedCity, setSelectedCity] = useState(true);
 
@@ -45,44 +29,49 @@ const Dashboard = () => {
     axiosInstance
       .get("/get-showtime", { withCredentials: true })
       .then((res) => {
-        console.log("showtime response",res.data);
+        console.log("showtime response", res.data);
         const allShowtimes = res.data;
         const uniqueMap = new Map();
 
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        
+
         allShowtimes.forEach((item) => {
-          const key = `${item.movieId}-${item.theatreId}`;
-          if (!uniqueMap.has(key)) {
-            uniqueMap.set(key, {
-              id: item.movieId,
-              movie: item.moviename,
-              file: item.Movie?.file || item.movieFile || "",
-              genre: item.Movie?.genre || "",
-              language: item.Movie?.language || [],
-              theatreId: item.theatreId,
-              theatrename: item.theatrename,
-              theatreAddress: item.Theatre?.address || "",
-              state: item.Theatre.stateName,
-              city:item.Theatre.cityName,
-              category:item.Movie?.status || "",
-              showId:item.id,
-            });
+          const key = `${item.ID}`;
+          const movieStartDate=new Date(item?.startDate);
+          movieStartDate.setHours(0, 0, 0, 0);
+
+        console.log("movie startdate:",movieStartDate);
+        console.log("today",today);
+
+          if (!uniqueMap.has(key) && movieStartDate>=today) {
+            uniqueMap.set(key, item);
           }
         });
+
+        
+
         const uniqueMovies = Array.from(uniqueMap.values());
+        console.log("unique movies is", uniqueMovies);
         setFilteredShowtimes(uniqueMovies);
         setAllShowtimes(uniqueMovies);
 
-        //segregate
-        setNowShowing(uniqueMovies.filter(movie=>movie.category==="Now Showing"));
-        setUpComing(uniqueMovies.filter(movie=>movie.category==="Upcoming"));
+        const nowShowingFiltered = uniqueMovies
+          .filter((show) => show?.Movie?.status === "Now Showing")
+          .reverse();
+        const upComingFiltered = uniqueMovies
+          .filter((show) => show?.Movie?.status === "Upcoming")
+          .reverse();
 
+        //segregate
+        setNowShowing(nowShowingFiltered.slice(0, 3));
+        setUpComing(upComingFiltered.slice(0,4));
 
       })
       .catch((err) => console.log(err));
   }, []);
-
-
-  console.log("filter showtie", allshowtime);
 
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -92,9 +81,10 @@ const Dashboard = () => {
       item.movie?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCity =
       !selectedCity?.name ||
-      item.city?.toLowerCase() === selectedCity.name.toLowerCase();
+      item.Theatre.cityName?.toLowerCase() === selectedCity.name.toLowerCase();
     return matchesSearch && matchesCity;
   });
+
   const bollywoodMovies = filteredCombos.slice(0, 3);
 
   return (
@@ -105,9 +95,12 @@ const Dashboard = () => {
           selectedCity={selectedCity}
           setSelectedCity={setSelectedCity}
         />
-        
+
         <section>
-          <ImageContainer setSearchTerm={setSearchTerm} />
+          <ImageContainer
+            setSearchTerm={setSearchTerm}
+            filteredShowtime={filteredCombos}
+          />
         </section>
         {/* <section>
           <MovieCardSection
@@ -116,7 +109,16 @@ const Dashboard = () => {
           />
         </section> */}
         <section className="mt-[2vw]">
-          <NowShowingTheatre  movies={nowshowing.slice(0,3) }/>
+          <NowShowingTheatre
+            shows={nowshowing
+              .filter(
+                (show) =>
+                  !selectedCity?.name ||
+                  show?.Theatre?.cityName?.toLowerCase() ===
+                    selectedCity.name.toLowerCase()
+              )
+              .slice(0, 3)}
+          />
         </section>
 
         <section className="mx-[3vw] bg-white">
@@ -129,7 +131,7 @@ const Dashboard = () => {
             experience.
           </p>
           <span className="flex items-center justify-between mt-8 mx-[6vw]">
-            <span className="flex flex-col items-center z-10">
+            <span className="flex flex-col items-center z-5">
               <p className="bg-[#FFE9F3] h-[7vw] w-[7vw] rounded-full flex items-center justify-center">
                 <img
                   src="/assets/take.png"
@@ -142,7 +144,7 @@ const Dashboard = () => {
               </p>
             </span>
 
-            <span className="flex flex-col items-center z-10">
+            <span className="flex flex-col items-center z-5">
               <p className="bg-[#FFE9F3] h-[7vw] w-[7vw] rounded-full flex items-center justify-center">
                 <img
                   src="/assets/clock.png"
@@ -155,7 +157,7 @@ const Dashboard = () => {
               </p>
             </span>
 
-            <span className="flex flex-col items-center z-10">
+            <span className="flex flex-col items-center z-5">
               <p className="bg-[#FFE9F3] h-[7vw] w-[7vw] rounded-full flex items-center justify-center">
                 <img
                   src="/assets/passenger.png"
@@ -168,7 +170,7 @@ const Dashboard = () => {
               </p>
             </span>
 
-            <span className="flex flex-col items-center z-10">
+            <span className="flex flex-col items-center z-5">
               <p className="bg-[#FFE9F3] h-[7vw] w-[7vw] rounded-full flex items-center justify-center">
                 <img
                   src="/assets/cash.png"
@@ -185,7 +187,14 @@ const Dashboard = () => {
         </section>
 
         <section>
-          <Bollywood movies={filteredCombos.slice(0, 4)} />  
+          <Bollywood shows={upcoming
+              .filter(
+                (show) =>
+                  !selectedCity?.name ||
+                  show?.Theatre?.cityName?.toLowerCase() ===
+                    selectedCity.name.toLowerCase()
+              )
+              .slice(0, 4)} />
         </section>
 
         <section className="mx-[3vw]  h-[14vw]  my-[4vw]">

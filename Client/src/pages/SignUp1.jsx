@@ -74,8 +74,8 @@ const SignUp1 = () => {
       // }
 
      
-      if (redirectPath === "/movie" && movie) {
-        navigate("/movie", {
+      if (redirectPath  && movie) {
+        navigate(redirectPath, {
           state: {
             movie: movie,
             reviewState: reviewState,

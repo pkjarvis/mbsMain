@@ -145,3 +145,6 @@ html,body{
   box-shadow: none !important;
   outline: none !important;
 }
+.css-1l5xwdx-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected {
+    background-color: #FF5295 !important;
+}

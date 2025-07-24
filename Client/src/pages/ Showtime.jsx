@@ -48,8 +48,10 @@ const Showtime = () => {
 
   const { state } = useLocation();
   const movie = state?.movie;
+  const showId=state?.showId;
 
   console.log("movies", movie);
+  console.log("showId is",showId)
 
   const [datebooked, setDateBooked] = useState([]);
   const [showtime, setShowTime] = useState([]);
@@ -58,10 +60,10 @@ const Showtime = () => {
   const [selectedCity, setSelectedCity] = useState("");
 
   useEffect(() => {
-    if (!movie.id) return;
+    if (!movie.ID) return;
     axiosInstance
       .get("/get-show", {
-        params: { movieId: movie.id },
+        params: { movieId: movie.ID },
         withCredentials: true,
       })
       .then((res) => {
@@ -89,7 +91,7 @@ const Showtime = () => {
     axiosInstance
       .get(
         "/get-movie-byid",
-        { params: { movieId: movie.id } },
+        { params: { movieId: movie.ID } },
         { withCredentials: true }
       )
       .then((res) => {
@@ -187,7 +189,7 @@ const Showtime = () => {
   }
 
   // Final filtered showtime array based on selected date
-  
+
   const filteredShowtime = useMemo(() => {
     if (!curdate) return [];
 
@@ -208,7 +210,6 @@ const Showtime = () => {
       return isSameDate && isSameCity;
     });
   }, [curdate, selectedCity, showtime]);
-
 
   // console.log("curdate is ",curdate);
   console.log("showtime details", showtime);
@@ -233,7 +234,7 @@ const Showtime = () => {
             {/* <a href="http://localhost:3000/movie" className='cursor-pointer font-light text-zinc-500'>Movie /</a>
                 <a href="http://localhost:3000/showtime" className='cursor-pointer'> Show Time</a> */}
             <Link
-              to="/movie"
+              to={`/movie/${showId}`}
               state={{ movie }}
               className="cursor-pointer font-light text-zinc-500"
             >
@@ -271,7 +272,7 @@ const Showtime = () => {
             </p>
             <div className="date-container max-w-[60%] h-[28%]  rounded-xl border-1 border-[#EBEBEB] flex items-center justify-start mt-4 ">
               <div className="flex items-center justify-between gap-4  w-[auto] p-[1vw] overflow-x-scroll ">
-                {datelist.map((dateInfo, index) => (
+                {/* {datelist.map((dateInfo, index) => (
                   <span
                     key={index}
                     className={`bg-[#F5F5F5] flex flex-col w-[4vw] h-[5.2vw] p-2  items-center justify-center rounded-2xl hover:border-1 hover:border-[#FF5295] hover:scale-115 ease-in-out duration-150 ${
@@ -302,7 +303,55 @@ const Showtime = () => {
                       {dateInfo.weekday}
                     </p>
                   </span>
-                ))}
+                ))} */}
+                
+                {datelist.map((dateInfo, index) => {
+                  const composedDate = `${dateInfo.weekday} ${dateInfo.day} ${dateInfo.month}`;
+                  const selectedDateStr =
+                    parseCurDateToLocalDateStr(composedDate);
+
+                  const hasShowForThisDate = showtime.some((show) => {
+                    const showDateStr = parseBackendStartDateToLocalDateStr(
+                      show.startDate
+                    );
+                    return showDateStr === selectedDateStr;
+                  });
+
+                  const isSelected = curdate === composedDate;
+
+                  return (
+                    <span
+                      key={index}
+                      className={`flex flex-col w-[4vw] h-[5.2vw] p-2 items-center justify-center rounded-2xl transition ease-in-out duration-150
+                                 ${isSelected ? "bg-[#FF5295]" : "bg-[#F5F5F5]"}
+                                 ${
+                                     hasShowForThisDate
+                                      ? "hover:border-1 hover:border-[#FF5295] hover:scale-115 cursor-pointer"
+                                      : "bg-gray-300 cursor-not-allowed opacity-34"
+                                  }
+                     `}
+                      onClick={() => {
+                        if (hasShowForThisDate) {
+                          handleDateSelection(
+                            dateInfo.weekday,
+                            dateInfo.day,
+                            dateInfo.month
+                          );
+                        }
+                      }}
+                    >
+                      <p className="text-xl font-light text-black">
+                        {dateInfo.month}
+                      </p>
+                      <p className="text-2xl font-semibold text-black">
+                        {dateInfo.day}
+                      </p>
+                      <p className="text-md font-light text-black">
+                        {dateInfo.weekday}
+                      </p>
+                    </span>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -321,6 +370,7 @@ const Showtime = () => {
                 movies={show.Movie}
                 timearray={show.timearray}
                 date={curdate}
+                showID={showId}
 
                 // setShowDataWarning={setShowDataWarning}
               />

@@ -13,9 +13,14 @@ const ShowBooking = () => {
   const from = state?.from;
   const to = state?.to;
   const showId = state?.id;
+  const showID = state?.showID;
+
   console.log("theatre from location.state", theatre);
   const username = localStorage.getItem("userName");
+
   console.log("Id is", showId);
+  console.log("Show Id is",showID);
+
   const [selectedCity, setSelectedCity] = useState("");
   // seat booked logic
   const [soldTickets, setSoldTickets] = useState([]);
@@ -173,7 +178,7 @@ const ShowBooking = () => {
             </Link>
             <Link
               // href="http://localhost:3000/movie"
-              to="/movie"
+              to={`/movie/${showID}`}
               state={{ movie: movie }}
               className="cursor-pointer font-light text-zinc-500"
             >
@@ -2313,7 +2318,7 @@ const ShowBooking = () => {
                 Submit
               </button>
             </Tooltip>):
-            (<Tooltip title="Login First">
+            (<Tooltip title="Login First, login button on top-right">
               <button
                 className={`bg-[#FF5295]  text-md w-[12vw] h-[2vw]  rounded-lg text-white font-semibold text-center  mx-[1vw] ${
                   !username ? "cursor-not-allowed" : "cursor-pointer"

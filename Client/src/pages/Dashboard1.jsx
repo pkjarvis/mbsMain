@@ -12,12 +12,23 @@ import { useLocation } from "react-router-dom";
 const Dashboard1 = () => {
   const [movies, setMovies] = useState([]);
   const [selectedCity, setSelectedCity] = useState(false);
+   const [searchTerm, setSearchTerm] = useState("");
   const location = useLocation();
   var username = localStorage.getItem("userName");
+
+  const [nowshowing,setNowShowing]=useState([]);
+  const [upcoming,setUpComing]=useState([]);
+  
+  const toDate = (dateStr) => new Date(new Date(dateStr).toDateString());
+  
 
   useEffect(() => {
     username = localStorage.getItem("userName");
   }, []);
+
+  const [filteredshowtimes, setFilteredShowtimes] = useState([]);
+  const [allshowtime, setAllShowtimes] = useState([]);
+  
 
   useEffect(() => {
     axiosInstance
@@ -30,6 +41,64 @@ const Dashboard1 = () => {
         console.log("Error fetching movies", err.response?.data || err.message)
       );
   }, []);
+
+
+
+  useEffect(() => {
+    axiosInstance
+      .get("/get-showtime", { withCredentials: true })
+      .then((res) => {
+        console.log("showtime response",res.data);
+        const allShowtimes = res.data;
+        const uniqueMap = new Map();
+
+        const today = toDate(new Date());
+
+        allShowtimes.forEach((item) => {
+        const key = `${item.id}`;
+        if (!uniqueMap.has(key)) {
+          const movieStart = toDate(item.Movie?.startdate);
+          const movieEnd = toDate(item.Movie?.enddate);
+
+          let dynamicStatus = "Upcoming";
+          if (today >= movieStart && today <= movieEnd) {
+            dynamicStatus = "Now Showing";
+          }
+
+          const enrichedItem = {
+            ...item,
+            status: dynamicStatus, 
+          };
+
+          uniqueMap.set(key, enrichedItem);
+        }
+      });
+
+
+        const uniqueMovies = Array.from(uniqueMap.values());
+        console.log("unique movies is",uniqueMovies);
+        setFilteredShowtimes(uniqueMovies);
+        setAllShowtimes(uniqueMovies);
+
+        //segregate
+        setNowShowing(uniqueMovies.filter(show=>show.status==="Now Showing"));
+        setUpComing(uniqueMovies.filter(show=>show.status==="Upcoming"));
+
+
+      })
+      .catch((err) => console.log(err));
+  }, []);
+  
+   const filteredCombos = filteredshowtimes.filter((item) => {
+    const matchesSearch =
+      searchTerm.trim() === "" ||
+      item.movie?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCity =
+      !selectedCity?.name ||
+      item.Theatre.cityName?.toLowerCase() === selectedCity.name.toLowerCase();
+    return matchesSearch && matchesCity;
+  });
+
 
   return (
     <div>
@@ -53,7 +122,7 @@ const Dashboard1 = () => {
         </>
 
         <section>
-          <ImageContainer />
+          <ImageContainer  setSearchTerm={setSearchTerm} filteredShowtime={filteredCombos} />
         </section>
         <section>
           <MovieCardSection

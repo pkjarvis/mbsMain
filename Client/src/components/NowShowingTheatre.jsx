@@ -1,7 +1,8 @@
 import React from "react";
 import TheatreCard1 from "./TheatreCard1";
 
-const NowShowingTheatre = ({ movies = [] }) => {
+const NowShowingTheatre = ({ shows = [] }) => {
+  console.log("inside now showing theatre",shows);
   return (
     <div>
       <div className="movie-showing-theatre mx-[3vw] h-[40vw] bg-white">
@@ -12,11 +13,11 @@ const NowShowingTheatre = ({ movies = [] }) => {
           </a>
         </span>
         <div className="flex items-center justify-start gap-[3vw]">
-          {movies.length > 0 ? (
-            movies.map((movie) => (
+          {shows.length > 0 ? (
+            shows.map((show) => (
               <TheatreCard1
-                key={`${movie.id}-${movie.theatreId}`}
-                movie={movie}
+                key={`${show.ID}`}
+                showsData={show}
               />
             ))
           ) : (

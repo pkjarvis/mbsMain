@@ -28,14 +28,21 @@ const ShowTimeCard = ({
     setVisible(!visible);
   };
 
+   const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
+    return date.toISOString().split("T")[0]; // returns YYYY-MM-DD
+  };
+
   const navigate = useNavigate("");
   const handleUpdate = () => {
+
+    const date=formatDate(startDate);
     navigate("/admin-addnewshows", {
       state: {
         showtime: {
           id,
           theatrename,
-          startDate,
+          startDate:date,
           moviename,
           datetime12h,
           datetime,
@@ -52,12 +59,12 @@ const ShowTimeCard = ({
   };
 
   return (
-    <div>
+    <div >
       {/* Add archive condition here */}
       <div
         className={
-          thisShow?.archived
-            ? "card-container h-22 w-[100%] mx-auto p-6 mb-7 opacity-45"
+          archived
+            ? "card-container h-22 w-[100%] mx-auto p-6 mb-7 opacity-55"
             : "card-container h-22 w-[100%] mx-auto p-6 mb-7 "
         }
       >
@@ -83,10 +90,7 @@ const ShowTimeCard = ({
                 </p>
               </span>
               <span className="flex gap-2 my-1">
-                {/* <p className='w-auto h-auto bg-zinc-300 text-[0.7vw] border-1 border-zinc-300 rounded-xl text-center items-center px-1 flex place-items-center font-thin text-zinc-800'>12:00 PM - 3:00 PM</p>
-                <p className='w-auto h-auto bg-zinc-300 text-[0.7vw] border-1 border-zinc-300 rounded-xl text-center items-center px-1 flex place-items-center font-thin text-zinc-800'>3:00 PM - 6:00 PM</p>
-                <p className='w-auto h-auto bg-zinc-300 text-[0.7vw] border-1 border-zinc-300 rounded-xl text-center items-center px-1 flex place-items-center font-thin text-zinc-800'>6:00 PM - 9:00 PM</p>
-                <p className='w-auto h-auto bg-zinc-300 text-[0.7vw] border-1 border-zinc-300 rounded-xl text-center items-center px-1 flex place-items-center font-thin text-zinc-800'>9:00 PM - 12:00 AM</p> */}
+               
                 {timearray?.map((item, index) => (
                   <p
                     key={index}

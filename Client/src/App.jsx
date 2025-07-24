@@ -59,7 +59,7 @@ function App() {
                   <Route path="*" element={<Navigate to="/dashboard"/>}/>
                   <Route path="/dashboard" element={<LoggedDashboard />} />
                   <Route path="/movies" element={<AllMovies/>} />
-                  <Route path="/movie" element={<Movie />} />
+                  <Route path="/movie/:id" element={<Movie />} />
                   <Route path="/showtime" element={<Showtime />} />
                   <Route path="/showbooking" element={<ShowBooking />} />
                   <Route path="/profile" element={<Profile/>} />

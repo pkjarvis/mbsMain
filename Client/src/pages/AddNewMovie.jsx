@@ -3,6 +3,9 @@ import Navbar from "../components/Navbar";
 import MainHeader from "../components/MainHeader";
 import AddButton from "../components/AddButton";
 
+import Stack from "@mui/material/Stack";
+import Alert from "@mui/material/Alert";
+
 // import DatePicker from "react-datepicker";
 
 const baseUrl = import.meta.env.VITE_ROUTE;
@@ -33,6 +36,8 @@ const AddNewMovie = () => {
   const [duration, setDuration] = useState(null);
 
   const [fileInputKey, setFileInputKey] = useState(Date.now());
+  const [showDateWarning, setShowDataWarning] = useState(false);
+  const [message,setMessage]=useState("");
 
   const [language, setLanguage] = useState("");
   const cities = [
@@ -46,22 +51,26 @@ const AddNewMovie = () => {
     { name: "German", code: "GER" },
   ];
 
-  const { addMovie, updateMovie } = useContext(MoviesContext);
+  // const { addMovie, updateMovie } = useContext(MoviesContext);
 
   const { state } = useLocation();
   const editingMovie = state?.movie;
 
+  // console.log("Movie id is:",editingMovie?.id);
+
   useEffect(() => {
     if (editingMovie) {
-      setMovie(editingMovie.movie);
-      setDescription(editingMovie.description);
-      setStartDate(editingMovie.startDate);
-      setEndDate(editingMovie.endDate);
-      setGenre(editingMovie.genre);
-      setFile(editingMovie.file);
-      setStatus(editingMovie.status);
-      setLanguage(editingMovie.language);
-      setDuration(editingMovie.duration);
+      setMovie(editingMovie?.movie);
+      setDescription(editingMovie?.description);
+      setStartDate(editingMovie?.startDate);
+      setEndDate(editingMovie?.endDate);
+      setGenre(editingMovie?.genre);
+      setFile(editingMovie?.file);
+      setStatus(editingMovie?.status);
+      setLanguage(editingMovie?.language);
+      setDuration(editingMovie?.duration);
+      setShowDataWarning(true);
+      setMessage("Also edit corresponding showtime of this movie!")
     }
 
     const bg = document.getElementById("ImageBg");
@@ -93,9 +102,25 @@ const AddNewMovie = () => {
 
   const fileInputRef = useRef(null);
 
+
+
   const handleDivClick = () => {
     fileInputRef.current.click();
   };
+
+  const uploadImage = async (file) => {
+  const formData = new FormData();
+  formData.append("image", file);
+
+  const res = await fetch("http://34.131.125.137:8080/upload", {
+    method: "POST",
+    body: formData,
+  });
+
+  const url = await res.text();
+  console.log("url is:",url);
+
+};
 
   const handleFileChange = async (e) => {
     e.preventDefault();
@@ -119,21 +144,12 @@ const AddNewMovie = () => {
       bg.style.background = `url(${imageUrl})`;
       bg.style.backgroundSize = "cover";
       bg.style.objectFit = "fill";
+      uploadImage(val);
     }
   };
 
   const handleCancel = () => {
-    setMovie("");
-    setDescription("");
-    setStartDate("");
-    setEndDate("");
-    setGenre("");
-    setSelectedCities("");
-    setStatus("");
-    setFile(null);
-    setLanguage("");
-    let bg = document.getElementById("ImageBg");
-    bg.style.background = "";
+    navigate("/admin-movie");
   };
 
   const handleRemoveFile = () => {
@@ -155,8 +171,15 @@ const AddNewMovie = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const movieNameRegex = /^[A-Za-z]/;
+    if (!movieNameRegex.test(movie)) {
+      setShowDataWarning(true);
+      setMessage("Movie name must start with an alphabet (not _, number, or special character)")
+      return;
+    }
+
     const newMovie = {
-      id: editingMovie ? editingMovie.id : Date.now(),
+      id: editingMovie ?.id ,
       movie,
       description,
       startDate,
@@ -202,7 +225,7 @@ const AddNewMovie = () => {
         toastMessage: editingMovie
           ? "Movie has been updated successfully"
           : "Movie has been added successfully",
-        setShowDataWarning: false,
+        type:"update",
       },
     });
   };
@@ -222,6 +245,34 @@ const AddNewMovie = () => {
           </Link>
           <p className="font-light text-sm">Add New Movie</p>
         </span>
+
+
+         {showDateWarning && (
+          <Stack
+            sx={{
+              width: "60%",
+              position: "absolute",
+              zIndex: "1020",
+              marginLeft: "18vw",
+              marginTop: "4.2vw",
+            }}
+            spacing={2}
+          >
+            <Alert
+              severity="warning"
+              variant="filled"
+              onClose={() => {
+                setShowDataWarning(false);
+              }}
+            >
+              {message}
+            </Alert>
+          </Stack>
+        )}
+
+        
+
+
         <div className="info flex flex-col place-items-center mt-[1.8vw]">
           <div className="flex flex-col justify-between gap-3">
             <p className="font-semibold text-base">Basic Info</p>
@@ -382,100 +433,36 @@ const AddNewMovie = () => {
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
+                min={new Date().toISOString().split("T")[0]}
                 className="outline-none border-1 border-[#A1A2A4] rounded-sm p-1 text-center w-[14vw]"
               />
               <input
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="outline-none border-1 border-[#A1A2A4] rounded-sm p-1 text-center w-[14vw]"
+                disabled={!startDate}
+                min={startDate || new Date().toISOString().split("T")[0]}
+                className={`outline-none border-1 rounded-sm p-1 text-center w-[14vw] ${
+                  !startDate
+                    ? "border-gray-300 bg-gray-100 cursor-not-allowed"
+                    : "border-[#A1A2A4]"
+                }`}
               />
             </div>
 
-            {/* <select
-              id="language"
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-              className="w-[100%] h-[2vw]  border-1 border-[#A1A2A4] rounded-sm p-2 flex items-center justify-between outline-none"
-            >
-              <option value="">Status</option>
-              <option id="nowshowing" className="outline-none">
-                Now Showing
-              </option>
-              <option id="expired">Expired</option>
-              <option id="upcoming">Upcoming</option>
-            </select> */}
 
-            {/*  Removed Status From the Add movie as not needed  */}
-            {/* <Box
-              component="form"
-              sx={{ "& > :not(style)": { width: "30vw", margin: "0.2vw 0" } }}
-              noValidate
-              autoComplete="off"
-            >
-              <FormControl
-                fullWidth
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    // Default border color for outlined input
-                    height: "2.2vw",
-
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#A1A2A4", // Grey border by default
-                      borderWidth: "1px",
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#A1A2A4", // Keep grey on hover if not focused
-                    },
-                    // Styles when the input itself is focused
-                    "&.Mui-focused": {
-                      "& .MuiOutlinedInput-notchedOutline": {
-                        borderColor: "#000", // Black border when focused
-                        borderWidth: "1px", // Keep border width consistent
-                      },
-                    },
-                  },
-                  // Target the label component directly
-                  "& .MuiInputLabel-root": {
-                    color: "#A1A2A4", // Default label color (grey)
-                    fontWeight: "normal", // Assuming default is normal, if you want bold when focused
-
-                    "&.Mui-focused": {
-                      color: "#000", // Black label when focused
-                      fontWeight: "light", // Bold label when focused
-                    },
-                    // Optional: Keep label black when it has a value (shrunk) and is not focused
-                    "&.MuiInputLabel-shrink": {
-                      color: "#000", // Black label when shrunk (has value)
-                    },
-                  },
-                }}
-              >
-                <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={status}
-                  label="Age"
-                  onChange={(e) => setStatus(e.target.value)}
-                >
-                  <MenuItem value={"Now Showing"}>Now Showing</MenuItem>
-                  <MenuItem value={"Expired"}>Expired</MenuItem>
-                  <MenuItem value={"Upcoming"}>Upcoming</MenuItem>
-                </Select>
-              </FormControl>
-            </Box> */}
-
-
+      
 
             <Box
               component="form"
               sx={{ "& > :not(style)": { width: "30vw", margin: "0.2vw 0" } }}
               noValidate
               autoComplete="off"
+           
             >
               <FormControl
                 fullWidth
+                variant="outlined"
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     // Default border color for outlined input
@@ -512,7 +499,7 @@ const AddNewMovie = () => {
                   },
                 }}
               >
-                <InputLabel id="demo-simple-select-label">
+                <InputLabel id="demo-simple-select-label" shrink={duration !== ""} >
                   Duration (in minutes)
                 </InputLabel>
                 <Select
@@ -587,7 +574,7 @@ const AddNewMovie = () => {
             endDate &&
             genre &&
             language &&
-            status &&
+            duration &&
             file ? (
               <div className="buttons flex items-center justify-start gap-5 mb-1">
                 <button

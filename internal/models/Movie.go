@@ -6,6 +6,7 @@ import (
 	"time"
 )
 
+
 //  id: editingMovie ? editingMovie.id : Date.now(),
 //       movie: movie,
 //       description: description,
@@ -17,9 +18,10 @@ import (
 //       file: file || editingMovie?.file,
 
 
+
 type Movie struct {
 	gorm.Model
-	Id          uint           `json:"id" gorm:"primaryKey"`
+	// Id          uint           `json:"id" gorm:"primaryKey"`
 	Title       string         `json:"movie"`
 	Description string         `json:"description"`
 	Genre       string         `json:"genre"`

@@ -20,7 +20,7 @@ import (
 
 type Theatre struct {
 	gorm.Model
-	Id           uint           `json:"id" gorm:"primaryKey"`
+	// Id           uint           `json:"id" gorm:"primaryKey"`
 	TheatreName  string         `json:"theatrename"`
 	Address      string         `json:"address"`
 	CityName     string         `json:"cityName"`

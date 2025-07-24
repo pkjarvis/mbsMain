@@ -36,7 +36,7 @@ const Booking = () => {
   console.log("seats", store);
   console.log("totalprice", price);
 
-  const movieId = movie.id;
+  const movieId = movie.ID;
   const moviename = movie.movie;
   const moviefile = movie.file;
   const theatrename = theatreval.theatrename;

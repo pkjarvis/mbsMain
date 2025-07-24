@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 // theatre-> id,theatrename,address,cityName,stateName,status,totalscreens,theatrefile,value
 // showtime -> id:Date.now(),theatrename,startDate,moviename,datetime12h,datetime,timearray,selectedCities,
 
-const Theatres = ({ theatre, movies, timearray, date }) => {
+const Theatres = ({ theatre, movies, timearray, date,showID }) => {
   const [showtime, setShowTime] = useState([]);
   //   const [movies,setMovies]=useState([]);
   const navigate = useNavigate("");
@@ -58,9 +58,11 @@ const Theatres = ({ theatre, movies, timearray, date }) => {
     (item) => item.theatre.cityName === selectedCity
   );
 
+  console.log("Inside Theatre card",showID);
+
   
 
-  const handleClick = (from, to, id) => {
+  const handleClick = (from, to, id, showID) => {
     if (!date) {
       // alert("Please select the date first!")
       setShowDataWarning(true);
@@ -75,6 +77,7 @@ const Theatres = ({ theatre, movies, timearray, date }) => {
         from: from,
         to: to,
         id,
+        showID,
       },
     });
   };
@@ -135,7 +138,8 @@ const Theatres = ({ theatre, movies, timearray, date }) => {
                 handleClick(
                   item.val1,
                   item.val2,
-                  `${movies.id}-${theatre.id}-${date}-${item.val1}-${item.val2}`
+                  `${movies.ID}-${theatre.ID}-${date}-${item.val1}-${item.val2}`,
+                  showID,
                 )
               }
             >

@@ -4,7 +4,7 @@ import axiosInstance from "../utils/axiosInstance";
 import { Link } from "react-router-dom";
 const baseUrl = import.meta.env.VITE_ROUTE;
 
-const MovieCardSection = ({ title, movies = [] }) => {
+const MovieCardSection = ({ title,shows = [] }) => {
   //  const [movies, setMovies] = useState([]);
 
   // useEffect(() => {
@@ -17,11 +17,12 @@ const MovieCardSection = ({ title, movies = [] }) => {
   //     .catch((err) =>
   //       console.log("Error fetching movies", err.response?.data || err.message)
   //     )
-
   // },[]);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
 
   return (
     <div>
@@ -37,11 +38,11 @@ const MovieCardSection = ({ title, movies = [] }) => {
           {/* {movies.map((movie) => (
             <MovieCard1 key={movie.id} movie={movie} />
           ))} */}
-          {movies.length > 0 ? (
-            movies.map((movie) => (
+          {shows.length > 0 ? (
+            shows.map((show) => (
               <MovieCard1
-                key={`${movie.id}-${movie.theatreId}`}
-                movie={movie}
+                key={`${show.ID}`}
+                showsData={show}
               />
             ))
           ) : (
