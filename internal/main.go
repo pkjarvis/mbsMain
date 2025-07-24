@@ -34,9 +34,7 @@ func main() {
 
 	url := os.Getenv("ALLOWED_ORIGIN1")
 
-	if url == "" {
-		url = "http://34.131.125.137" // fallback during dev
-	}
+	
 	fmt.Println("url is",url) // this url should be passed in alloworigins
 
 

@@ -150,13 +150,13 @@ func SignupWithRole(c *gin.Context, role string) {
 	}
 
 	log.Println("CP-1")
-	// c.SetCookie("token", tokenString, 365*24*60*60, "", "", false, true)
-	c.Header("Set-Cookie", fmt.Sprintf(
-		"token=%s; Path=/; Domain=%s; Max-Age=%d; Secure; HttpOnly; SameSite=None",
-		tokenString,
-		"",
-		365*24*60*60,
-	))
+	c.SetCookie("token", tokenString, 365*24*60*60, "", "", false, true)
+	// c.Header("Set-Cookie", fmt.Sprintf(
+	// 	"token=%s; Path=/; Domain=%s; Max-Age=%d; Secure; HttpOnly; SameSite=None",
+	// 	tokenString,
+	// 	"",
+	// 	365*24*60*60,
+	// ))
 	
 	log.Println("CP-2", tokenString)
 

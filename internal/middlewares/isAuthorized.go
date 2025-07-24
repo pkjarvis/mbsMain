@@ -46,7 +46,7 @@ func IsAuthorized() gin.HandlerFunc {
 func UserAuthorized() gin.HandlerFunc{
     return func(c*gin.Context){
 
-         fmt.Println("UserAuthorized middleware called")
+        fmt.Println("UserAuthorized middleware called")
 
         // 1. Extract token from cookie
         token, err := c.Cookie("token")

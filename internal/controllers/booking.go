@@ -57,9 +57,9 @@ func generatePayuPayment(tx models.Transaction) map[string]interface{} {
 
 	successurl := os.Getenv("SUCCESS_URL")
 
-	if successurl == "" {
-		successurl = "http://34.131.125.137:8080"
-	}
+	// if successurl == "" {
+	// 	successurl = "http://34.131.125.137:8080"
+	// }
 
 	fmt.Println("successurl is", successurl)
 
@@ -118,7 +118,7 @@ func Payment(c *gin.Context) {
 		c.JSON(400, gin.H{"error": "UserId is not in correct format"})
 		return
 	}
-	fmt.Println("userIdVal is:", userIdVal)
+	fmt.Println("userIdVal is from payment handler is:", userIdVal)
 
 	// Create transaction
 	payment := models.Transaction{
@@ -169,9 +169,9 @@ func PaymentSuccess(c *gin.Context) {
 	}
 	fmt.Println("redirect message")
 	frontend := os.Getenv("ALLOWED_ORIGIN1")
-	if frontend == "" {
-		frontend = "http://34.131.125.137"
-	}
+	// if frontend == "" {
+	// 	frontend = "http://34.131.125.137"
+	// }
 
 	c.Redirect(302, fmt.Sprintf("%s/payment-status?success=true", frontend))
 
@@ -189,9 +189,9 @@ func PaymentFailure(c *gin.Context) {
 	fmt.Println("Passed 2")
 
 	frontend := os.Getenv("ALLOWED_ORIGIN1")
-	if frontend == "" {
-		frontend = "http://34.131.125.137"
-	}
+	// if frontend == "" {
+	// 	frontend = "http://34.131.125.137"
+	// }
 
 	c.Redirect(302, fmt.Sprintf("%s/payment-status?success=false", frontend))
 
