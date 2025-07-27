@@ -6,20 +6,44 @@ import Tooltip from "@mui/material/Tooltip";
 
 const ShowBooking = () => {
   const navigate = useNavigate();
+
   const { state } = useLocation();
-  const movie = state?.movie;
-  const theatre = state?.theatreval;
-  const date = state?.date;
-  const from = state?.from;
-  const to = state?.to;
-  const showId = state?.id;
-  const showID = state?.showID;
+
+  const [movie, setMovie] = useState(state?.movie);
+  const [theatre, setTheatre] = useState(state?.theatreval);
+  const [date, setDate] = useState(state?.date);
+  const [from, setFrom] = useState(state?.from);
+  const [to, setTo] = useState(state?.to);
+  const [showId, setShowId] = useState(state?.id);
+  const [showID, setShowID] = useState(state?.showID);
+  const [storeId, setStoreId] = useState([]);
+  var [totalprice, setTotalPrice] = useState(0);
+
+  useEffect(() => {
+    if (!state) {
+      const pending = localStorage.getItem("pendingBooking");
+      if (pending) {
+        const data = JSON.parse(pending);
+        setMovie(data?.movie);
+        setTheatre(data?.theatreval);
+        setDate(data?.date);
+        setFrom(data?.from);
+        setTo(data?.to);
+        setShowId(data?.id);
+        setShowID(data?.showID);
+        setStoreId(data?.storeId || []);
+        setTotalPrice(data?.totalprice || 0);
+
+        // localStorage.removeItem("pendingBooking");
+      }
+    }
+  }, [state]);
 
   console.log("theatre from location.state", theatre);
   const username = localStorage.getItem("userName");
 
   console.log("Id is", showId);
-  console.log("Show Id is",showID);
+  console.log("Show Id is", showID);
 
   const [selectedCity, setSelectedCity] = useState("");
   // seat booked logic
@@ -37,7 +61,9 @@ const ShowBooking = () => {
       .catch((err) => console.error("Error fetching paid tickets:", err));
   }, []);
 
+  
   useEffect(() => {
+    // Style sold seats
     soldTickets.forEach((id) => {
       const el = document.getElementById(id);
       const el1 = document.getElementById(id + "text");
@@ -45,17 +71,35 @@ const ShowBooking = () => {
         el.style.setProperty("background-color", "#E5E5E5", "important");
         el.style.setProperty("border", "2px solid #D6D6D6", "important");
         el.style.setProperty("cursor", "not-allowed", "important");
-        // el.style.setProperty("pointer-events", "none", "important");
         el.style.zIndex = "1";
 
-        console.log(getComputedStyle(el).pointerEvents);
-        el1.style.setProperty("color", "#FFFFFF", "important");
+        if (el1) {
+          el1.style.setProperty("color", "#FFFFFF", "important");
+        }
       }
     });
-  }, [soldTickets]);
 
-  const [storeId, setStoreId] = useState([]);
-  var [totalprice, setTotalPrice] = useState(0);
+    // Style selected seats (storeId) — ONLY if not sold
+    storeId.forEach((id) => {
+      // Avoid re-styling sold seats as selected
+      if (soldTickets.includes(id)) return;
+
+      const el = document.getElementById(id);
+      const el1 = document.getElementById(id + "text");
+
+      if (el) {
+        el.style.setProperty("background-color", "#59B200", "important"); // Selected seat color
+        el.style.setProperty("cursor", "pointer", "important");
+        el.style.setProperty("border", "2px solid #59B200", "important");
+        el.style.zIndex = "2";
+
+        if (el1) {
+          el1.style.setProperty("color", "#FFFFFF", "important"); // Selected text color
+        }
+      }
+    });
+  }, [soldTickets, storeId]);
+
 
   const handleMiddleRow = (s, id) => {
     var finalId = `${s}${id}`;
@@ -146,10 +190,24 @@ const ShowBooking = () => {
     }
 
     if (!username) {
+      localStorage.setItem(
+        "pendingBooking",
+        JSON.stringify({
+          movie,
+          theatreval: theatre,
+          date,
+          from,
+          to,
+          id: showId,
+          showID,
+          storeId,
+          totalprice,
+        })
+      );
+      navigate("/root", { state: { from: "/showbooking" } });
       return;
     }
 
-    totalprice += 60;
     navigate("/booking", {
       state: { storeId, totalprice, movie, theatre, date, from, to, showId },
     });
@@ -205,15 +263,15 @@ const ShowBooking = () => {
 
         <div className="header flex justify-start mx-[3vw] mt-[2vw] gap-4 bg-[#F9F9F9] py-[1.4vw]">
           <img
-            src={theatre.theatrefile || "/assets/pvr.png"}
+            src={theatre?.theatrefile || "/assets/pvr.png"}
             alt="PVR"
             className="w-[3vw] h-[3vw] rounded-full"
           />
           <span className="flex flex-col items-start justify-center">
-            <h1 className="text-3xl font-bold">{movie.movie}</h1>
+            <h1 className="text-3xl font-bold">{movie?.movie}</h1>
             <p className="font-normal text-[#5E5E5E]">
-              {theatre.theatrename} | {theatre.address}| {theatre.cityName} |{" "}
-              {theatre.stateName} | {date}
+              {theatre?.theatrename} | {theatre?.address}| {theatre?.cityName} |{" "}
+              {theatre?.stateName} | {date}
             </p>
           </span>
         </div>
@@ -2306,32 +2364,29 @@ const ShowBooking = () => {
           >
             <p className="font-bold text-xl">{storeId.length} seat selected</p>
 
-            {
-            username ?
-              (<Tooltip >
-              <button
-                className={`bg-[#FF5295]  text-md w-[12vw] h-[2vw]  rounded-lg text-white font-semibold text-center  mx-[1vw] ${
-                  !username ? "cursor-not-allowed" : "cursor-pointer"
-                }`}
-                onClick={handleSubmit}
-              >
-                Submit
-              </button>
-            </Tooltip>):
-            (<Tooltip title="Login First, login button on top-right">
-              <button
-                className={`bg-[#FF5295]  text-md w-[12vw] h-[2vw]  rounded-lg text-white font-semibold text-center  mx-[1vw] ${
-                  !username ? "cursor-not-allowed" : "cursor-pointer"
-                }`}
-                onClick={handleSubmit}
-              >
-                Submit
-              </button>
-            </Tooltip>)
-
-            }
-            
-            
+            {username ? (
+              <Tooltip>
+                <button
+                  className={`bg-[#FF5295]  text-md w-[12vw] h-[2vw]  rounded-lg text-white font-semibold text-center  mx-[1vw] ${
+                    !username ? "cursor-not-allowed" : "cursor-pointer"
+                  }`}
+                  onClick={handleSubmit}
+                >
+                  Submit
+                </button>
+              </Tooltip>
+            ) : (
+              <Tooltip title="Login First, login button on top-right">
+                <button
+                  className={`bg-[#FF5295]  text-md w-[12vw] h-[2vw]  rounded-lg text-white font-semibold text-center  mx-[1vw] ${
+                    !username ? "cursor-not-allowed" : "cursor-pointer"
+                  }`}
+                  onClick={handleSubmit}
+                >
+                  Submit
+                </button>
+              </Tooltip>
+            )}
           </div>
         </div>
       </div>

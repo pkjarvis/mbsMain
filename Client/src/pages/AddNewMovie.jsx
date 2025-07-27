@@ -25,6 +25,8 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
+import { InputNumber } from "primereact/inputnumber";
+
 const AddNewMovie = () => {
   const [movie, setMovie] = useState("");
   const [description, setDescription] = useState("");
@@ -37,7 +39,7 @@ const AddNewMovie = () => {
 
   const [fileInputKey, setFileInputKey] = useState(Date.now());
   const [showDateWarning, setShowDataWarning] = useState(false);
-  const [message,setMessage]=useState("");
+  const [message, setMessage] = useState("");
 
   const [language, setLanguage] = useState("");
   const cities = [
@@ -66,16 +68,17 @@ const AddNewMovie = () => {
       setEndDate(editingMovie?.endDate);
       setGenre(editingMovie?.genre);
       setFile(editingMovie?.file);
+      console.log("file is:", editingMovie?.file);
       setStatus(editingMovie?.status);
       setLanguage(editingMovie?.language);
       setDuration(editingMovie?.duration);
       setShowDataWarning(true);
-      setMessage("Also edit corresponding showtime of this movie!")
+      setMessage("Also edit corresponding showtime of this movie!");
     }
 
     const bg = document.getElementById("ImageBg");
     if (bg && editingMovie) {
-      bg.style.background = `url(${editingMovie.file})`;
+      bg.style.background = `url(${editingMovie?.file})`;
       bg.style.backgroundSize = "cover";
       bg.style.objectFit = "fill";
     }
@@ -102,49 +105,51 @@ const AddNewMovie = () => {
 
   const fileInputRef = useRef(null);
 
-
-
   const handleDivClick = () => {
     fileInputRef.current.click();
   };
 
   const uploadImage = async (file) => {
-  const formData = new FormData();
-  formData.append("image", file);
+    const formData = new FormData();
+    formData.append("image", file);
 
-  const res = await fetch("http://34.131.125.137:8080/upload", {
-    method: "POST",
-    body: formData,
-  });
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/upload`, {
+      method: "POST",
+      body: formData,
+    });
 
-  const url = await res.text();
-  console.log("url is:",url);
-
-};
+    const json = await res.json();
+    console.log("url is:", json);
+    return json;
+  };
 
   const handleFileChange = async (e) => {
     e.preventDefault();
 
     const val = e.target.files[0];
     if (!val) return;
+
+    const imageUrl = await uploadImage(val);
+    setFile(imageUrl?.url);
+    console.log("imageurl is", imageUrl?.url);
+
     const reader = new FileReader();
 
-    reader.onloadend = () => {
-      const base64String = reader.result;
-      setFile(base64String);
-    };
+    // reader.onloadend = () => {
+    //   const base64String = reader.result;
+    //   setFile(base64String);
+    // };
 
     if (val) {
       reader.readAsDataURL(val);
       console.log("file", val);
       let bg = document.getElementById("ImageBg");
-      let imageUrl = val ? URL.createObjectURL(val) : "";
+      // let imageUrl = val ? URL.createObjectURL(val) : "";
       // let imageUrl=val?convertToBase64(val):"";
-      setFile(imageUrl);
-      bg.style.background = `url(${imageUrl})`;
+      // setFile(imageUrl);
+      bg.style.background = `url(${imageUrl?.url})`;
       bg.style.backgroundSize = "cover";
       bg.style.objectFit = "fill";
-      uploadImage(val);
     }
   };
 
@@ -174,12 +179,14 @@ const AddNewMovie = () => {
     const movieNameRegex = /^[A-Za-z]/;
     if (!movieNameRegex.test(movie)) {
       setShowDataWarning(true);
-      setMessage("Movie name must start with an alphabet (not _, number, or special character)")
+      setMessage(
+        "Movie name must start with an alphabet (not _, number, or special character)"
+      );
       return;
     }
 
     const newMovie = {
-      id: editingMovie ?.id ,
+      id: editingMovie?.id,
       movie,
       description,
       startDate,
@@ -225,7 +232,7 @@ const AddNewMovie = () => {
         toastMessage: editingMovie
           ? "Movie has been updated successfully"
           : "Movie has been added successfully",
-        type:"update",
+        type: "update",
       },
     });
   };
@@ -246,8 +253,7 @@ const AddNewMovie = () => {
           <p className="font-light text-sm">Add New Movie</p>
         </span>
 
-
-         {showDateWarning && (
+        {showDateWarning && (
           <Stack
             sx={{
               width: "60%",
@@ -269,9 +275,6 @@ const AddNewMovie = () => {
             </Alert>
           </Stack>
         )}
-
-        
-
 
         <div className="info flex flex-col place-items-center mt-[1.8vw]">
           <div className="flex flex-col justify-between gap-3">
@@ -450,15 +453,11 @@ const AddNewMovie = () => {
               />
             </div>
 
-
-      
-
-            <Box
+            {/* <Box
               component="form"
               sx={{ "& > :not(style)": { width: "30vw", margin: "0.2vw 0" } }}
               noValidate
               autoComplete="off"
-           
             >
               <FormControl
                 fullWidth
@@ -499,7 +498,10 @@ const AddNewMovie = () => {
                   },
                 }}
               >
-                <InputLabel id="demo-simple-select-label" shrink={duration !== ""} >
+                <InputLabel
+                  id="demo-simple-select-label"
+                  shrink={duration !== ""}
+                >
                   Duration (in minutes)
                 </InputLabel>
                 <Select
@@ -520,7 +522,19 @@ const AddNewMovie = () => {
                   <MenuItem value={240}>Two Forty</MenuItem>
                 </Select>
               </FormControl>
-            </Box>
+            </Box> */}
+            <div className="card flex flex-wrap gap-3 p-fluid duration-block">
+              <div className="flex-auto">
+                <label htmlFor="integeronly" className="font-bold block mb-2">
+                  Duration (in minutes)
+                </label>
+                <InputNumber
+                  inputId="integeronly"
+                  value={duration}
+                  onValueChange={(e) => setDuration(e.value)}
+                />
+              </div>
+            </div>
 
             <p className="font-semibold text-zinc-600 text-base my-2">
               Upload Poster
@@ -528,7 +542,7 @@ const AddNewMovie = () => {
 
             <div
               id="ImageBg"
-              className="w-[6vw] h-[6vw] flex flex-col items-center justify-center gap-4 border-1 border-dashed border-zinc-400 rounded-sm px-auto mb-1 bg-[url(file)]"
+              className="w-[6vw] h-[6vw] flex flex-col items-center justify-center gap-4 border-1 border-dashed border-zinc-400 rounded-sm px-auto mb-1 "
               onClick={handleDivClick}
             >
               {file ? (
@@ -563,6 +577,7 @@ const AddNewMovie = () => {
               <input
                 key={fileInputKey}
                 type="file"
+                accept="image/*"
                 className=" text-gray-500 text-sm mx-auto hidden"
                 ref={fileInputRef}
                 onChange={handleFileChange}

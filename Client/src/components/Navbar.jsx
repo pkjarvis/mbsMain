@@ -16,6 +16,7 @@ const Navbar = (props) => {
   }
 
   const navigate=useNavigate("");
+
   const handleLogout=()=>{
     localStorage.clear();
     Cookies.remove('token');
@@ -45,15 +46,15 @@ const Navbar = (props) => {
           alt="Icon"
           className="w-[1.2vw] h-[1.2vw] relative ml-[-2rem]"
         />
-        <span className="user flex items-center justify-between ml-[21vw] px-4 mr-2">
-          <p className="text-gray-700 font-[inter] text-base font-normal leading-1">
+        <span className="user flex items-center justify-between ml-[26vw] px-4 mr-2">
+          {/* <p className="text-gray-700 font-[inter] text-base font-normal leading-1">
             New Delhi
           </p>
           <img
             src="/assets/dropDownIcon.png"
             alt="DropDown"
             className="w-3 h-2 ml-1"
-          />
+          /> */}
           <span className="flex items-center cursor-pointer" onClick={handleClick}>
             <img
               src="/assets/ei_user.png"
@@ -64,7 +65,7 @@ const Navbar = (props) => {
               Hi,<span className="text-md font-normal">{username}</span>{" "}
             </p>
             
-            <span className={visible?`top-[2.7vw] right-[7vw]  text-white font-semibold bg-[#FF5295] w-[auto] h-[1.5vw] p-2 absolute text-center flex items-center justify-center rounded-md`:`hidden`} onClick={handleLogout}>Logout</span>
+            <span className={visible?`top-[2.7vw] right-[4vw]  text-white font-semibold bg-[#FF5295] w-[auto] h-[1.5vw] p-2 absolute text-center flex items-center justify-center rounded-md`:`hidden`} onClick={handleLogout}>Logout</span>
           </span>
         </span>
        

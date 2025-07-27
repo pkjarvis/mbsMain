@@ -158,14 +158,14 @@ const MovieManagement = () => {
 
         {/* <MovieCard/> */}
       </div>
-      <div className="flex justify-center mt-[7vw]">
+      <div className="flex justify-center mt-[7vw] paginate">
         <Pagination
           count={Math.ceil(filteredMovies.length / itemsPerPage)}
           page={currentPage}
           onChange={(e, value) => setCurrentPage(value)}
           // variant="outlined"
           // shape="rounded"
-          // color="secondary" // pink theme
+          color="pink" 
         />
       </div>
     </div>

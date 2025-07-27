@@ -150,34 +150,7 @@ const Theatres = ({ theatre, movies, timearray, date,showID }) => {
           ))
           }
 
-        {/* <div className="font-medium border-1 border-[#ACACAC] p-2 w-[10vw] text-center rounded-2xl cursor-pointer" onClick={handleClick}>
-                    <p className="text-[#008610] ">2:40 PM</p>
-                  </div> */}
-
-        {/* <div className="font-medium border-1 border-[#ACACAC] p-2 w-[10vw] text-center rounded-2xl cursor-pointer" onClick={handleClick}>
-                    <p className="text-[#008610] ">2:40 PM</p>
-                  </div>
-                 <div className="font-medium border-1 border-[#ACACAC] p-2 w-[10vw] text-center rounded-2xl cursor-pointer" onClick={handleClick}>
-                    <p className="text-[#008610] ">2:40 PM</p>
-                  </div>
-                 <div className="font-medium border-1 border-[#ACACAC] p-2 w-[10vw] text-center rounded-2xl cursor-pointer" onClick={handleClick}>
-                    <p className="text-[#008610] ">2:40 PM</p>
-                  </div>
-                   <div className="font-medium border-1 border-[#ACACAC] p-2 w-[10vw] text-center rounded-2xl cursor-pointer" onClick={handleClick}>
-                    <p className="text-[#008610] ">2:40 PM</p>
-                  </div>
-                   <div className="font-medium border-1 border-[#ACACAC] p-2 w-[10vw] text-center rounded-2xl cursor-pointer" onClick={handleClick}>
-                    <p className="text-[#008610] ">2:40 PM</p>
-                  </div>
-                   <div className="font-medium border-1 border-[#ACACAC] p-2 w-[10vw] text-center rounded-2xl cursor-pointer" onClick={handleClick}>
-                    <p className="text-[#008610] ">2:40 PM</p>
-                  </div>
-                   <div className="font-medium border-1 border-[#ACACAC] p-2 w-[10vw] text-center rounded-2xl cursor-pointer" onClick={handleClick}>
-                    <p className="text-[#008610] ">2:40 PM</p>
-                  </div>
-                   <div className="font-medium border-1 border-[#ACACAC] p-2 w-[10vw] text-center rounded-2xl cursor-pointer" onClick={handleClick}>
-                    <p className="text-[#008610] ">2:40 PM</p>
-                  </div> */}
+       
       </div>
       <hr className="text-[#C2C2C2] mt-[1vw]" />
     </div>

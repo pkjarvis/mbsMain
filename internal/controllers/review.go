@@ -1,10 +1,9 @@
 package controllers
 
 import (
-	"go-auth/models"
 	"github.com/gin-gonic/gin"
+	"go-auth/models"
 )
-
 
 func AddReview(c *gin.Context) {
 
@@ -26,13 +25,12 @@ func AddReview(c *gin.Context) {
 		return
 	}
 
-	var existingMovieId models.Review
-	var existingUserId models.Review
-	models.DB.Where("movie_id = ?", input.MovieId).First(&existingMovieId)
-	models.DB.Where("user_id = ?", userId).First(&existingUserId)
+	var existingReview models.Review
+	err := models.DB.Where("movie_id = ? AND user_id = ?", input.MovieId, userId).First(&existingReview).Error
 
-	if existingMovieId.MovieId != 0 && existingUserId.UserId != 0 {
-		c.JSON(400, gin.H{"error": "already gave review for movieId with userId"})
+	if err == nil {
+		// A review already exists
+		c.JSON(400, gin.H{"error": "You have already submitted a review for this movie"})
 		return
 	}
 
@@ -63,8 +61,6 @@ func AddReview(c *gin.Context) {
 	c.JSON(200, gin.H{"message": "review added", "review": review})
 
 }
-
-
 
 func GetReviewByMovie(c *gin.Context) {
 	movieId := c.Query("movieId")

@@ -147,6 +147,7 @@ func ArchiveShowTime(c *gin.Context) {
 
 func UpdateShowTime(c *gin.Context) {
 	var input struct {
+		ID          uint            `json:"id"`
 		MovieName   string          `json:"moviename"`
 		TheatreName string          `json:"theatrename"`
 		Archived    bool            `json:"archived"`
@@ -178,7 +179,7 @@ func UpdateShowTime(c *gin.Context) {
 		TimeArray:   datatypes.JSON(input.TimeArray),
 	}
 
-	if err := models.DB.Model(&models.Showtime{}).Where("id =?", update.ID).Updates(update).Error; err != nil {
+	if err := models.DB.Model(&models.Showtime{}).Where("id =?",input.ID ).Updates(update).Error; err != nil {
 		c.JSON(400, gin.H{"message": "Failed to update showtime"})
 		return
 	}

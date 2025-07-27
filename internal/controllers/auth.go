@@ -120,6 +120,9 @@ func SignupWithRole(c *gin.Context, role string) {
 
 	user.Password = hashedPwd
 	user.Role = role
+	if user.ProfilePhoto == "" {
+		user.ProfilePhoto = "https://storage.googleapis.com/mbs-image/Vector%20(1).png" // or a CDN URL
+	}
 
 	if err := models.DB.Create(&user).Error; err != nil {
 		c.JSON(500, gin.H{"error": "could not create user"})
@@ -172,6 +175,7 @@ func SignupWithRole(c *gin.Context, role string) {
 		"role":     user.Role,
 		"userId":   user.ID,
 		"email":    user.Email,
+		"profilePhoto": user.ProfilePhoto,
 	})
 
 }
@@ -971,7 +975,8 @@ func Logout(c *gin.Context) {
 func UpdateProfile(c *gin.Context) {
 	var input struct {
 		Name  string `json:"name"`
-		Email string `json:"email"`
+		// Email string `json:"email"`
+		ProfilePhoto string `json:"image"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -997,7 +1002,10 @@ func UpdateProfile(c *gin.Context) {
 		return
 	}
 	user.Name = input.Name
-	user.Email = input.Email
+	if input.ProfilePhoto != "" {
+		user.ProfilePhoto = input.ProfilePhoto
+	}
+	
 
 	if err := models.DB.Save(&user).Error; err != nil {
 		c.JSON(500, gin.H{"message": "Failed to update user model"})
@@ -1075,6 +1083,33 @@ func UpdateProfile(c *gin.Context) {
 
 // 	c.JSON(200, gin.H{"movie": movie})
 // }
+
+func GetUserDetails(c *gin.Context) {
+	userIDVal, exists := c.Get("userId")
+	if !exists {
+		c.JSON(401, gin.H{"message": "Unauthorized"})
+		return
+	}
+	userID, ok := userIDVal.(uint)
+	if !ok {
+		c.JSON(400, gin.H{"message": "Invalid userId format"})
+		return
+	}
+
+	var user models.User
+	if err := models.DB.First(&user, userID).Error; err != nil {
+		c.JSON(404, gin.H{"message": "User not found"})
+		return
+	}
+
+	// Return only required fields
+	c.JSON(200, gin.H{
+		"username": user.Name,
+		"email": user.Email,
+		"profilePhoto": user.ProfilePhoto, // assuming this field exists in the User model
+	})
+}
+
 
 func SaveUserState(c *gin.Context) {
 	var input struct {

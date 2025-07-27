@@ -147,7 +147,7 @@ const Theatres = () => {
       ) : (
         <p className="text-center text-gray-500 mt-8">No theatres added yet</p>
       )}
-      <div className="flex justify-center mt-[7vw]">
+      <div className="flex justify-center mt-[7vw] paginate">
         <Pagination
           count={Math.ceil(filterTheatres.length / itemsPerPage)}
           page={currentPage}

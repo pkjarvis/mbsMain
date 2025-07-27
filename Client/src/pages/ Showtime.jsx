@@ -8,7 +8,7 @@ import Theatres from "../components/Theatres";
 import axiosInstance from "../utils/axiosInstance";
 import Stack from "@mui/material/Stack";
 import Alert from "@mui/material/Alert";
-import axios from "axios";
+
 
 // theatre-> id,theatrename,address,cityName,stateName,status,totalscreens,theatrefile,value
 
@@ -48,10 +48,10 @@ const Showtime = () => {
 
   const { state } = useLocation();
   const movie = state?.movie;
-  const showId=state?.showId;
+  const showId = state?.showId;
 
   console.log("movies", movie);
-  console.log("showId is",showId)
+  console.log("showId is", showId);
 
   const [datebooked, setDateBooked] = useState([]);
   const [showtime, setShowTime] = useState([]);
@@ -190,26 +190,64 @@ const Showtime = () => {
 
   // Final filtered showtime array based on selected date
 
-  const filteredShowtime = useMemo(() => {
-    if (!curdate) return [];
+const filteredShowtime = useMemo(() => {
+  if (!curdate) return [];
 
-    const selectedDateStr = parseCurDateToLocalDateStr(curdate);
+  const selectedDateStr = parseCurDateToLocalDateStr(curdate); // e.g., "2025-07-27"
+  const todayStr = new Date().toISOString().split("T")[0];     // today's date in "YYYY-MM-DD"
 
-    return showtime.filter((show) => {
+  // Parse '3:31 PM' to a Date object (only for time comparison)
+  const parseTimeToDate = (timeStr) => {
+    const [time, modifier] = timeStr.split(" ");
+    let [hours, minutes] = time.split(":").map(Number);
+
+    if (modifier === "PM" && hours < 12) hours += 12;
+    if (modifier === "AM" && hours === 12) hours = 0;
+
+    const now = new Date();
+    return new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      hours,
+      minutes
+    );
+  };
+
+  const now = new Date();
+
+  return showtime
+    .filter((show) => {
       if (!show?.startDate || !show?.Theatre?.cityName) return false;
 
       const showDateStr = parseBackendStartDateToLocalDateStr(show.startDate);
-
-      // Match both date and city (if selected)
       const isSameDate = selectedDateStr === showDateStr;
+
       const isSameCity = selectedCity?.name
         ? show.Theatre.cityName.trim().toLowerCase() ===
           selectedCity.name.trim().toLowerCase()
         : true;
 
       return isSameDate && isSameCity;
-    });
-  }, [curdate, selectedCity, showtime]);
+    })
+    .map((show) => {
+      const isToday = selectedDateStr === todayStr;
+
+      const filteredTimeArray = isToday
+        ? show.timearray.filter((slot) => {
+            const slotTime = parseTimeToDate(slot.val1);
+            return slotTime > now;
+          })
+        : show.timearray;
+
+      return {
+        ...show,
+        timearray: filteredTimeArray,
+      };
+    })
+    .filter((show) => show.timearray.length > 0); // only return shows with valid times
+}, [curdate, selectedCity, showtime]);
+
 
   // console.log("curdate is ",curdate);
   console.log("showtime details", showtime);
@@ -304,7 +342,7 @@ const Showtime = () => {
                     </p>
                   </span>
                 ))} */}
-                
+
                 {datelist.map((dateInfo, index) => {
                   const composedDate = `${dateInfo.weekday} ${dateInfo.day} ${dateInfo.month}`;
                   const selectedDateStr =
@@ -325,10 +363,10 @@ const Showtime = () => {
                       className={`flex flex-col w-[4vw] h-[5.2vw] p-2 items-center justify-center rounded-2xl transition ease-in-out duration-150
                                  ${isSelected ? "bg-[#FF5295]" : "bg-[#F5F5F5]"}
                                  ${
-                                     hasShowForThisDate
-                                      ? "hover:border-1 hover:border-[#FF5295] hover:scale-115 cursor-pointer"
-                                      : "bg-gray-300 cursor-not-allowed opacity-34"
-                                  }
+                                   hasShowForThisDate
+                                     ? "hover:border-1 hover:border-[#FF5295] hover:scale-115 cursor-pointer"
+                                     : "bg-gray-300 cursor-not-allowed opacity-34"
+                                 }
                      `}
                       onClick={() => {
                         if (hasShowForThisDate) {

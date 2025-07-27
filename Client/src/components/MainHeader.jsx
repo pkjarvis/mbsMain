@@ -7,7 +7,7 @@ const MainHeader = (props) => {
   return (
     
      <div className="theatre-container font-[Inter]">
-            <Navbar para="Find showtimes by Movie,Theatre,Show title." onSearch={props.onSearch} searchValue={props.searchValue}/>
+            <Navbar para="Find Movie by moviename , Theatre by theatrename , Showtime by either moviename or theatrename" onSearch={props.onSearch} searchValue={props.searchValue}/>
             <span className="flex items-center justify-start ml-6 gap-1">
                 <Link to="/admin-dashboard" className='cursor-pointer font-light text-zinc-500 '>Home / </Link>
                 <Link to="/admin-movie" className='cursor-pointer'>{props.headerlink}</Link>

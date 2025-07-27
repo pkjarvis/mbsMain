@@ -16,85 +16,72 @@ const Login1 = () => {
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!isEmailValid(email)) {
-    setError("Please enter a valid email address.");
-    return;
-  }
-  if (!password) {
-    setError("Please enter the password");
-    return;
-  }
-  setError("");
+    if (!isEmailValid(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+    if (!password) {
+      setError("Please enter the password");
+      return;
+    }
+    setError("");
 
-  try {
-    const response = await axiosInstance.post("/user/login", {
-      email,
-      password,
-    });
+    try {
+      const response = await axiosInstance.post("/user/login", {
+        email,
+        password,
+      });
 
-    if (response.data && response.data.token) {
-      console.log("response", response);
-      localStorage.setItem("userToken", response.data.token);
-      localStorage.setItem("userName", response.data.username);
-      localStorage.setItem("userId", response.data.userId);
-      localStorage.setItem("email", response.data.email);
+      if (response.data && response.data.token) {
+        console.log("response", response);
+        localStorage.setItem("userToken", response.data.token);
+        localStorage.setItem("userName", response.data.username);
+        localStorage.setItem("userId", response.data.userId);
+        localStorage.setItem("email", response.data.email);
 
-      const redirectPath = location.state?.from;
-      const movie = location.state?.movie;
-      const reviewState = location.state?.reviewState;
+        const redirectPath = location.state?.from;
+        const movie = location.state?.movie;
+        const reviewState = location.state?.reviewState;
 
-      
-      if (redirectPath === "/booking") {
-        const compressedState = localStorage.getItem("bookingState");
-        console.log(compressedState);
-        if (compressedState) {
-          const decompressed = LZString.decompress(compressedState);
-          const bookingState = JSON.parse(decompressed);
-
-         
-          navigate("/booking", { state: bookingState });
+        if (redirectPath === "/showbooking") {
+          // Just go back to the page; it will read from localStorage
+          navigate("/showbooking");
           return;
         }
-      }
 
-     
-      if (redirectPath && movie) {
-        navigate(redirectPath, {
-          state: {
-            movie: movie,
-            reviewState: reviewState,
-          },
-        });
+        if (redirectPath && movie) {
+          navigate(redirectPath, {
+            state: {
+              movie: movie,
+              reviewState: reviewState,
+            },
+          });
+          return;
+        }
+
+        navigate("/dashboard");
         return;
       }
 
-      
-      navigate("/dashboard");
-      return;
+      if (response.data && response.data.error) {
+        setError(response.data.message);
+        return;
+      }
+    } catch (error) {
+      console.log("Logging error:", error);
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setError(error.response.data.error);
+      } else {
+        setError("An unexpected error occurred. Please try again!");
+      }
     }
-
-    if (response.data && response.data.error) {
-      setError(response.data.message);
-      return;
-    }
-  } catch (error) {
-    console.log("Logging error:", error);
-    if (
-      error.response &&
-      error.response.data &&
-      error.response.data.message
-    ) {
-      setError(error.response.data.error);
-    } else {
-      setError("An unexpected error occurred. Please try again!");
-    }
-  }
-};
-
-
- 
+  };
 
   return (
     <div className="flex items-center justify-center mt-[9vw] font-[inter]">

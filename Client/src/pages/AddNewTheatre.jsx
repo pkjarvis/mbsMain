@@ -53,6 +53,7 @@ const AddNewTheatre = () => {
       setTotalScreens(editingTheatre?.totalscreens);
       setValue(editingTheatre?.value);
       setTheatreFile(editingTheatre?.theatrefile);
+      console.log("theatre file is:",editingTheatre?.theatrefile);
       setTheatreName(editingTheatre?.theatrename);
       setShowDataWarning(true);
       setMessage("Also edit corresponding showtime of this theatre!");
@@ -60,7 +61,7 @@ const AddNewTheatre = () => {
 
     const bg = document.getElementById("ImageBg");
     if (bg && editingTheatre) {
-      bg.style.background = `url(${editingTheatre.theatrefile})`;
+      bg.style.background = `url(${editingTheatre?.theatrefile})`;
       bg.style.backgroundSize = "cover";
       bg.style.objectFit = "fill";
     }
@@ -73,55 +74,52 @@ const AddNewTheatre = () => {
   };
 
   const uploadImage = async (file) => {
-  const formData = new FormData();
-  formData.append("image", file);
+    const formData = new FormData();
+    formData.append("image", file);
 
-  const res = await fetch("http://34.131.125.137:8080/upload", {
-    method: "POST",
-    body: formData,
-  });
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/upload`, {
+      method: "POST",
+      body: formData,
+    });
 
-  const url = await res.text();
-
-};
+    const json = await res.json();
+    console.log("url is:", json);
+    return json;
+  };
+  
 
   const handleFileChange = async (e) => {
     e.preventDefault();
     const val = e.target.files[0];
+    if(!val) return;
+    
+
+    const imageUrl = await uploadImage(val);
+    setTheatreFile(imageUrl?.url);
+
     const reader = new FileReader();
 
-    reader.onloadend = () => {
-      const base64String = reader.result;
-      setTheatreFile(base64String);
-    };
+     // reader.onloadend = () => {
+    //   const base64String = reader.result;
+    //   setFile(base64String);
+    // };
 
     if (val) {
       reader.readAsDataURL(val);
-
+      console.log("file",val);
       let bg = document.getElementById("ImageBg");
-      let imageUrl = val ? URL.createObjectURL(val) : "";
-      setTheatreFile(imageUrl);
-      bg.style.background = `url(${imageUrl})`;
+      // let imageUrl = val ? URL.createObjectURL(val) : "";
+      // setTheatreFile(imageUrl);
+      bg.style.background = `url(${imageUrl?.url})`;
       bg.style.backgroundSize = "cover";
       bg.style.objectFit = "fill";
-      uploadImage(val);
+      
     }
   };
 
   const divRef = useRef(null);
 
   const handleCancel = () => {
-    // setTheatreName("");
-    // setAddress("");
-    // setCityName("");
-    // setStateName("");
-    // setStatus("");
-    // setTotalScreens("");
-    // setCurrentMovies("");
-    // setTheatreFile(null);
-
-    // let bg = document.getElementById("ImageBg");
-    // bg.style.background = "";
     navigate("/admin-theatre")
   };
 
@@ -862,6 +860,7 @@ const AddNewTheatre = () => {
               <input
                 key={fileInputKey}
                 type="file"
+                accept="image/*"
                 className="hidden"
                 ref={fileInputRef}
                 onChange={handleFileChange}

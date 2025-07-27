@@ -1,5 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Miniver&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Miniver&family=Oxanium:wght@200..800&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&display=swap');
 @import "tailwindcss";
+
+
 
 
 
@@ -145,6 +148,29 @@ html,body{
   box-shadow: none !important;
   outline: none !important;
 }
-.css-1l5xwdx-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected {
+.paginate .css-1l5xwdx-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected {
     background-color: #FF5295 !important;
+}
+
+.duration-block .p-inputtext{
+    box-shadow: none !important;
+}
+.duration-block .p-inputtext:hover{
+    border:1px solid black !important;
+    box-shadow: none !important;
+}
+.duration-block .p-inputtext:focus{
+    border: 1px solid black !important;
+}
+
+
+/* Tickt oxanium text */
+.my-oxanium-text{
+    font-family: 'Oxanium';
+}
+
+/* Barcode text */
+.barcode-text-style text{
+    font-weight: 200 !important;
+    
 }

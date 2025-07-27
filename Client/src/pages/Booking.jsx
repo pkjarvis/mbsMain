@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import NavBar1 from "../components/NavBar1";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
@@ -6,10 +6,15 @@ import LZString from "lz-string";
 
 const Booking = () => {
   const navigate = useNavigate();
+  const [selectedCity, setSelectedCity] = useState("");
+
   const username = localStorage.getItem("userName");
+  const email=localStorage.getItem("email");
   useEffect(() => {
     console.log(username);
+    
   }, [username]);
+
 
   const location = useLocation();
   const state =
@@ -122,7 +127,7 @@ const Booking = () => {
   return (
     <div>
       <div className="booking-container">
-        <NavBar1 title={username} />
+        <NavBar1 title={username} selectedCity={selectedCity} setSelectedCity={setSelectedCity} />
         <span className="flex items-center justify-start mx-[3vw] gap-1 mt-2">
           <Link
             to="/dashboard"
@@ -214,13 +219,15 @@ const Booking = () => {
           <h1 className="text-xl mt-[1vw] font-semibold">Your details</h1>
           <span className="border-1 border-[#A7A7A7] rounded-2xl p-3 mt-[1.2vw] flex items-center  justify-between">
             <span className="flex flex-col">
-              <p className="text-[#626262]">+91-93234234293</p>
-              <p className="text-[#626262]">Delhi-NCR</p>
+              <p className="text-[#626262]">Name:{username}</p>
+              <p className="text-[#626262]">Email:{email}</p>
+              <p className="text-[#626262]">Selected City:{selectedCity.name || "Pune"}</p>
             </span>
             <img
               src="/assets/Pencil.png"
               alt="Pencil"
-              className="w-[1.5vw] h-[1.5vw]"
+              className="w-[1.5vw] h-[1.5vw] cursor-pointer"
+              onClick={()=>navigate("/profile")}
             />
           </span>
           <span className="border-1 border-[#A7A7A7] rounded-2xl p-3 mt-[1.2vw] flex items-center gap-[0.6vw]">

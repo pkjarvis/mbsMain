@@ -66,8 +66,8 @@ const Dashboard = () => {
           .reverse();
 
         //segregate
-        setNowShowing(nowShowingFiltered.slice(0, 3));
-        setUpComing(upComingFiltered.slice(0,4));
+        setNowShowing(nowShowingFiltered);
+        setUpComing(upComingFiltered);
 
       })
       .catch((err) => console.log(err));

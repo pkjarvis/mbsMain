@@ -50,7 +50,7 @@ const SignUp1 = () => {
 
       localStorage.setItem("flag", false);
 
-     localStorage.setItem("userToken", response.data.token);
+      localStorage.setItem("userToken", response.data.token);
       localStorage.setItem("userName", response.data.username);
       localStorage.setItem("userId", response.data.userId);
       localStorage.setItem("email", response.data.email);
@@ -59,7 +59,6 @@ const SignUp1 = () => {
       const movie = location.state?.movie;
       const reviewState = location.state?.reviewState;
 
-      
       // if (redirectPath === "/booking") {
       //   const compressedState = localStorage.getItem("bookingState");
       //   console.log(compressedState);
@@ -67,14 +66,17 @@ const SignUp1 = () => {
       //     const decompressed = LZString.decompress(compressedState);
       //     const bookingState = JSON.parse(decompressed);
 
-         
       //     navigate("/booking", { state: bookingState });
       //     return;
       //   }
       // }
+      if (redirectPath === "/showbooking") {
+        // Just go back to the page; it will read from localStorage
+        navigate("/showbooking");
+        return;
+      }
 
-     
-      if (redirectPath  && movie) {
+      if (redirectPath && movie) {
         navigate(redirectPath, {
           state: {
             movie: movie,
@@ -86,7 +88,6 @@ const SignUp1 = () => {
 
       navigate("/dashboard");
       return;
-      
     } catch (error) {
       // handle error while login
       console.log(error);

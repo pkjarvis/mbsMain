@@ -13,33 +13,24 @@ import Stack from "@mui/material/Stack";
 import Alert from "@mui/material/Alert";
 
 const Movie = () => {
-
-
-
   const [visible, setVisible] = useState(false);
   const [star, setStar] = useState(null);
   const [text, setText] = useState("");
 
-
-
-
   const [selectedCity, setSelectedCity] = useState("");
   const username = localStorage.getItem("userName");
 
-
   const [showstartdate, setShowStartDate] = useState();
-
 
   const [currentmovieshow, setCurrentMovieShow] = useState([]);
 
   const navigate = useNavigate("");
 
   const [showDateWarning, setShowDataWarning] = useState(false);
+  const [message, setMessage] = useState("");
 
   const { state } = useLocation();
   const m = state?.movie;
- 
-
 
   const { id } = useParams();
   console.log("Show id is:", id);
@@ -61,9 +52,34 @@ const Movie = () => {
       .catch((err) => {
         console.error("Failed to fetch showtime by ID:", err);
       });
-
-    
   }, [id]);
+
+  const [moviereview, setMovieReview] = useState([]);
+
+  useEffect(() => {
+    if (!movieshow) return;
+    
+
+    axiosInstance
+      .get("/get-review-bymovie", {
+        params: { movieId: movieshow?.Movie?.ID },
+        withCredentials: true,
+      })
+      .then((res) => {
+        console.log("response is", res.data);
+        const filteredReviews = res.data.reviews.map((item) => item.star);
+        setMovieReview(filteredReviews);
+      })
+      .catch((err) => console.log(err));
+
+  }, [movieshow]);
+
+  let total = 0;
+  for (let i = 0; i < moviereview.length; i++) {
+    total += moviereview[i];
+  }
+  const average =
+    moviereview.length > 0 ? (total / moviereview.length).toFixed(1) : 0;
 
   // useEffect(()=>{
 
@@ -72,7 +88,6 @@ const Movie = () => {
   // },[movieshow])
 
   console.log("Response of movie is:", movieshow.Movie);
-
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -88,6 +103,7 @@ const Movie = () => {
   }, []);
 
   const handleClick = () => {
+    if (!username) return;
     window.scrollTo({ top: 0, behavior: "smooth" });
     setVisible(true);
   };
@@ -96,12 +112,9 @@ const Movie = () => {
     setVisible(false);
   };
 
-
   const inputTime = showstartdate;
   const inputDate = new Date(inputTime);
   const now = new Date();
-
-
 
   const [movies, setMovies] = useState([]);
   const [allshowtime, setAllShowtimes] = useState([]);
@@ -117,8 +130,6 @@ const Movie = () => {
         console.log("Error fetching movies", err.response?.data || err.message)
       );
   }, []);
-
-  
 
   const [userwatchedmovie, setUserWatchedMovie] = useState(false);
 
@@ -143,8 +154,7 @@ const Movie = () => {
       .catch((err) => console.log(err));
   }, []);
 
-
-   useEffect(() => {
+  useEffect(() => {
     axiosInstance
       .get("/get-showtime", { withCredentials: true })
       .then((res) => {
@@ -155,22 +165,18 @@ const Movie = () => {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        
-
         allShowtimes.forEach((item) => {
           const key = `${item.ID}`;
-          const movieStartDate=new Date(item?.startDate);
+          const movieStartDate = new Date(item?.startDate);
           movieStartDate.setHours(0, 0, 0, 0);
 
-        console.log("movie startdate:",movieStartDate);
-        console.log("today",today);
+          console.log("movie startdate:", movieStartDate);
+          console.log("today", today);
 
-          if (!uniqueMap.has(key) && movieStartDate>=today) {
+          if (!uniqueMap.has(key) && movieStartDate >= today) {
             uniqueMap.set(key, item);
           }
         });
-
-        
 
         const uniqueMovies = Array.from(uniqueMap.values());
         console.log("unique movies is", uniqueMovies);
@@ -186,22 +192,28 @@ const Movie = () => {
         // //segregate
         // setNowShowing(nowShowingFiltered.slice(0, 3));
         // setUpComing(upComingFiltered.slice(0,4));
-
       })
       .catch((err) => console.log(err));
   }, []);
 
+  const filteredMovieShows = allshowtime
+    ?.filter((show) => {
+      const cityMatch =
+        !selectedCity?.name ||
+        show?.Theatre?.cityName?.toLowerCase() ===
+          selectedCity.name.toLowerCase();
 
-  
-  const filteredMovieShows = allshowtime?.filter((show) =>
-          !selectedCity?.name ||
-          show?.Theatre?.cityName?.toLowerCase() ===
-            selectedCity.name.toLowerCase()
-      )
-      .slice(0, 4);
+      const genreMatch =
+        !movieshow?.Movie?.genre ||
+        show?.Movie?.genre === movieshow?.Movie?.genre;
 
-  console.log("filtered movie",filteredMovieShows);
+      const notSameShow = show?.ID !== movieshow?.ID;
 
+      return cityMatch && genreMatch && notSameShow;
+    })
+    .slice(0, 4);
+
+  console.log("filtered movie", filteredMovieShows);
 
   console.log("movie show", currentmovieshow);
 
@@ -230,10 +242,16 @@ const Movie = () => {
     }
 
     if (!userwatchedmovie) {
+      setMessage(
+        "You haven't purchased ticket for this movie, first watch the movie then give review"
+      );
       setShowDataWarning(true);
       return;
     }
     if (inputDate > now) {
+      setMessage("You could rate after your showtime ends");
+      setShowDataWarning(true);
+
       return;
     }
 
@@ -241,15 +259,14 @@ const Movie = () => {
       .post("/add-review", { text, star, movieId }, { withCredentials: "true" })
       .then((res) => console.log(res.data))
       .catch((err) => console.log(err));
-
   };
 
-
   const handleBook = () => {
-    navigate("/showtime", { state: { movie: m,showId:id } });
+    navigate("/showtime", { state: { movie: m, showId: id } });
   };
 
   const [reviews, setReviews] = useState([]);
+
   useEffect(() => {
     axiosInstance
       .get("/get-review", { withCredentials: "true" })
@@ -260,7 +277,8 @@ const Movie = () => {
       .catch((err) => console.log(err));
   }, []);
 
-  const filteredReviews = reviews.filter((r) => r.movieId === m.id);
+  const filteredReviews = reviews.filter((r) => r?.movieId === movieshow?.Movie?.ID);
+  console.log("filtered reviews is",filteredReviews);
 
   return (
     <div>
@@ -328,9 +346,7 @@ const Movie = () => {
                 setShowDataWarning(false);
               }}
             >
-              {
-                "You haven't purchased ticket for this movie, first watch the movie then give review"
-              }
+              {message}
             </Alert>
           </Stack>
         )}
@@ -368,7 +384,7 @@ const Movie = () => {
           <div className="h-[100%] flex flex-col items-start justify-start mt-[6vw] p-[2vw] max-w-[40%]">
             <h1 className="text-4xl font-bold">{movieshow?.moviename}</h1>
             <span className="flex items-center justify-start gap-2 mt-2">
-              <p className="text-zinc-300">4.2 ⭐</p>
+              <p className="text-zinc-300">{average || 0} ⭐</p>
               {/* <img
                 src="/assets/Star.png"
                 alt="Star"
@@ -396,7 +412,11 @@ const Movie = () => {
               /> */}
             </span>
             <p className="text-[#6F6F6F] mt-[1vw]">
-              <span className="text-black ">2h 49m</span> {movieshow?.Movie?.genre}|UA13+|
+              <span className="text-black ">
+                {movieshow?.Movie?.duration}
+                {" Minutes"}
+              </span>{" "}
+              {movieshow?.Movie?.genre}|UA13+|
               {movieshow?.Movie?.language?.map((lang, index) => (
                 <span key={index} className="inline-block flex-wrap">
                   {lang.name}
@@ -407,7 +427,9 @@ const Movie = () => {
             <p className="text-black text-md my-[1vw] font-medium">
               About the movie
             </p>
-            <p className="text-normal text-black font-light">{movieshow?.Movie?.description}</p>
+            <p className="text-normal text-black font-light">
+              {movieshow?.Movie?.description}
+            </p>
             <button
               className="bg-[#FF5295] p-1 text-xl w-[16vw] h-[3vw] rounded-lg text-white font-semibold text-center cursor-pointer my-[1vw]"
               onClick={handleBook}
@@ -450,7 +472,9 @@ const Movie = () => {
               />
             </span>
             <button
-              className="bg-[#FF5295] p-2 flex text-xl w-[10%] h-[2vw] rounded-lg text-white font-semibold text-center cursor-pointer  justify-center items-center"
+              className={`p-2 flex text-xl w-[10%] h-[2vw] rounded-lg text-white font-semibold text-center cursor-pointer  justify-center items-center ${
+                username ? "bg-[#FF5295]" : "bg-[grey]"
+              }`}
               onClick={handleClick}
             >
               Rate Now

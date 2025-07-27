@@ -45,6 +45,7 @@ const AddNewShowtime = () => {
 
   const { state } = useLocation();
   const editingNewShowTime = state?.showtime;
+  console.log("editingNewShowTime is",editingNewShowTime?.id);
 
   // movie label options through get movies
   const [movies, setMovies] = useState([]);
@@ -122,7 +123,7 @@ const AddNewShowtime = () => {
     if (!theatrename) return;
     axiosInstance
       .get("/get-theatre-byname", {
-        params: { theatrename: theatrename.name },
+        params: { theatrename: theatrename?.name },
         withCredentials: true,
       })
       .then((res) => {
@@ -238,19 +239,13 @@ const AddNewShowtime = () => {
 
   const navigate = useNavigate("");
 
-  function formatTime(val) {
-    const dataObject = new Date(val);
-    const hours = dataObject.getHours();
-    const minutes = dataObject.getMinutes();
-
-    var res, ans;
-    if (hours >= 12 && hours <= 24) {
-      res = "PM";
-    } else {
-      res = "AM";
-    }
-    ans = `${hours}:${minutes} ${res}`;
-    return ans;
+  function formatTimeTo12Hour(date) {
+    let hours = date.getHours();
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    const ampm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12;
+    hours = hours ? hours : 12; // 0 should be 12
+    return `${hours}:${minutes} ${ampm}`;
   }
 
   const handleTime = () => {
@@ -276,8 +271,8 @@ const AddNewShowtime = () => {
       return;
     }
 
-    var val1 = formatTime(datetime12h);
-    var val2 = formatTime(datetime);
+    var val1 = formatTimeTo12Hour(datetime12h);
+    var val2 = formatTimeTo12Hour(datetime);
 
     if (!val1 || !val2) {
       console.log("Provide values for date time in time format");
@@ -292,19 +287,15 @@ const AddNewShowtime = () => {
     setTimeArray((prev) => {
       const updated = [...prev, newEntry];
 
-      // Custom sort logic for 12-hour format with AM/PM
-      updated.sort((a, b) => {
-        const parseTime = (t) => {
-          const [time, meridiem] = t.split(" ");
-          let [hours, minutes] = time.split(":").map(Number);
-          if (meridiem === "PM" && hours !== 12) hours += 12;
-          if (meridiem === "AM" && hours === 12) hours = 0;
-          return hours * 60 + minutes;
-        };
+      const parseTime = (timeStr) => {
+        const [time, meridiem] = timeStr.split(" ");
+        let [hours, minutes] = time.split(":").map(Number);
+        if (meridiem === "PM" && hours !== 12) hours += 12;
+        if (meridiem === "AM" && hours === 12) hours = 0;
+        return hours * 60 + minutes;
+      };
 
-        return parseTime(a.val1) - parseTime(b.val1);
-      });
-
+      updated.sort((a, b) => parseTime(a.val1) - parseTime(b.val1));
       return updated;
     });
 
@@ -328,10 +319,11 @@ const AddNewShowtime = () => {
       setMessage("Cannot add/edit showtime. The movie has already ended.");
     }
 
-    if (theatrename && currentheatrestatus !== "Active") {
-      setShowDataWarning(true);
-      setMessage("Cannot add showtime. Selected theatre is inactive.");
-    }
+    // if (theatrename && currentheatrestatus !== "Active") {
+    //   console.log("current theatre status",currentheatrestatus);
+    //   setShowDataWarning(true);
+    //   setMessage("Cannot add showtime. Selected theatre is inactive.");
+    // }
   }, [moviename, end, currentheatrestatus]);
 
   const handleSubmit = (e) => {
@@ -398,21 +390,22 @@ const AddNewShowtime = () => {
     // Check for collision
     const newStart = start;
     const newEnd = end;
+    const parseToDate = (str) => {
+      const [time, meridiem] = str.split(" ");
+      const [hoursStr, minutesStr] = time.split(":");
+      let hours = parseInt(hoursStr);
+      const minutes = parseInt(minutesStr);
+      if (meridiem === "PM" && hours !== 12) hours += 12;
+      if (meridiem === "AM" && hours === 12) hours = 0;
+
+      const d = new Date(start);
+      d.setHours(hours, minutes, 0, 0);
+      return d;
+    };
 
     const isOverlapping = timearray.some(({ val1, val2 }) => {
-      const [startHour, startMinute] = val1.split(/[: ]/);
-      const [endHour, endMinute] = val2.split(/[: ]/);
-
-      const startAMPM = val1.includes("PM") ? 12 : 0;
-      const endAMPM = val2.includes("PM") ? 12 : 0;
-
-      const existingStart = new Date(start);
-      existingStart.setHours((parseInt(startHour) % 12) + startAMPM);
-      existingStart.setMinutes(parseInt(startMinute));
-
-      const existingEnd = new Date(start);
-      existingEnd.setHours((parseInt(endHour) % 12) + endAMPM);
-      existingEnd.setMinutes(parseInt(endMinute));
+      const existingStart = parseToDate(val1);
+      const existingEnd = parseToDate(val2);
 
       return (
         (newStart >= existingStart && newStart < existingEnd) ||
@@ -573,7 +566,7 @@ const AddNewShowtime = () => {
               </div>
               <div className="flex mt-2 mx-2 gap-1">
                 {timearray?.map((item, index) => (
-                  <div>
+                  <div key={index}>
                     <p
                       key={index}
                       className="text-[0.5vw] font-light h-[0.8vw] w-auto text-[#1F242D] bg-[#E1E4EA] items-center justify-center text-center inline rounded-xl p-1"

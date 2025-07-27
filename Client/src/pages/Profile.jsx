@@ -1,55 +1,109 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import NavBar1 from "../components/NavBar1";
 import Footer from "../components/Footer";
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
-import Cookies from 'js-cookie';
-
+import Cookies from "js-cookie";
 
 const baseUrl = import.meta.env.VITE_ROUTE;
 const Profile = () => {
-  const username = localStorage.getItem("userName");
-  const emailAddress = localStorage.getItem("email");
+  // const username = localStorage.getItem("userName");
+  // const emailAddress = localStorage.getItem("email");
 
-  const [name, setName] = useState(username);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+
   const [selectedCity, setSelectedCity] = useState(false);
-  
-  const [email, setEmail] = useState(emailAddress);
 
-  useEffect(() => {
-    console.log(username);
-  }, [username]);
+  const [image, setImage] = useState("/assets/camera.png");
+
+
+ useEffect(() => {
+  axiosInstance.get("/user-details", { withCredentials: true })
+    .then((res) => {
+      const { username, email, profilePhoto } = res.data;
+
+      // Save to state
+      setName(username);
+      setEmail(email);
+      setImage(profilePhoto || "/assets/camera.png");
+
+      // Save to localStorage
+      localStorage.setItem("userName", username);
+      localStorage.setItem("email", email);
+      localStorage.setItem("profilePhoto", profilePhoto || "/assets/camera.png");
+    })
+    .catch((err) => {
+      console.error("Failed to fetch user details", err);
+      // Optionally handle auth error (redirect to login, etc.)
+    });
+}, []);
 
   const navigate = useNavigate("");
 
   const handleLogout = () => {
     localStorage.clear();
-    Cookies.remove('token');
-    if(!username){
+    Cookies.remove("token");
+    if (!name) {
       navigate("/dashboard");
-    }else{
+    } else {
       navigate("/root");
     }
-    
   };
 
-  const handleSave = ()=>{
+  const uploadImage = async (file) => {
+    const formData = new FormData();
+    formData.append("image", file);
+
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/upload`, {
+      method: "POST",
+      body: formData,
+    });
+
+    const json = await res.json();
+    console.log("url is:", json);
+    return json;
+  };
+
+  const fileInputRef = useRef("");
+
+  const handleDivChange = () => {
+    fileInputRef.current.click();
+  };
+
+  const handlePhotoChange = async(e) => {
+    const val = e.target.files[0];
+    if(!val) return;
     
-    axiosInstance.post("/update-profile",{name,email},{withCredentials:true})
-    .then(res=>{
-      console.log(res.data)
-      localStorage.setItem("userName",name);
-     })
-    .catch(err=>console.log(err))
-  }
+    const imageUrl = await uploadImage(val);
+
+    if(imageUrl?.url){
+      setImage(imageUrl?.url);
+      localStorage.setItem("profilePhoto", imageUrl.url);
+    }
 
 
+  };
+
+  const handleSave = () => {
+    axiosInstance
+      .post("/update-profile", { name,image }, { withCredentials: true })
+      .then((res) => {
+        console.log(res.data);
+        localStorage.setItem("userName", name);
+        localStorage.setItem("profilePhoto", image);
+      })
+      .catch((err) => console.log(err));
+  };
 
   return (
     <div>
       <div className="profile-container">
-        <NavBar1 title={username}  selectedCity={selectedCity}
-          setSelectedCity={setSelectedCity} />
+        <NavBar1
+          title={name}
+          selectedCity={selectedCity}
+          setSelectedCity={setSelectedCity}
+        />
         <div className="bg-[#E2E0E0] p-2">
           <div className="flex items-center gap-[3vw] mx-[2.4vw]">
             <Link to="/profile">Profile</Link>
@@ -59,14 +113,25 @@ const Profile = () => {
         <div className="bg-[#F1F1F1] mx-[3vw] h-[70vh] pt-[2vw] mt-[1.6vw]">
           <div className="h-[6.4vw] w-[100%] bg-linear-to-r from-[#2D3148] to-[#E54D61] relative ">
             <div className="flex items-center justify-start gap-[2vw] pt-[2vw] mx-[12vw] ">
-              <span className="w-[6.4vw] h-[6.2vw] rounded-full bg-[#D9D9D9] flex items-center justify-center ">
+              <span
+                className="w-[6.4vw] h-[6.2vw] rounded-full bg-[#D9D9D9] flex items-center justify-center cursor-pointer"
+                onClick={handleDivChange}
+              >
                 <img
-                  src="/assets/camera.png"
+                  src={image}
                   alt="Camera"
                   className="w-[3vw] h-[3vw] z-10"
                 />
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  ref={fileInputRef}
+                  id="profilePhotoInput"
+                  onChange={handlePhotoChange}
+                />
               </span>
-              <p className="text-xl text-white">Hi,{username}</p>
+              <p className="text-xl text-white">Hi,{name}</p>
             </div>
           </div>
 
@@ -84,7 +149,7 @@ const Profile = () => {
                 onChange={(e) => setName(e.target.value.toUpperCase())}
               />
             </span>
-            
+
             <span className="flex justify-between items-center gap-[3.7vw] mt-[1vw]">
               <p className="text-md max-w-[18%] opacity-15">Email Address</p>
               <input
@@ -95,21 +160,17 @@ const Profile = () => {
                 // onChange={(e) => setEmail(e.target.value)}
               />
             </span>
-          
           </div>
 
           <div className="flex items-center justify-end mt-[4vw] gap-5 max-w-[68%]">
             <span className="w-[10%] h-[2vw] border-1 border-[#FF1414] rounded-sm flex items-center justify-center p-3 cursor-pointer">
-              <p
-               className=" text-md text-[#FF1414] " 
-               onClick={handleLogout}
-               >
+              <p className=" text-md text-[#FF1414] " onClick={handleLogout}>
                 Log out
               </p>
             </span>
-            <span 
-            className="w-[10%] h-[2vw]  bg-[#FF5295] rounded-sm flex items-center justify-center p-3 cursor-pointer" 
-            onClick={handleSave}
+            <span
+              className="w-[10%] h-[2vw]  bg-[#FF5295] rounded-sm flex items-center justify-center p-3 cursor-pointer"
+              onClick={handleSave}
             >
               <p className=" text-md text-white">Save</p>
             </span>

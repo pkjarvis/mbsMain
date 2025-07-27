@@ -43,14 +43,14 @@ const Navbar = (props) => {
           className="w-[1.2vw] h-[1.2vw] relative ml-[-2rem]"
         /> */}
         <span className="user flex items-center justify-between ml-[18vw] px-4 mr-[3vw]">
-          <p className="text-gray-700 font-[inter] text-base font-normal leading-1">
+          {/* <p className="text-gray-700 font-[inter] text-base font-normal leading-1">
             New Delhi
           </p>
           <img
             src="/assets/dropDownIcon.png"
             alt="DropDown"
             className="w-3 h-2 ml-1"
-          />
+          /> */}
           <span
             className="flex items-center cursor-pointer"
             onClick={handleClick}
