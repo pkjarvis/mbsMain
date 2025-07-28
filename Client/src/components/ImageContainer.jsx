@@ -4,7 +4,8 @@ import { Dropdown } from "primereact/dropdown";
 import axiosInstance from "../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
 
-import { motion } from "framer-motion";
+// import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 const ImageContainer = ({ setSearchTerm, filteredShowtime }) => {
   const navigate = useNavigate();
@@ -72,49 +73,71 @@ const ImageContainer = ({ setSearchTerm, filteredShowtime }) => {
 
   return (
     <div>
-      <div className=" flex items-center w-[40%] h-[12vw] absolute top-[31vw] right-0 overflow-hidden object-fill">
-        {containermovie?.slice(0, 3).map((item, index) => (
-          <motion.span
-            key={index}
-            onClick={() => handleClick(item?.Movie?.file, item?.Movie, index)}
-            className="max-w-[25%] max-h-[12vw] overflow-hidden object-cover cursor-pointer"
-            animate={{
-              scale: selectedImageIndex === index ? 1.4 : 1,
-              rotateY: selectedImageIndex === index ? 15 : 0,
-              boxShadow:
-                selectedImageIndex === index
-                  ? "0px 0px 25px 5px rgba(255, 105, 180, 0.8)"
-                  : "0px 0px 0px 0px rgba(0,0,0,0)",
-              zIndex: selectedImageIndex === index ? 999 : 1,
-            }}
-            transition={{
-              type: "spring",
-              stiffness: 200,
-              damping: 15,
-            }}
-            whileHover={{
-              scale: selectedImageIndex === index ? 1.45 : 1.1,
-              rotate: 2,
-            }}
-          >
-            <motion.img
-              src={item.Movie.file}
-              alt="Bg-3"
-              className={`w-[12vw] h-[12vw] object-fit rounded-xl transition-all duration-300 ${
-                selectedImageIndex === index
-                  ? "border-[3px] border-[#8B005D]" // dark pink on select
-                  : "border-[2px] border-[#D36BA2]" // soft pink border default
-              }`}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: index * 0.1 }}
-            />
-          </motion.span>
-        ))}
+      <div className=" flex items-center w-[40%] h-[12vw] absolute top-[29vw] right-0  object-fill">
+        {containermovie?.slice(0, 3).map((item, index) => {
+          const isSelected = selectedImageIndex === index;
+
+          // Set the display order for animation effect
+          const displayIndex =
+            selectedImageIndex !== null
+              ? selectedImageIndex === index
+                ? 0
+                : index < selectedImageIndex
+                ? index + 1
+                : index
+              : index;
+
+          return (
+            <motion.div
+              key={index}
+              onClick={() => handleClick(item?.Movie?.file, item?.Movie, index)}
+              className="absolute cursor-pointer"
+              initial={false}
+              animate={{
+                x: `${displayIndex * 13}vw`,
+                scaleX: isSelected ? 1.5 : 1,
+                scaleY: isSelected ? 1.1 : 1,
+                zIndex: isSelected ? 10 : 1,
+                opacity: isSelected ? 1 : 0.9,
+              }}
+              transition={{
+                duration: 0.6,
+                type: "spring",
+                damping: 20,
+              }}
+              whileHover={{
+                scale: isSelected ? 1.2 : 1.1,
+              }}
+            >
+              <motion.div
+                className={`w-[12vw] h-[12vw] rounded-xl overflow-hidden transition-all duration-500
+          ${
+            isSelected
+              ? "border-[4px] border-[#8B005D] shadow-[0_0_40px_10px_rgba(139,0,93,0.5)]"
+              : "border-[2px] border-[#f3a6c4] shadow-md"
+          }
+        `}
+                style={{
+                  boxSizing: "border-box",
+                }}
+              >
+                <motion.img
+                  src={item.Movie.file}
+                  alt="Movie"
+                  className="w-full h-full object-cover "
+                />
+              </motion.div>
+            </motion.div>
+          );
+        })}
       </div>
 
       <div className="bg-white mt-5  w-[100%] h-[70vh] overflow-hidden  ">
-        <img src={bgimage} alt="Bg" className="w-[100%] h-[100%]  object-fill"/>
+        <img
+          src={bgimage}
+          alt="Bg"
+          className="w-[100%] h-[100%]  object-fill"
+        />
         <div className="card flex justify-content-center absolute right-0 top-[7vw] w-[40%] h-[2vw]  rounded-2xl  px-2 items-center justify-between">
           <Dropdown
             value={moviename}

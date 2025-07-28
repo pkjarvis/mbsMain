@@ -6,6 +6,7 @@ import (
 	"go-auth/models"
 	"go-auth/routes"
 	"go-auth/seeder"
+	"go-auth/utils"
 	"log"
 	"os"
 
@@ -29,6 +30,8 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
+	
+
 	r.POST("/payment-success", controllers.PaymentSuccess)
 	r.POST("/payment-failure", controllers.PaymentFailure)
 
@@ -39,7 +42,7 @@ func main() {
 
 
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://34.131.125.137"},
+		AllowOrigins:     []string{"http://localhost:5173"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length", "Set-Cookie"},
@@ -63,6 +66,9 @@ func main() {
 
 	// Seeder
 	seeder.SeedDefaultAdmin()
+
+	// cleanup
+	utils.RunPendingTransactionCleanup()
 
 	// Load the routes
 	routes.AuthRoutes(r)

@@ -175,6 +175,18 @@ const AddNewMovie = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (
+      !movie ||
+      !description ||
+      !startDate ||
+      !endDate ||
+      !genre ||
+      !language ||  
+      !duration ||
+      !file
+    ) {
+      return;
+    }
 
     const movieNameRegex = /^[A-Za-z]/;
     if (!movieNameRegex.test(movie)) {
@@ -406,6 +418,7 @@ const AddNewMovie = () => {
                 <option id="mystery">Mystery</option>
                 <option id="romance">Romance</option>
                 <option id="fantasy">Fantasy</option>
+                <option id="fiction">Fiction</option>
               </select>
 
               <div className="card flex justify-content-center w-[14vw] h-[2vw]">
@@ -606,9 +619,9 @@ const AddNewMovie = () => {
                 </button>
               </div>
             ) : (
-              <div className="buttons flex items-center justify-start gap-5 mb-1 opacity-25">
+              <div className="buttons flex items-center justify-start gap-5 mb-1">
                 <button
-                  className="bg-pink-500 cursor-pointer w-[6vw] h-[2vw] text-md text-white font-semibold p-1 rounded-xl"
+                  className="bg-pink-500 cursor-pointer w-[6vw] h-[2vw] text-md text-white font-semibold p-1 rounded-xl  opacity-25"
                   onClick={handleSubmit}
                 >
                   Add

@@ -35,7 +35,7 @@ func InitDB(cfg Config) {
 
     
 	// Run all migrations
-	if err := db.AutoMigrate(&User{}, &Movie{}, &Theatre{}, &Review{},&Showtime{}, &Transaction{},&State{}); err != nil {
+	if err := db.AutoMigrate(&User{}, &Movie{}, &Theatre{}, &Review{},&Showtime{}, &Transaction{},&State{},&SeatLayout{}); err != nil {
 		panic(err)
 	}
 

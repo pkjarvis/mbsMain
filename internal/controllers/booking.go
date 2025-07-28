@@ -86,6 +86,15 @@ func generatePayuPayment(tx models.Transaction) map[string]interface{} {
 
 }
 
+type ReservedSeat struct {
+	ID        uint      `gorm:"primaryKey"`
+	ShowID    string    `gorm:"index"`
+	SeatCode  string    `gorm:"index"` // e.g., "A10"
+	UserID    uint
+	CreatedAt time.Time
+	ExpiresAt time.Time // TTL reservation e.g., 5 min
+}
+
 func Payment(c *gin.Context) {
 	var input struct {
 		Price          float64         `json:"price"`
@@ -100,10 +109,45 @@ func Payment(c *gin.Context) {
 		ShowID         string          `json:"showId"`
 	}
 
+
 	// Validate request body
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(400, gin.H{"error": "Binding failed in payment"})
 		return
+	}
+
+	var requestedSeats []string
+	if err := json.Unmarshal(input.Store, &requestedSeats); err != nil {
+		c.JSON(400, gin.H{"error": "Invalid seat data"})
+		return
+	}
+	tx := models.DB.Begin()
+
+	var conflictingTransactions []models.Transaction
+	if err := tx.
+		Where("show_id = ? AND status = ?", input.ShowID, "paid").
+		Find(&conflictingTransactions).Error; err != nil {
+		tx.Rollback()
+		c.JSON(500, gin.H{"error": "Error checking booked seats"})
+		return
+	}
+	// Extract all booked seat codes
+	var bookedSeats map[string]bool = map[string]bool{}
+	for _, txn := range conflictingTransactions {
+		var booked []string
+		json.Unmarshal([]byte(txn.Ticket), &booked)
+		for _, s := range booked {
+			bookedSeats[s] = true
+		}
+	}
+
+	// Check for conflicts
+	for _, s := range requestedSeats {
+		if bookedSeats[s] {
+			tx.Rollback()
+			c.JSON(409, gin.H{"error": fmt.Sprintf("Seat %s already booked", s)})
+			return
+		}
 	}
 
 	// Extract userId from context
@@ -137,11 +181,18 @@ func Payment(c *gin.Context) {
 		ShowID:         input.ShowID,
 	}
 
-	// Save to DB
-	if err := models.DB.Create(&payment).Error; err != nil {
-		c.JSON(500, gin.H{"error": "Could not create transaction", "details": err.Error()})
+	// // Save to DB
+	// if err := models.DB.Create(&payment).Error; err != nil {
+	// 	c.JSON(500, gin.H{"error": "Could not create transaction", "details": err.Error()})
+	// 	return
+	// }
+	if err := tx.Create(&payment).Error; err != nil {
+		tx.Rollback()
+		c.JSON(500, gin.H{"error": "Could not create transaction"})
 		return
 	}
+
+	tx.Commit()
 
 	// Generate PayU payment data
 	payUData := generatePayuPayment(payment)

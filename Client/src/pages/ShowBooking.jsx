@@ -61,7 +61,6 @@ const ShowBooking = () => {
       .catch((err) => console.error("Error fetching paid tickets:", err));
   }, []);
 
-  
   useEffect(() => {
     // Style sold seats
     soldTickets.forEach((id) => {
@@ -99,7 +98,6 @@ const ShowBooking = () => {
       }
     });
   }, [soldTickets, storeId]);
-
 
   const handleMiddleRow = (s, id) => {
     var finalId = `${s}${id}`;
@@ -2209,18 +2207,7 @@ const ShowBooking = () => {
               </div>
               <div className="flex items-center gap-4 justify-start my-[1.3vw]">
                 <p className="text-[#949494] font-normal">F</p>
-                {/* <div
-                  id="F1"
-                  className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center ml-[4vw]"
-                  onClick={() => handleMiddleRow("F", 1)}
-                >
-                  <p
-                    className="text-center text-base  text-[#59B200]"
-                    id="F1text"
-                  >
-                    1
-                  </p>
-                </div> */}
+               
                 <div
                   id="F2"
                   className="h-[2.4vw] w-[2.4vw] bg-[#F9F9F9] border-2 border-[#59B200]  cursor-pointer rounded-md flex items-center justify-center ml-[7.3vw]"
@@ -2360,33 +2347,17 @@ const ShowBooking = () => {
           </div>
           <div
             className="flex items-center justify-around p-[1vw] w-[100%] bg-[#F0F0F0] relative mb-4"
-            // onClick={handlePopUP}
+            
           >
             <p className="font-bold text-xl">{storeId.length} seat selected</p>
 
-            {username ? (
-              <Tooltip>
-                <button
-                  className={`bg-[#FF5295]  text-md w-[12vw] h-[2vw]  rounded-lg text-white font-semibold text-center  mx-[1vw] ${
-                    !username ? "cursor-not-allowed" : "cursor-pointer"
-                  }`}
-                  onClick={handleSubmit}
-                >
-                  Submit
-                </button>
-              </Tooltip>
-            ) : (
-              <Tooltip title="Login First, login button on top-right">
-                <button
-                  className={`bg-[#FF5295]  text-md w-[12vw] h-[2vw]  rounded-lg text-white font-semibold text-center  mx-[1vw] ${
-                    !username ? "cursor-not-allowed" : "cursor-pointer"
-                  }`}
-                  onClick={handleSubmit}
-                >
-                  Submit
-                </button>
-              </Tooltip>
-            )}
+            <button
+              className="bg-[#FF5295]  text-md w-[12vw] h-[2vw]  rounded-lg text-white font-semibold text-center  mx-[1vw] cursor-pointer"
+              onClick={handleSubmit}
+            >
+              Submit
+            </button>
+            
           </div>
         </div>
       </div>

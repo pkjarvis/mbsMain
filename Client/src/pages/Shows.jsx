@@ -182,7 +182,7 @@ const Shows = () => {
       ) : (
         <p className="text-center text-gray-500 mt-8">No showtime added yet</p>
       )}
-      <div className="flex justify-center mt-[3vw] paginate">
+      <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 bg-white py-2 px-4 rounded shadow ">
         <Pagination
           count={Math.ceil(filteredShowtime.length / itemsPerPage)}
           page={currentPage}

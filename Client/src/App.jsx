@@ -24,6 +24,8 @@ import AllMovies from "./pages/AllMovies";
 import Movie from "./pages/Movie";
 import Showtime from "./pages/ Showtime";
 import ShowBooking from "./pages/ShowBooking";
+import ShowBooking1 from "./pages/ShowBooking1";
+
 import Profile from "./pages/Profile";
 import SignUp1 from "./pages/SignUp1";
 import Login1 from "./pages/Login1";
@@ -61,7 +63,8 @@ function App() {
                   <Route path="/movies" element={<AllMovies/>} />
                   <Route path="/movie/:id" element={<Movie />} />
                   <Route path="/showtime" element={<Showtime />} />
-                  <Route path="/showbooking" element={<ShowBooking />} />
+                  {/* <Route path="/showbooking" element={<ShowBooking />} /> */} 
+                  <Route path="/showbooking" element={<ShowBooking1/>}/>
                   <Route path="/profile" element={<Profile/>} />
                   <Route path="/signup" element={<SignUp1/>} />
                   <Route path="/login" element={<Login1 />} />

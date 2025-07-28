@@ -84,7 +84,7 @@ const DeleteBox = (props) => {
     props.func(!props.val);
   };
   return (
-    <div className="flex flex-col items-center justify-center bg-white shadow-2xl rounded-xl mx-auto gap-1 p-3 w-[16vw] fixed top-[20rem] left-[45rem]">
+    <div className="flex flex-col items-center justify-center bg-white shadow-2xl rounded-xl mx-auto gap-1 p-3 w-[16vw] fixed top-[20rem] left-[45rem] z-10">
       <p className="text-xl text-pink-600 font-bold">{props.status} ?</p>
       <p className="text-md font-medium text-center">
         Are you sure you want to delete this{" "}

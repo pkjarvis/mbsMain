@@ -158,7 +158,7 @@ const MovieManagement = () => {
 
         {/* <MovieCard/> */}
       </div>
-      <div className="flex justify-center mt-[7vw] paginate">
+      <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 bg-white py-2 px-4 rounded shadow ">
         <Pagination
           count={Math.ceil(filteredMovies.length / itemsPerPage)}
           page={currentPage}

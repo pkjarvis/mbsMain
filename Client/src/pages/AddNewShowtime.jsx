@@ -45,7 +45,7 @@ const AddNewShowtime = () => {
 
   const { state } = useLocation();
   const editingNewShowTime = state?.showtime;
-  console.log("editingNewShowTime is",editingNewShowTime?.id);
+  console.log("editingNewShowTime is", editingNewShowTime?.id);
 
   // movie label options through get movies
   const [movies, setMovies] = useState([]);
@@ -328,6 +328,17 @@ const AddNewShowtime = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (
+      !startDate ||
+      !moviename ||
+      !theatrename ||
+      !selectedCities ||
+      !timearray?.length > 0
+    ) {
+      return;
+    }
+
     const newShowTime = {
       id: editingNewShowTime?.id,
       theatrename: theatrename.name,
@@ -615,9 +626,9 @@ const AddNewShowtime = () => {
                 </button>
               </div>
             ) : (
-              <div className="buttons flex items-center justify-start gap-5 mb-1 opacity-15">
+              <div className="buttons flex items-center justify-start gap-5 mb-1 ">
                 <button
-                  className="bg-[#FF5295] cursor-pointer w-[6vw] h-[2vw] text-md text-white font-semibold p-1 rounded-xl"
+                  className="bg-[#FF5295] cursor-pointer w-[6vw] h-[2vw] text-md text-white font-semibold p-1 rounded-xl opacity-15"
                   onClick={handleSubmit}
                 >
                   Add

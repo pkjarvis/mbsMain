@@ -53,7 +53,7 @@ const AddNewTheatre = () => {
       setTotalScreens(editingTheatre?.totalscreens);
       setValue(editingTheatre?.value);
       setTheatreFile(editingTheatre?.theatrefile);
-      console.log("theatre file is:",editingTheatre?.theatrefile);
+      console.log("theatre file is:", editingTheatre?.theatrefile);
       setTheatreName(editingTheatre?.theatrename);
       setShowDataWarning(true);
       setMessage("Also edit corresponding showtime of this theatre!");
@@ -86,41 +86,38 @@ const AddNewTheatre = () => {
     console.log("url is:", json);
     return json;
   };
-  
 
   const handleFileChange = async (e) => {
     e.preventDefault();
     const val = e.target.files[0];
-    if(!val) return;
-    
+    if (!val) return;
 
     const imageUrl = await uploadImage(val);
     setTheatreFile(imageUrl?.url);
 
     const reader = new FileReader();
 
-     // reader.onloadend = () => {
+    // reader.onloadend = () => {
     //   const base64String = reader.result;
     //   setFile(base64String);
     // };
 
     if (val) {
       reader.readAsDataURL(val);
-      console.log("file",val);
+      console.log("file", val);
       let bg = document.getElementById("ImageBg");
       // let imageUrl = val ? URL.createObjectURL(val) : "";
       // setTheatreFile(imageUrl);
       bg.style.background = `url(${imageUrl?.url})`;
       bg.style.backgroundSize = "cover";
       bg.style.objectFit = "fill";
-      
     }
   };
 
   const divRef = useRef(null);
 
   const handleCancel = () => {
-    navigate("/admin-theatre")
+    navigate("/admin-theatre");
   };
 
   const handleRemoveFile = () => {
@@ -138,14 +135,27 @@ const AddNewTheatre = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (
+      !theatrename ||
+      !address ||
+      !cityName ||
+      !stateName ||
+      !totalscreens ||
+      !value ||
+      !theatrefile
+    ) {
+      return;
+    }
     const theatreNameRegex = /^[A-Za-z]/;
     if (!theatreNameRegex.test(theatrename)) {
       setShowDataWarning(true);
-      setMessage("Theatre name must start with an alphabet (not _, number, or special character)")
+      setMessage(
+        "Theatre name must start with an alphabet (not _, number, or special character)"
+      );
       return;
     }
     const newTheatre = {
-      id:  editingTheatre?.id ,
+      id: editingTheatre?.id,
       theatrename,
       address,
       cityName,
@@ -609,49 +619,47 @@ const AddNewTheatre = () => {
 
               {/*  Status change needs to be removed */}
 
-              <Box 
-                sx={{ "& > :not(style)": { width: "14vw", margin: "0 0" ,} }}
+              <Box
+                sx={{ "& > :not(style)": { width: "14vw", margin: "0 0" } }}
                 noValidate
                 autoComplete="off"
-                
               >
-                <FormControl 
-               
-                 sx={{
-                  "& .MuiOutlinedInput-root": {
-                    // Default border color for outlined input
-                    height:"2.2vw",
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#A1A2A4", // Grey border by default
-                      borderWidth: "1px",
-                      height:"3rem",
-                      alignItems:"center",
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#A1A2A4", // Keep grey on hover if not focused
-                    },
-                    // Styles when the input itself is focused
-                    "&.Mui-focused": {
+                <FormControl
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      // Default border color for outlined input
+                      height: "2.2vw",
                       "& .MuiOutlinedInput-notchedOutline": {
-                        borderColor: "#000", // Black border when focused
-                        borderWidth: "1px", // Keep border width consistent
+                        borderColor: "#A1A2A4", // Grey border by default
+                        borderWidth: "1px",
+                        height: "3rem",
+                        alignItems: "center",
+                      },
+                      "&:hover .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#A1A2A4", // Keep grey on hover if not focused
+                      },
+                      // Styles when the input itself is focused
+                      "&.Mui-focused": {
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          borderColor: "#000", // Black border when focused
+                          borderWidth: "1px", // Keep border width consistent
+                        },
                       },
                     },
-                  },
-                  // Target the label component directly
-                  "& .MuiInputLabel-root": {
-                    color: "#A1A2A4", // Default label color (grey)
-                    fontWeight: "normal",// Assuming default is normal, if you want bold when focused
-                    "&.Mui-focused": {
-                      color: "#000", // Black label when focused
-                      fontWeight: "light", // Bold label when focused
+                    // Target the label component directly
+                    "& .MuiInputLabel-root": {
+                      color: "#A1A2A4", // Default label color (grey)
+                      fontWeight: "normal", // Assuming default is normal, if you want bold when focused
+                      "&.Mui-focused": {
+                        color: "#000", // Black label when focused
+                        fontWeight: "light", // Bold label when focused
+                      },
+                      // Optional: Keep label black when it has a value (shrunk) and is not focused
+                      "&.MuiInputLabel-shrink": {
+                        color: "#000", // Black label when shrunk (has value)
+                      },
                     },
-                    // Optional: Keep label black when it has a value (shrunk) and is not focused
-                    "&.MuiInputLabel-shrink": {
-                      color: "#000", // Black label when shrunk (has value)
-                    },
-                  },
-                }}
+                  }}
                 >
                   <InputLabel id="demo-simple-select-label">Status</InputLabel>
                   <Select
@@ -660,11 +668,9 @@ const AddNewTheatre = () => {
                     value={status}
                     label="Status"
                     onChange={handleStatusChange}
-                    
                   >
                     <MenuItem value={"Active"}>Active</MenuItem>
                     <MenuItem value={"Inactive"}>Inactive</MenuItem>
-                    
                   </Select>
                 </FormControl>
               </Box>
@@ -890,9 +896,9 @@ const AddNewTheatre = () => {
                 </button>
               </div>
             ) : (
-              <div className="buttons flex items-center justify-start gap-5 mb-1 opacity-15 my-2">
+              <div className="buttons flex items-center justify-start gap-5 mb-1 my-2">
                 <button
-                  className="bg-pink-500 cursor-pointer w-[6vw] h-[2vw] text-md text-white font-semibold p-1 rounded-xl"
+                  className="bg-pink-500 cursor-pointer w-[6vw] h-[2vw] text-md text-white font-semibold p-1 rounded-xl opacity-15 "
                   onClick={handleSubmit}
                 >
                   Add

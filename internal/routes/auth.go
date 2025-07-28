@@ -68,6 +68,7 @@ func AuthRoutes(r *gin.Engine) {
 	r.GET("/get-review-bymovie", controllers.GetReviewByMovie)
 	r.GET("/get-showtime/:id", controllers.GetShowTimeByID)
 	r.GET("/get-theatre-byname", controllers.GetTheatreByName)
+	r.GET("/seat-layout", controllers.GetSeatLayout)
 	
 
 	// user routes
