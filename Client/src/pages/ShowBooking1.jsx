@@ -22,6 +22,29 @@ const ShowBooking1 = () => {
   const [seatLayout, setSeatLayout] = useState([]);
   const [groupedSeats, setGroupedSeats] = useState({});
 
+  const [lockedSeats, setLockedSeats] = useState([]);
+
+  const fetchLockedSeats = async () => {
+    try {
+      const res = await axiosInstance.get("/locked-seats", {
+        params: { showId: showId }, // replace with actual showId
+      });
+      if (res.status === 200) {
+        setLockedSeats(res.data.locked);
+      }
+    } catch (err) {
+      console.error("Error fetching locked seats:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchLockedSeats(); // initial fetch
+
+    const interval = setInterval(fetchLockedSeats, 5000); // poll every 5 sec
+
+    return () => clearInterval(interval); // cleanup on unmount
+  }, [showId]);
+
   useEffect(() => {
     const fetchSeats = async () => {
       try {
@@ -100,6 +123,7 @@ const ShowBooking1 = () => {
         el.style.setProperty("background-color", "#E5E5E5", "important");
         el.style.setProperty("border", "2px solid #D6D6D6", "important");
         el.style.setProperty("cursor", "not-allowed", "important");
+        el.style.setProperty("pointer-events", "none", "important");
         el.style.zIndex = "1";
 
         if (el1) {
@@ -107,6 +131,28 @@ const ShowBooking1 = () => {
         }
       }
     });
+
+    // Style locked seats (from Redis)
+    if (Array.isArray(lockedSeats) && lockedSeats.length > 0) {
+      lockedSeats.forEach((id) => {
+        if (soldTickets.includes(id)) return; // Don't override sold seats
+
+        const el = document.getElementById(id);
+        const el1 = document.getElementById(id + "text");
+
+        if (el) {
+          el.style.setProperty("background-color", "#E5E5E5", "important");
+          el.style.setProperty("border", "2px solid #D6D6D6", "important");
+          el.style.setProperty("cursor", "not-allowed", "important");
+          el.style.setProperty("pointer-events", "none", "important");
+          el.style.zIndex = "1";
+
+          if (el1) {
+            el1.style.setProperty("color", "#FFFFFF", "important");
+          }
+        }
+      });
+    }
 
     // Style selected seats (storeId) — ONLY if not sold
     storeId.forEach((id) => {
@@ -127,7 +173,7 @@ const ShowBooking1 = () => {
         }
       }
     });
-  }, [soldTickets, storeId]);
+  }, [soldTickets, storeId, lockedSeats]);
 
   const handleMiddleRow = (s, id) => {
     var finalId = `${s}${id}`;
@@ -212,7 +258,7 @@ const ShowBooking1 = () => {
   const handleSubmit = async () => {
     console.log("final values of store id, totalprice", totalprice);
     console.log("final values of store id, totalprice", storeId);
-    if(storeId.length===0){
+    if (storeId.length === 0) {
       alert("Select atleast one seat");
       return;
     }
@@ -269,12 +315,11 @@ const ShowBooking1 = () => {
       }
     } catch (err) {
       console.log(err);
-      alert("One or many seat is already locked by another user. Try another one!");
+      alert(
+        "One or many seat is already locked by another user. Try another one!"
+      );
     }
-
-
   };
-
 
   return (
     <div id={showId}>
@@ -304,7 +349,7 @@ const ShowBooking1 = () => {
             <Link
               // href="http://localhost:3000/showtime"
               to="/showtime"
-              state={{ movie: movie,showID:showID }}
+              state={{ movie: movie, showID: showID }}
               className="cursor-pointer text-zinc-500"
             >
               Showtime /
@@ -351,7 +396,7 @@ const ShowBooking1 = () => {
             </span>
           </div>
         </div>
-              {Object.entries(groupedSeats).map(([row, seats], index) => {
+        {Object.entries(groupedSeats).map(([row, seats], index) => {
           const seatPrice = seats[0]?.Price;
           const prevRow = Object.entries(groupedSeats)[index - 1];
           const prevPrice = prevRow ? prevRow[1][0]?.Price : null;

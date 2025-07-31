@@ -71,6 +71,7 @@ func AuthRoutes(r *gin.Engine) {
 	r.GET("/get-theatre-byname", controllers.GetTheatreByName)
 	r.GET("/seat-layout", controllers.GetSeatLayout)
 	r.GET("/seats", controllers.GetSeatsByTheatre)
+	r.GET("/locked-seats", controllers.GetLockedSeats)
 	// r.POST("/lock-seats", controllers.LockSeats)
 
 	// user routes
@@ -86,7 +87,6 @@ func AuthRoutes(r *gin.Engine) {
 	user.POST("/save-state", controllers.SaveUserState)
 
 	// Locking of seats
-	user.POST("/lock-seats",controllers.LockSeats)
-
+	user.POST("/lock-seats", controllers.LockSeats)
 
 }

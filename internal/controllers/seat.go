@@ -6,6 +6,9 @@ import (
 	"github.com/gin-gonic/gin"
 	// "go-auth/utils"
 	"strconv"
+	"fmt"
+	"strings"
+	"go-auth/database"
 )
 
 func GetSeatLayout(c *gin.Context) {
@@ -59,3 +62,38 @@ func GetSeatsByTheatre(c *gin.Context) {
 	c.JSON(200, gin.H{"seats": seats})
 }
 
+
+
+
+// GET /locked-seats?showId=abc123
+func GetLockedSeats(c *gin.Context) {
+	showID := c.Query("showId")
+	if showID == "" {
+		c.JSON(400, gin.H{"error": "Missing showId"})
+		return
+	}
+
+	// Redis key pattern: lock:showID:seatID
+	pattern := fmt.Sprintf("lock:%s:*", showID)
+
+	// Fetch keys
+	keys, err := database.Rdb.Keys(database.Ctx, pattern).Result()
+	if err != nil {
+		fmt.Println("Redis KEYS error:", err)
+		c.JSON(400, gin.H{"error": "Failed to fetch locked seats"})
+		return
+	}
+
+	// Extract seatIDs from key format: lock:<showID>:<seatID>
+	var seatIDs []string
+	for _, key := range keys {
+		parts := strings.Split(key, ":")
+		if len(parts) == 3 {
+			seatIDs = append(seatIDs, parts[2])
+		}
+	}
+
+	c.JSON(200, gin.H{
+		"locked": seatIDs,
+	})
+}

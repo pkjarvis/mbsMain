@@ -13,12 +13,12 @@ import (
 	// "os"
 	"time"
 
+	"go-auth/database"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"go-auth/database"
 )
-
 
 func main() {
 	// Create a new gin instance
@@ -31,16 +31,12 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	
-
 	r.POST("/payment-success", controllers.PaymentSuccess)
 	r.POST("/payment-failure", controllers.PaymentFailure)
 
 	url := os.Getenv("ALLOWED_ORIGIN1")
 
-	
-	fmt.Println("url is",url) // this url should be passed in alloworigins
-
+	fmt.Println("url is", url) // this url should be passed in alloworigins
 
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:5173"},
@@ -90,4 +86,3 @@ func main() {
 	}
 
 }
-
