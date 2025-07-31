@@ -7,5 +7,3 @@ type SeatLayout struct {
     SeatCount int
     Price     int
 }
-
-

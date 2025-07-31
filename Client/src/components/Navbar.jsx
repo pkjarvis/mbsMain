@@ -36,7 +36,7 @@ const Navbar = (props) => {
         
         <input
           type="text"
-          placeholder={props.para}
+          placeholder={props.placeholderValue}
           value={props.searchValue}
           onChange={(e)=>props.onSearch && props.onSearch(e.target.value)}
           className="border-1 rounded-3xl w-[60vw] px-3 py-2 border-gray-400 outline-none"

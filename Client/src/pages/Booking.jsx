@@ -4,17 +4,21 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
 import LZString from "lz-string";
 
+import Stack from "@mui/material/Stack";
+import Alert from "@mui/material/Alert";
+
 const Booking = () => {
   const navigate = useNavigate();
   const [selectedCity, setSelectedCity] = useState("");
 
+  const [showDateWarning, setShowDataWarning] = useState(false);
+  const [message, setMessage] = useState("");
+
   const username = localStorage.getItem("userName");
-  const email=localStorage.getItem("email");
+  const email = localStorage.getItem("email");
   useEffect(() => {
     console.log(username);
-    
   }, [username]);
-
 
   const location = useLocation();
   const state =
@@ -22,13 +26,13 @@ const Booking = () => {
   console.log("state", state);
   const store = state?.storeId || [];
   const price = state?.totalprice || 0;
-  const movie = state?.movie ;
-  const theatreval = state?.theatre ;
-  const date = state?.date ;
-  const from = state?.from ;
-  const to = state?.to ;
-  const showId = state?.showId ;
-
+  const movie = state?.movie;
+  const theatreval = state?.theatre;
+  const date = state?.date;
+  const from = state?.from;
+  const to = state?.to;
+  const showId = state?.showId;
+  const showID = state?.showID;
 
   // useEffect(() => {
   //   if (!movie.id || store.length === 0 || !theatreval.theatrename) {
@@ -37,9 +41,9 @@ const Booking = () => {
   //   }
   // }, []);
 
-
   console.log("seats", store);
   console.log("totalprice", price);
+  console.log("ShowID original is:",showID);
 
   const movieId = movie.ID;
   const moviename = movie.movie;
@@ -76,7 +80,7 @@ const Booking = () => {
         totalprice: price,
         movieId: movie?.id,
         moviename: movie?.movie,
-        moviefile: movie?.file, 
+        moviefile: movie?.file,
         theatrename: theatreval?.theatrename,
         theatreaddress: theatreval?.address,
         date,
@@ -120,6 +124,8 @@ const Booking = () => {
 
       submitToPayU(payUData);
     } catch (error) {
+      setShowDataWarning(true);
+      setMessage("⏰ The clock ran out! Please wrap up the transaction within 5 minutes next time")
       console.error("Payment Api failed", error);
     }
   };
@@ -127,7 +133,11 @@ const Booking = () => {
   return (
     <div>
       <div className="booking-container">
-        <NavBar1 title={username} selectedCity={selectedCity} setSelectedCity={setSelectedCity} />
+        <NavBar1
+          title={username}
+          selectedCity={selectedCity}
+          setSelectedCity={setSelectedCity}
+        />
         <span className="flex items-center justify-start mx-[3vw] gap-1 mt-2">
           <Link
             to="/dashboard"
@@ -144,7 +154,7 @@ const Booking = () => {
           </Link>
           <Link
             to="/showtime"
-            state={{ movie: movie }}
+            state={{ movie: movie ,showID:showID}}
             className="cursor-pointer text-zinc-500"
           >
             Showtime /
@@ -157,6 +167,29 @@ const Booking = () => {
             Show Booking
           </Link>
         </span>
+
+        {showDateWarning && (
+          <Stack
+            sx={{
+              width: "60%",
+              position: "absolute",
+              zIndex: "1020",
+              marginLeft: "18vw",
+              marginTop: "2vw",
+            }}
+            spacing={2}
+          >
+            <Alert
+              severity="warning"
+              variant="filled"
+              onClose={() => {
+                setShowDataWarning(false);
+              }}
+            >
+              {message}
+            </Alert>
+          </Stack>
+        )}
 
         <div className="h-[auto] bg-[rgba(248, 248, 248, 0.55)] mx-[20vw] mt-[2vw] shadow-2xl p-[2.4vw] flex flex-col rounded-xl ">
           <span className="flex gap-2 items-center justify-start">
@@ -221,13 +254,15 @@ const Booking = () => {
             <span className="flex flex-col">
               <p className="text-[#626262]">Name:{username}</p>
               <p className="text-[#626262]">Email:{email}</p>
-              <p className="text-[#626262]">Selected City:{selectedCity.name || "Pune"}</p>
+              <p className="text-[#626262]">
+                Selected City:{selectedCity.name || "Pune"}
+              </p>
             </span>
             <img
               src="/assets/Pencil.png"
               alt="Pencil"
               className="w-[1.5vw] h-[1.5vw] cursor-pointer"
-              onClick={()=>navigate("/profile")}
+              onClick={() => navigate("/profile")}
             />
           </span>
           <span className="border-1 border-[#A7A7A7] rounded-2xl p-3 mt-[1.2vw] flex items-center gap-[0.6vw]">

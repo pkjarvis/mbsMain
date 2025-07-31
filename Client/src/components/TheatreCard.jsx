@@ -13,6 +13,9 @@ const TheatreCard = ({
   totalscreens,
   theatrefile,
   value,
+  rowCount,
+  colCount,
+  seatPrice,
 }) => {
   const [visible, setVisible] = useState(false);
   const pencilIconRef = useRef(null);
@@ -27,6 +30,11 @@ const TheatreCard = ({
 
   const handleClick = () => {
     setVisible(!visible);
+  };
+  const handleClose = () => {
+    if (visible) {
+      setVisible(!visible);
+    }
   };
   // const {deleteTheatre}=useContext(TheatreContext);
 
@@ -53,17 +61,21 @@ const TheatreCard = ({
           totalscreens,
           theatrefile,
           value,
+          rowCount,
+          colCount,
+          seatPrice,
         },
-        type:"update",
-
+        type: "update",
       },
     });
   };
 
-
   return (
     <div>
-      <div className="card-container h-25 w-[100%]  px-6 pt-7  mb-2">
+      <div
+        className="card-container h-25 w-[100%]  px-6 pt-7  mb-2"
+        onClick={handleClose}
+      >
         <div className="content flex items-center justify-start border-1 rounded-xl border-zinc-300  h-[4.8vw]">
           <div className="left w-[4%] ml-2">
             <img
@@ -128,12 +140,14 @@ const TheatreCard = ({
               ) : null}
             </div>
             <div className="right-right left-4 cursor-pointer">
-              <img
-                src="/assets/3Dot.png"
-                alt="3Dot"
-                className="w-1 h-4"
-                onClick={() => handleClick(id)}
-              />
+              <div className="w-[1.5vw] h-[2vw] flex items-center justify-center cursor-pointer" onClick={handleClick}>
+                <img
+                  src="/assets/3Dot.png"
+                  alt="3Dot"
+                  className="w-[0.3vw] h-[0.9vw]"
+                  onClick={() => handleClick(id)}
+                />
+              </div>
 
               {visible ? (
                 <div className="hidden-card w-[8.5vw] h-[5vw]  bg-white py-2 mt-[-2vw] px-4 rounded-xl gap-3  absolute right-[4vw] shadow-[0_4px_4px_0px_rgb(0,0,0,0.45)] border-1 border-gray-200">

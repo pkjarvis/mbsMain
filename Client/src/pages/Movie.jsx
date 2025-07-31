@@ -154,6 +154,7 @@ const Movie = () => {
       .catch((err) => console.log(err));
   }, []);
 
+
   useEffect(() => {
     axiosInstance
       .get("/get-showtime", { withCredentials: true })
@@ -166,7 +167,7 @@ const Movie = () => {
         today.setHours(0, 0, 0, 0);
 
         allShowtimes.forEach((item) => {
-          const key = `${item.ID}`;
+          const key=`${item.Theatre.ID}-${item.Movie.ID}`;
           const movieStartDate = new Date(item?.startDate);
           movieStartDate.setHours(0, 0, 0, 0);
 
@@ -262,7 +263,7 @@ const Movie = () => {
   };
 
   const handleBook = () => {
-    navigate("/showtime", { state: { movie: m, showId: id } });
+    navigate("/showtime", { state: { movie: m, showId: id,showID:id } });
   };
 
   const [reviews, setReviews] = useState([]);
@@ -366,7 +367,7 @@ const Movie = () => {
               Home /
             </Link>
             {/* <a href="http://localhost:3000/movie" className='cursor-pointer font-light'>Movie </a> */}
-            <Link to="/movie" className="cursor-pointer font-light">
+            <Link  className="cursor-pointer font-light">
               Movie
             </Link>
           </span>

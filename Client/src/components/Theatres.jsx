@@ -5,50 +5,14 @@ import { useLocation, useNavigate } from "react-router-dom";
 // theatre-> id,theatrename,address,cityName,stateName,status,totalscreens,theatrefile,value
 // showtime -> id:Date.now(),theatrename,startDate,moviename,datetime12h,datetime,timearray,selectedCities,
 
-const Theatres = ({ theatre, movies, timearray, date,showID }) => {
+const Theatres = ({ theatre, movies, timearray, date,showId,showID }) => {
   const [showtime, setShowTime] = useState([]);
   //   const [movies,setMovies]=useState([]);
   const navigate = useNavigate("");
 
-  // const {state}=useLocation();
-  // const movie=state?.movie;
-
-  // console.log("movie from location.state",movie)
-
-  // useEffect(() => {
-  //   axiosInstance
-  //     .get("/get-showtime", { withCredentials: true })
-  //     .then((res) => {
-  //       console.log(res.data);
-  //       setShowTime(res.data);
-  //     })
-  //     .catch((err) =>
-  //       console.log("Error fetching movies", err.response?.data || err.message)
-  //     );
-  // }, []);
-  //    useEffect(() => {
-  //     axiosInstance
-  //       .get("/get-showtime", { withCredentials: true })
-  //       .then((res) => {
-  //         console.log(res.data);
-  //         setShowTime(res.data);
-  //       })
-  //       .catch((err) =>
-  //         console.log("Error fetching movies", err.response?.data || err.message)
-  //       );
-  //   }, []);
+  
   const location = useLocation();
 
-  // useEffect(()=>{
-  //   if (location.state){
-  //   setShowDataWarning(true);
-  // }
-  // },[location])
-
-  // const d=new Date();
-  // const h=d.toLocaleTimeString();
-
-  // console.log("date now hour",h);
 
   console.log("showtime", showtime);
   console.log("theatreval", theatre);
@@ -58,11 +22,11 @@ const Theatres = ({ theatre, movies, timearray, date,showID }) => {
     (item) => item.theatre.cityName === selectedCity
   );
 
-  console.log("Inside Theatre card",showID);
+  console.log("Inside Theatre card",showId);
 
   
 
-  const handleClick = (from, to, id, showID) => {
+  const handleClick = (from, to, id, showId,showID) => {
     if (!date) {
       // alert("Please select the date first!")
       setShowDataWarning(true);
@@ -77,6 +41,7 @@ const Theatres = ({ theatre, movies, timearray, date,showID }) => {
         from: from,
         to: to,
         id,
+        showId,
         showID,
       },
     });
@@ -99,22 +64,7 @@ const Theatres = ({ theatre, movies, timearray, date,showID }) => {
         </span>
       </span>
       <div className="h-[auto] mt-2 grid grid-cols-7 px-2 gap-4 ">
-        {/* {
-      
-        timearray && timearray.length>0?(
-          timearray.map((item,index)=>(
-           <div key={index} className="font-medium border-1 border-[#ACACAC] p-2 w-[10vw] text-center rounded-2xl cursor-pointer" onClick={()=>handleClick(item.val1,item.val2,`${movies.id}-${theatre.id}-${date}-${item.val1}-${item.val2}`)}>
-                <p key={index} className="text-[#008610] " >{item.val1}-{item.val2}</p>
-           </div>
-        ))
-        )
-        
-        : (
-        
-          <p className="text-gray-500 text-xs">No times available</p>
-          // Or simply: null
-        )} */}
-
+  
         {
         timearray
           .filter((item) => {
@@ -139,6 +89,7 @@ const Theatres = ({ theatre, movies, timearray, date,showID }) => {
                   item.val1,
                   item.val2,
                   `${movies.ID}-${theatre.ID}-${date}-${item.val1}-${item.val2}`,
+                  showId,
                   showID,
                 )
               }

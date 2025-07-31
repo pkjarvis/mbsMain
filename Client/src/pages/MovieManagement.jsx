@@ -116,6 +116,7 @@ const MovieManagement = () => {
           btnlink="/admin-addnewmovie"
           onSearch={setSearchQuery}
           searchValue={searchQuery}
+          placeholderValue="Search movie by movie name"
         />
 
         {loading ? (

@@ -58,7 +58,8 @@ const Theatres = () => {
   // filter logic
   const [searchQuery, setSearchQuery] = useState("");
   const filterTheatres = theatres.filter((theatre) =>
-    theatre.theatrename.toLowerCase().includes(searchQuery.toLocaleLowerCase())
+    theatre.theatrename.toLowerCase().includes(searchQuery.toLocaleLowerCase()) ||
+    theatre.cityName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const paginatedTheatres = filterTheatres.slice(
@@ -79,30 +80,7 @@ const Theatres = () => {
         }
       />
 
-      {/* {showDateWarning && (
-        <Stack
-          sx={{
-            width: "60%",
-            position: "absolute",
-            zIndex: "1020",
-            marginLeft: "18vw",
-            marginTop: "6vw",
-          }}
-          spacing={2}
-        >
-          <Alert
-            severity="warning"
-            variant="filled"
-            onClose={() => {
-              setShowDataWarning(false);
-            }}
-          >
-            {
-              "Update the corresponding showtime if theatre is edited or add theatre in showtime if new theatre is added"
-            }
-          </Alert>
-        </Stack>
-      )} */}
+      
 
       <MainHeader
         title="Manage Theatres"
@@ -111,25 +89,12 @@ const Theatres = () => {
         btnlink="/admin-addnewtheatre"
         onSearch={setSearchQuery}
         searchValue={searchQuery}
+        placeholderValue="Search theatre by theatre name or city name"
       />
       {loading ? (
         <p className="text-center mt-8">Loading Theatres ...</p>
       ) : filterTheatres.length > 0 ? (
-        // filterTheatres.map((t) => (
-        //   <TheatreCard
-        //     key={t.id}
-        //     id={t.ID}
-        //     theatrename={t.theatrename}
-        //     address={t.address}
-        //     cityName={t.cityName}
-        //     stateName={t.stateName}
-        //     status={t.status}
-        //     totalscreens={t.totalscreens}
-        //     theatrefile={t.theatrefile}
-        //     value={t.value}
-
-        //   />
-        // ))
+       
         paginatedTheatres.map((t) => (
           <TheatreCard
             key={t.id}
@@ -142,6 +107,9 @@ const Theatres = () => {
             totalscreens={t.totalscreens}
             theatrefile={t.theatrefile}
             value={t.value}
+            rowCount={t.rowCount}
+            colCount={t.colCount}
+            seatPrice={t.seatPrice}
           />
         ))
       ) : (
@@ -152,9 +120,7 @@ const Theatres = () => {
           count={Math.ceil(filterTheatres.length / itemsPerPage)}
           page={currentPage}
           onChange={(e, value) => setCurrentPage(value)}
-          // variant="outlined"
-          // shape="rounded"
-          // color="secondary" // pink theme
+         
         />
       </div>
     </div>

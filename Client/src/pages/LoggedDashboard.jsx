@@ -39,9 +39,11 @@ const Dashboard = () => {
         
 
         allShowtimes.forEach((item) => {
-          const key = `${item.ID}`;
+          const key = `${item.Theatre.ID}-${item.Movie.ID}`;
           const movieStartDate=new Date(item?.startDate);
           movieStartDate.setHours(0, 0, 0, 0);
+
+          if(!item?.Theatre?.status==="Active") return;
 
         console.log("movie startdate:",movieStartDate);
         console.log("today",today);
@@ -50,6 +52,8 @@ const Dashboard = () => {
             uniqueMap.set(key, item);
           }
         });
+
+
 
         
 

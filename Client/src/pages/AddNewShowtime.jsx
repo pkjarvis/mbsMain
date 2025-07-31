@@ -326,59 +326,168 @@ const AddNewShowtime = () => {
     // }
   }, [moviename, end, currentheatrestatus]);
 
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+
+  //   if (
+  //     !startDate ||
+  //     !moviename ||
+  //     !theatrename ||
+  //     !selectedCities ||
+  //     !timearray?.length > 0
+  //   ) {
+  //     setShowDataWarning(true);
+  //     setMessage(
+  //       `🎭 Intermission already? Some showtime details didn’t make it to the stage!`
+  //     );
+  //     return;
+  //   }
+
+  //   const isDuplicate = showtime.some((existingShow) => {
+  //     const sameDate =
+  //       new Date(existingShow.startDate).toISOString().split("T")[0] ===
+  //       new Date(startDate).toISOString().split("T")[0];
+
+  //       const arraysEqual = (a1, a2) => 
+  // a1.length === a2.length && a1.every((v, i) => v.val1 === a2[i].val1 && v.val2 === a2[i].val2);
+
+  //     const sameTimeArray =
+  //       JSON.stringify(existingShow.timearray) === JSON.stringify(timearray);
+
+  //     const sameTheatre = existingShow.theatrename === theatrename.name;
+
+  //     const sameLanguage =
+  //       JSON.stringify(existingShow.language) ===
+  //       JSON.stringify(selectedCities);
+
+  //     return sameDate && sameTimeArray && sameTheatre && sameLanguage;
+  //   });
+
+  //   if (isDuplicate) {
+  //     setShowDataWarning(true);
+  //     setMessage(
+  //       "A showtime already exists for this movie, date, time, language, and theatre!"
+  //     );
+  //     return;
+  //   }
+
+  //   const newShowTime = {
+  //     id: editingNewShowTime?.id,
+  //     theatrename: theatrename.name,
+  //     startDate: startDate,
+  //     moviename: moviename.name,
+  //     timearray: timearray,
+  //     language: selectedCities,
+  //     archived: false,
+  //   };
+
+  //   if (editingNewShowTime) {
+  //     // api cal to update showtime
+  //     axiosInstance
+  //       .post("/update-showtime", newShowTime, {
+  //         withCredentials: true,
+  //       })
+  //       .then((res) => console.log(res.data))
+  //       .catch((err) => console.log(err));
+
+  //     // updateShowTime(newShowTime);
+  //   } else {
+  //     // backend call to put data to db when user clicks on add new showtime
+  //     axiosInstance
+  //       .post("/add-showtime", newShowTime, {
+  //         withCredentials: true,
+  //       })
+  //       .then((res) => console.log(res.data))
+  //       .catch((err) => console.log(err));
+
+  //     // addShowTime(newShowTime);
+  //   }
+
+  //   navigate("/admin-shows", {
+  //     state: {
+  //       toastMessage: editingNewShowTime
+  //         ? "Showtime has been updated successfully"
+  //         : "Showtime has been added successfully",
+  //     },
+  //   });
+  // };
   const handleSubmit = (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (
-      !startDate ||
-      !moviename ||
-      !theatrename ||
-      !selectedCities ||
-      !timearray?.length > 0
-    ) {
-      return;
-    }
+  // Validation check
+  if (
+    !startDate ||
+    !moviename ||
+    !theatrename ||
+    !selectedCities ||
+    !(timearray?.length > 0)
+  ) {
+    setShowDataWarning(true);
+    setMessage(
+      `🎭 Intermission already? Some showtime details didn’t make it to the stage!`
+    );
+    return;
+  }
 
-    const newShowTime = {
-      id: editingNewShowTime?.id,
-      theatrename: theatrename.name,
-      startDate: startDate,
-      moviename: moviename.name,
-      timearray: timearray,
-      language: selectedCities,
-      archived: false,
-    };
-
-    if (editingNewShowTime) {
-      // api cal to update showtime
-      axiosInstance
-        .post("/update-showtime", newShowTime, {
-          withCredentials: true,
-        })
-        .then((res) => console.log(res.data))
-        .catch((err) => console.log(err));
-
-      // updateShowTime(newShowTime);
-    } else {
-      // backend call to put data to db when user clicks on add new showtime
-      axiosInstance
-        .post("/add-showtime", newShowTime, {
-          withCredentials: true,
-        })
-        .then((res) => console.log(res.data))
-        .catch((err) => console.log(err));
-
-      // addShowTime(newShowTime);
-    }
-
-    navigate("/admin-shows", {
-      state: {
-        toastMessage: editingNewShowTime
-          ? "Showtime has been updated successfully"
-          : "Showtime has been added successfully",
-      },
+  // Helper function to compare timearray deeply
+  const arraysEqual = (a1, a2) => {
+    if (a1.length !== a2.length) return false;
+    return a1.every((val1, idx) => {
+      const val2 = a2[idx];
+      return val1.val1 === val2.val1 && val1.val2 === val2.val2;
     });
   };
+
+  // Check for duplicates
+  const isDuplicate = showtime.some((existingShow) => {
+    const sameDate =
+      new Date(existingShow.startDate).toISOString().split("T")[0] ===
+      new Date(startDate).toISOString().split("T")[0];
+
+    const sameTimeArray = arraysEqual(existingShow.timearray, timearray);
+    const sameTheatre = existingShow.theatrename === theatrename.name;
+    const sameLanguage =
+      JSON.stringify(existingShow.language) === JSON.stringify(selectedCities);
+
+    return sameDate && sameTimeArray && sameTheatre && sameLanguage;
+  });
+
+  if (isDuplicate) {
+    setShowDataWarning(true);
+    setMessage(
+      "🎬 A showtime already exists for this movie with the same date, time slots, language, and theatre!"
+    );
+    return;
+  }
+
+  const newShowTime = {
+    id: editingNewShowTime?.id,
+    theatrename: theatrename.name,
+    startDate: startDate,
+    moviename: moviename.name,
+    timearray: timearray,
+    language: selectedCities,
+    archived: false,
+  };
+
+  const endpoint = editingNewShowTime ? "/update-showtime" : "/add-showtime";
+
+  axiosInstance
+    .post(endpoint, newShowTime, {
+      withCredentials: true,
+    })
+    .then((res) => console.log(res.data))
+    .catch((err) => console.log(err));
+
+  navigate("/admin-shows", {
+    state: {
+      toastMessage: editingNewShowTime
+        ? "Showtime has been updated successfully"
+        : "Showtime has been added successfully",
+    },
+  });
+};
+
 
   const handleCancel = () => {
     navigate("/admin-shows");

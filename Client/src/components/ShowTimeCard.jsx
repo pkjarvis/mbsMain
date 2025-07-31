@@ -14,7 +14,6 @@ const ShowTimeCard = ({
   language,
   archived,
   file,
- 
 }) => {
   const [visible, setVisible] = useState(false);
   const pencilIconRef = useRef(null);
@@ -27,24 +26,27 @@ const ShowTimeCard = ({
   const handleClick = () => {
     setVisible(!visible);
   };
+  const handleClose = () => {
+    if (visible) {
+      setVisible(!visible);
+    }
+  };
 
-   const formatDate = (dateStr) => {
+  const formatDate = (dateStr) => {
     const date = new Date(dateStr);
     return date.toISOString().split("T")[0]; // returns YYYY-MM-DD
   };
 
   const navigate = useNavigate("");
 
-  
   const handleUpdate = () => {
-
-    const date=formatDate(startDate);
+    const date = formatDate(startDate);
     navigate("/admin-addnewshows", {
       state: {
         showtime: {
           id,
           theatrename,
-          startDate:date,
+          startDate: date,
           moviename,
           datetime12h,
           datetime,
@@ -61,7 +63,7 @@ const ShowTimeCard = ({
   };
 
   return (
-    <div >
+    <div onClick={handleClose}>
       {/* Add archive condition here */}
       <div
         className={
@@ -73,7 +75,7 @@ const ShowTimeCard = ({
         <div className="content flex items-center justify-start border-1 rounded-xl border-zinc-300 ">
           <div className="left w-[6.2%]">
             <img
-              src={file || "/assets/Inception.png"}  
+              src={file || "/assets/Inception.png"}
               alt="MovieBg"
               className="w-26 h-25 rounded-l-md"
             />
@@ -92,7 +94,6 @@ const ShowTimeCard = ({
                 </p>
               </span>
               <span className="flex gap-2 my-1">
-               
                 {timearray?.map((item, index) => (
                   <p
                     key={index}
@@ -129,12 +130,14 @@ const ShowTimeCard = ({
                   className="w-1.2 h-4  opacity-10"
                 />
               ) : (
-                <img
-                  src="/assets/3Dot.png"
-                  alt="3Dot"
-                  className="w-1.2 h-4 cursor-pointer"
-                  onClick={handleClick}
-                />
+                <div className="w-[1.5vw] h-[2vw] flex items-center justify-center cursor-pointer" onClick={handleClick}>
+                  <img
+                    src="/assets/3Dot.png"
+                    alt="3Dot"
+                    className="w-[0.3vw] h-[0.9vw] cursor-pointer"
+                    onClick={handleClick}
+                  />
+                </div>
               )}
 
               {visible ? (

@@ -165,7 +165,7 @@ const NavBar1 = (props) => {
               alt="IndiaGate"
               className="w-[88%] h-[8vw]"
             />
-            <p className="text-base text-[#6F6F6F]">Delhi</p>
+            <p className="text-base text-[#6F6F6F]">New Delhi</p>
           </span>
           <span className="flex flex-col items-center cursor-pointer" 
              onClick={() => {
@@ -199,14 +199,14 @@ const NavBar1 = (props) => {
         </Link>
         <span className="container-right flex items-center justify-center gap-4">
           
-          <Link
+          {/* <Link
             to="/admin-login"
             target="_blank"
             rel="noopener noreferrer"
             className="underline"
           >
             Admin Access
-          </Link>
+          </Link> */}
           <span
             className="flex items-center gap-2 cursor-pointer"
             onClick={handleClick}

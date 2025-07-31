@@ -29,7 +29,7 @@ const AddNewTheatre = () => {
 
   var [theatrefile, setTheatreFile] = useState("");
 
-  const [value, setValue] = useState([]); // multi input state
+  // const [value, setValue] = useState([]); // multi input state
 
   const [fileInputKey, setFileInputKey] = useState(Date.now());
 
@@ -39,10 +39,73 @@ const AddNewTheatre = () => {
   const navigate = useNavigate();
   const { addTheatre, updateTheatre } = useContext(TheatreContext);
 
+  const [rowCount, setRowCount] = useState(0);
+  const [colCount, setColCount] = useState(0);
+  const [seatPrice, setSeatPrice] = useState(0);
+
+  const handleRowChange = (e) => {
+    const val = Math.min(parseInt(e.target.value), 10);
+    setRowCount(val);
+  };
+
+  const handleColChange = (e) => {
+    const val = Math.min(parseInt(e.target.value), 15);
+    setColCount(val);
+  };
+
+  const handlePriceChange = (e) => {
+    const val = Math.min(parseInt(e.target.value), 10000);
+    setSeatPrice(val);
+  };
+
+
+
+
   const { state } = useLocation();
   const editingTheatre = state?.theatre;
 
   // theatrename,address,cityName,stateName,status,totalscreens,theatrefile,value
+
+  useEffect(() => {
+
+    const fetchSeats = async () => {
+      try {
+        const res = await axiosInstance.get(`/seats?theatreId=${editingTheatre?.id}`); 
+
+        console.log("Response is:",res.data);
+         const rawSeats = res?.data?.seats;
+
+      // Get unique row labels (A, B, C...)
+      const uniqueRows = Array.from(new Set(rawSeats.map(seat => seat.Row))).sort();
+      const rowCount = uniqueRows?.length;
+
+     
+      const colCount = res?.data?.seats?.length/rowCount;
+
+      // Extract base price from first seat
+      const basePrice = res.data.seats[0]?.Price;
+
+      console.log("Total Rows:", rowCount);
+      console.log("Columns per row:", colCount);
+      console.log("Base Price:", basePrice);
+
+      setRowCount(rowCount);
+      setColCount(colCount);
+      setSeatPrice(basePrice);
+
+       
+
+        
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchSeats();
+  }, [editingTheatre]);
+
+
+
 
   useEffect(() => {
     if (editingTheatre) {
@@ -51,12 +114,16 @@ const AddNewTheatre = () => {
       setStateName(editingTheatre?.stateName);
       setStatus(editingTheatre?.status);
       setTotalScreens(editingTheatre?.totalscreens);
-      setValue(editingTheatre?.value);
+      // setValue(editingTheatre?.value);
       setTheatreFile(editingTheatre?.theatrefile);
       console.log("theatre file is:", editingTheatre?.theatrefile);
       setTheatreName(editingTheatre?.theatrename);
-      setShowDataWarning(true);
+      // setShowDataWarning(true);
+      setColCount(editingTheatre?.colCount);
+      setRowCount(editingTheatre?.rowCount);
+      setSeatPrice(editingTheatre?.seatPrice);
       setMessage("Also edit corresponding showtime of this theatre!");
+      
     }
 
     const bg = document.getElementById("ImageBg");
@@ -141,9 +208,12 @@ const AddNewTheatre = () => {
       !cityName ||
       !stateName ||
       !totalscreens ||
-      !value ||
-      !theatrefile
+      // !value ||
+      !theatrefile ||
+      !rowCount || !colCount || !seatPrice
     ) {
+      setShowDataWarning(true);
+      setMessage("Don't leave us hanging — complete every field to unlock the magic 🪄")
       return;
     }
     const theatreNameRegex = /^[A-Za-z]/;
@@ -163,6 +233,9 @@ const AddNewTheatre = () => {
       status,
       totalscreens,
       theatrefile: theatrefile || editingTheatre?.theatrefile,
+      rowCount: parseInt(rowCount),
+      colCount: parseInt(colCount),
+      seatPrice: parseInt(seatPrice),
       // value: value,
     };
 
@@ -252,7 +325,7 @@ const AddNewTheatre = () => {
           </Stack>
         )}
 
-        <div className="info flex flex-col place-items-center mt-[2.8vw]">
+        <div className="info flex flex-col place-items-center mt-[1vw]">
           <div className="flex flex-col justify-between gap-2">
             <p className="font-semibold text-base">Basic Info</p>
             <Box
@@ -301,30 +374,7 @@ const AddNewTheatre = () => {
                 }}
               />
             </Box>
-            {/* <input
-              type="text"
-              placeholder="Theatre Name"
-              value={theatrename}
-              onChange={(e) => setTheatreName(e.target.value)}
-              required
-              className="w-[30vw] h-[2vw] text-md  text-zinc-500 border-1 border-gray-300 p-2 rounded-sm mb-1 outline-none "
-            /> */}
-            {/* <div className="card flex justify-content-center ">
-            <FloatLabel>
-                <InputText id="username" value={theatrename} onChange={(e) => setTheatreName(e.target.value)}     
-                 className="w-[30vw] h-[2vw] text-md  text-zinc-500"
-                 />
-                <label htmlFor="username">Username</label>
-            </FloatLabel>
-            </div> */}
-            {/* <textarea
-              type="text"
-              placeholder="Theatre Address"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              required
-              className="w-[30vw] h-[8vw] text-zinc-400  border-1 border-gray-300 p-2  rounded-sm mb-1 outline-none "
-            /> */}
+
             <Box
               component="form"
               sx={{ "& > :not(style)": { width: "30vw", margin: "0.2vw 0" } }}
@@ -372,59 +422,6 @@ const AddNewTheatre = () => {
               />
             </Box>
             <div className="flex items-center justify-between mb-1">
-              {/* <input
-                placeholder="City Name"
-                value={cityName}
-                onChange={(e) => setCityName(e.target.value)}
-                className="w-[47%] text-sm text-zinc-400 border-1 border-gray-300 rounded-sm p-2 flex items-center justify-between outline-none"
-              /> */}
-              {/* <Box
-                component="form"
-                sx={{ "& > :not(style)": { width: "14vw", margin: "0.2vw 0" } }}
-                noValidate
-                autoComplete="off"
-              >
-                <TextField
-                  id="outlined-basic"
-                  label="City Name"
-                  variant="outlined"
-                  value={cityName}
-                  onChange={(e) => setCityName(e.target.value)}
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      // Default border color for outlined input
-                      "& .MuiOutlinedInput-notchedOutline": {
-                        borderColor: "#A1A2A4", // Grey border by default
-                        borderWidth: "1px",
-                      },
-                      "&:hover .MuiOutlinedInput-notchedOutline": {
-                        borderColor: "#A1A2A4", // Keep grey on hover if not focused
-                      },
-                      // Styles when the input itself is focused
-                      "&.Mui-focused": {
-                        "& .MuiOutlinedInput-notchedOutline": {
-                          borderColor: "#000", // Black border when focused
-                          borderWidth: "1px", // Keep border width consistent
-                        },
-                      },
-                    },
-                    // Target the label component directly
-                    "& .MuiInputLabel-root": {
-                      color: "#A1A2A4", // Default label color (grey)
-                      fontWeight: "normal", // Assuming default is normal, if you want bold when focused
-                      "&.Mui-focused": {
-                        color: "#000", // Black label when focused
-                        fontWeight: "light", // Bold label when focused
-                      },
-                      // Optional: Keep label black when it has a value (shrunk) and is not focused
-                      "&.MuiInputLabel-shrink": {
-                        color: "#000", // Black label when shrunk (has value)
-                      },
-                    },
-                  }}
-                />
-              </Box> */}
-
               <Box
                 sx={{ "& > :not(style)": { width: "14vw", margin: "0 0" } }}
                 noValidate
@@ -477,21 +474,6 @@ const AddNewTheatre = () => {
                     label="CityName"
                     onChange={(e) => {
                       setCityName(e.target.value);
-                      // if(e.target.value==="New Delhi"){
-                      //   setStateName("New Delhi");
-                      // }
-                      // if(e.target.value==="Mumbai"){
-                      //   setStateName("Maharashtra");
-                      // }
-                      // if(e.target.value==="Pune"){
-                      //   setStateName("Maharashtra");
-                      // }
-                      // if(e.target.value==="Hyderabad"){
-                      //   setStateName("Telangana");
-                      // }
-                      // if(e.target.value==="Agra"){
-                      //   setStateName("Uttar Pradesh");
-                      // }
 
                       if (e.target.value != "") {
                         const state = e.target.value;
@@ -508,12 +490,7 @@ const AddNewTheatre = () => {
                 </FormControl>
               </Box>
 
-              {/* <input
-                placeholder="State Name"
-                value={stateName}
-                onChange={(e) => setStateName(e.target.value)}
-                className="w-[47%] border-1 border-gray-300 text-sm text-zinc-400 rounded-sm p-2 flex items-center justify-between outline-none"
-              /> */}
+             
               <Box
                 component="form"
                 sx={{ "& > :not(style)": { width: "14vw", margin: "0.2vw 0" } }}
@@ -563,60 +540,6 @@ const AddNewTheatre = () => {
             </div>
 
             <div className="flex items-center justify-between mb-1">
-              {/* <input
-                placeholder="Status"
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-                className="w-[47%] text-sm text-zinc-400 border-1 border-gray-300 rounded-sm p-2 flex items-center justify-between outline-none"
-              /> */}
-
-              {/* <Box
-                component="form"
-                sx={{ "& > :not(style)": { width: "14vw", margin: "0 0" } }}
-                noValidate
-                autoComplete="off"
-              >
-                <TextField
-                  id="outlined-basic"
-                  label="Status"
-                  variant="outlined"
-                  value={status}
-                  onChange={(e) => setStatus(e.target.value)}
-                  sx={{
-                  "& .MuiOutlinedInput-root": {
-                    // Default border color for outlined input
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#A1A2A4", // Grey border by default
-                      borderWidth: "1px",
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#A1A2A4", // Keep grey on hover if not focused
-                    },
-                    // Styles when the input itself is focused
-                    "&.Mui-focused": {
-                      "& .MuiOutlinedInput-notchedOutline": {
-                        borderColor: "#000", // Black border when focused
-                        borderWidth: "1px", // Keep border width consistent
-                      },
-                    },
-                  },
-                  // Target the label component directly
-                  "& .MuiInputLabel-root": {
-                    color: "#A1A2A4", // Default label color (grey)
-                    fontWeight: "normal", // Assuming default is normal, if you want bold when focused
-                    "&.Mui-focused": {
-                      color: "#000", // Black label when focused
-                      fontWeight: "light", // Bold label when focused
-                    },
-                    // Optional: Keep label black when it has a value (shrunk) and is not focused
-                    "&.MuiInputLabel-shrink": {
-                      color: "#000", // Black label when shrunk (has value)
-                    },
-                  },
-                }}
-                />
-              </Box> */}
-
               {/*  Status change needs to be removed */}
 
               <Box
@@ -675,61 +598,6 @@ const AddNewTheatre = () => {
                 </FormControl>
               </Box>
 
-              {/* <input
-                type="number"
-                placeholder="Total Screen"
-                value={totalscreens}
-                onChange={(e) => setTotalScreens(e.target.value)}
-                className="w-[47%] text-sm text-zinc-400  border-1 border-gray-300 rounded-sm p-2 flex items-center justify-between outline-none"
-              /> */}
-
-              {/* <Box
-                component="form"
-                sx={{ "& > :not(style)": { width: "14vw", margin: "0 0" } }}
-                noValidate
-                autoComplete="off"
-              >
-                <TextField
-                  id="outlined-basic"
-                  label="Total Screen"
-                  variant="outlined"
-                  value={totalscreens}
-                  onChange={(e) => setTotalScreens(e.target.value)}
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      // Default border color for outlined input
-                      "& .MuiOutlinedInput-notchedOutline": {
-                        borderColor: "#A1A2A4", // Grey border by default
-                        borderWidth: "1px",
-                      },
-                      "&:hover .MuiOutlinedInput-notchedOutline": {
-                        borderColor: "#A1A2A4", // Keep grey on hover if not focused
-                      },
-                      // Styles when the input itself is focused
-                      "&.Mui-focused": {
-                        "& .MuiOutlinedInput-notchedOutline": {
-                          borderColor: "#000", // Black border when focused
-                          borderWidth: "1px", // Keep border width consistent
-                        },
-                      },
-                    },
-                    // Target the label component directly
-                    "& .MuiInputLabel-root": {
-                      color: "#A1A2A4", // Default label color (grey)
-                      fontWeight: "normal", // Assuming default is normal, if you want bold when focused
-                      "&.Mui-focused": {
-                        color: "#000", // Black label when focused
-                        fontWeight: "light", // Bold label when focused
-                      },
-                      // Optional: Keep label black when it has a value (shrunk) and is not focused
-                      "&.MuiInputLabel-shrink": {
-                        color: "#000", // Black label when shrunk (has value)
-                      },
-                    },
-                  }}
-                />
-              </Box> */}
-
               <Box
                 sx={{ "& > :not(style)": { width: "14vw", margin: "0 0" } }}
                 noValidate
@@ -787,43 +655,54 @@ const AddNewTheatre = () => {
                 </FormControl>
               </Box>
             </div>
+            <div className="max-w-[30vw] p-6 bg-white rounded-xl shadow-md">
+              <h2 className="text-2xl font-semibold text-center mb-6 text-gray-800">
+                Configure Seat Layout
+              </h2>
 
-            {/* <div className="border-1 border-zinc-400 rounded-md card p-fluid mt-2 ">
-              <FloatLabel>
-                <Chips
-                  id="username"
-                  value={value}
-                  onChange={(e) => setValue(e.value)}
-                  allowDuplicate={false}
-                  pt={{
-                    label: { className: "text-sm" },
-                    root: {
-                     className:
-                      "h-[2vw] rounded-md text-zinc-700 p-1 scroll-auto " +
-                      "border border-gray-100 " + // Default border color and width (grey)
-                      "focus-within:border-black " + // Standard Tailwind for container focus
-                      "[&.p-focus]:border-black", // PrimeReact specific class for focus (more reliable)
-
-                    },
-                    container: {
-                      className: "max-w-[30vw] h-[0.9vw]",
-                    },
-
-                    token: {
-                      className: "h-[1.2vw]   font-xs p-1",
-                    },
-                    input: {
-                      className: "max-w-[5vw] h-[0.9vw]",
-                    },
-                  }}
-                  
-                 
-                />
-                <label htmlFor="Current Movies" className="max-w-[30vw]">
-                  Current Movies
+              <div className="mb-4">
+                <label className="block mb-1 font-medium text-gray-700">
+                  Rows (Max 10)
                 </label>
-              </FloatLabel>
-            </div> */}
+                <input
+                  type="number"
+                  value={rowCount}
+                  onChange={handleRowChange}
+                  min={1}
+                  max={10}
+                  className="w-full px-4 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="block mb-1 font-medium text-gray-700">
+                  Columns (Max 15)
+                </label>
+                <input
+                  type="number"
+                  value={colCount}
+                  onChange={handleColChange}
+                  min={1}
+                  max={15}
+                  className="w-full px-4 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="block mb-1 font-medium text-gray-700">
+                  Base Seat Price (Max 10000)
+                </label>
+                <input
+                  type="number"
+                  value={seatPrice}
+                  onChange={handlePriceChange}
+                  min={0}
+                  max={2000}
+                  className="w-full px-4 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+            </div>
+
             <p className="font-semibold text-zinc-600 text-base my-2">
               Upload Theatre Icon
             </p>
@@ -878,9 +757,8 @@ const AddNewTheatre = () => {
               cityName &&
               stateName &&
               totalscreens &&
-              value &&
-              theatrefile) ||
-            editingTheatre ? (
+              theatrefile && rowCount && colCount && seatPrice) 
+              ? (
               <div className="buttons flex items-center justify-start gap-5 my-2 ">
                 <button
                   className="bg-pink-500 cursor-pointer w-[6vw] h-[2vw] text-md text-white font-semibold p-1 rounded-xl"

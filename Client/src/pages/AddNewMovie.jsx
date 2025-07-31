@@ -72,7 +72,7 @@ const AddNewMovie = () => {
       setStatus(editingMovie?.status);
       setLanguage(editingMovie?.language);
       setDuration(editingMovie?.duration);
-      setShowDataWarning(true);
+      // setShowDataWarning(true);
       setMessage("Also edit corresponding showtime of this movie!");
     }
 
@@ -185,6 +185,8 @@ const AddNewMovie = () => {
       !duration ||
       !file
     ) {
+      setShowDataWarning(true);
+      setMessage("🎬  Cut! Looks like a few scenes are missing from your form.")
       return;
     }
 

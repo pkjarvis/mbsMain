@@ -54,6 +54,7 @@ func AuthRoutes(r *gin.Engine) {
 	protected.POST("/update-movie", controllers.UpdateMovie)
 	protected.POST("/update-theatre", controllers.UpdateTheatre)
 	protected.POST("/update-showtime", controllers.UpdateShowTime)
+	protected.POST("/update-seat-layout", controllers.UpdateSeatLayout)
 	r.POST("/upload", controllers.UploadImageHandler)
 
 	// public api's
@@ -69,7 +70,8 @@ func AuthRoutes(r *gin.Engine) {
 	r.GET("/get-showtime/:id", controllers.GetShowTimeByID)
 	r.GET("/get-theatre-byname", controllers.GetTheatreByName)
 	r.GET("/seat-layout", controllers.GetSeatLayout)
-	
+	r.GET("/seats", controllers.GetSeatsByTheatre)
+	// r.POST("/lock-seats", controllers.LockSeats)
 
 	// user routes
 	user := r.Group("/")
@@ -82,5 +84,9 @@ func AuthRoutes(r *gin.Engine) {
 	user.GET("/booked-seats", controllers.GetBookedSeats)
 	user.GET("/get-paid-ticket", controllers.GetPaidTicketUser)
 	user.POST("/save-state", controllers.SaveUserState)
+
+	// Locking of seats
+	user.POST("/lock-seats",controllers.LockSeats)
+
 
 }

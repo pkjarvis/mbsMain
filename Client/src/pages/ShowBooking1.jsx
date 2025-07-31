@@ -14,24 +14,39 @@ const ShowBooking1 = () => {
   const [date, setDate] = useState(state?.date);
   const [from, setFrom] = useState(state?.from);
   const [to, setTo] = useState(state?.to);
-  const [showId, setShowId] = useState(state?.id);
-  const [showID, setShowID] = useState(state?.showID);
+  const [showId, setShowId] = useState(state?.showID);
+  const [showID, setShowID] = useState(state?.showId);
   const [storeId, setStoreId] = useState([]);
   var [totalprice, setTotalPrice] = useState(0);
 
   const [seatLayout, setSeatLayout] = useState([]);
+  const [groupedSeats, setGroupedSeats] = useState({});
 
   useEffect(() => {
-    if (!theatre?.ID) return;
+    const fetchSeats = async () => {
+      try {
+        const res = await axiosInstance.get(`/seats?theatreId=${theatre.ID}`); // use your showtime id
+        const rawSeats = res.data.seats;
 
-    axiosInstance
-      .get(`/seat-layout?theatreId=${theatre.ID}`)
-      .then((res) => {
-        setSeatLayout(res.data.layout);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch seat layout:", err);
-      });
+        // Group seats by row (like A, B, C)
+        const grouped = rawSeats.reduce((acc, seat) => {
+          if (!acc[seat.Row]) acc[seat.Row] = [];
+          acc[seat.Row].push(seat);
+          return acc;
+        }, {});
+
+        // Sort each row by seat number
+        Object.keys(grouped).forEach((row) => {
+          grouped[row].sort((a, b) => a.Number - b.Number);
+        });
+
+        setGroupedSeats(grouped);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchSeats();
   }, [theatre]);
 
   useEffect(() => {
@@ -194,10 +209,14 @@ const ShowBooking1 = () => {
 
   console.log(totalprice);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log("final values of store id, totalprice", totalprice);
     console.log("final values of store id, totalprice", storeId);
-    if (soldTickets.length === 166) {
+    if(storeId.length===0){
+      alert("Select atleast one seat");
+      return;
+    }
+    if (soldTickets.length === 150) {
       alert("All seats booked can't proceed to pay!");
       return;
     }
@@ -221,14 +240,41 @@ const ShowBooking1 = () => {
       return;
     }
 
-    navigate("/booking", {
-      state: { storeId, totalprice, movie, theatre, date, from, to, showId },
-    });
+    const userId = localStorage.getItem("userID");
+
+    try {
+      const res = await axiosInstance.post("/lock-seats", {
+        showId,
+        seats: storeId,
+        userId,
+        duration: 300, // 5 minutes
+      });
+
+      if (res.status === 200) {
+        navigate("/booking", {
+          state: {
+            storeId,
+            totalprice,
+            movie,
+            theatre,
+            date,
+            from,
+            to,
+            showId,
+            showID,
+          },
+        });
+      } else {
+        alert("Some seats are already locked or unavailable.");
+      }
+    } catch (err) {
+      console.log(err);
+      alert("One or many seat is already locked by another user. Try another one!");
+    }
+
+
   };
 
-  // const handlePopUP = () => {
-  //   navigate("/booking",{state:{totalprice,storeId,movie}});
-  // };
 
   return (
     <div id={showId}>
@@ -258,7 +304,7 @@ const ShowBooking1 = () => {
             <Link
               // href="http://localhost:3000/showtime"
               to="/showtime"
-              state={{ movie: movie }}
+              state={{ movie: movie,showID:showID }}
               className="cursor-pointer text-zinc-500"
             >
               Showtime /
@@ -305,39 +351,63 @@ const ShowBooking1 = () => {
             </span>
           </div>
         </div>
-        {seatLayout.map(({ ID, Row, SeatCount, Price }) => (
-          <div key={Row} className="main-content mx-[3vw] p-1">
-            <h3 className="text-[#949494] font-normal">Rs.{Price}</h3>
-            {/* <hr className="my-2 text-[#D6D6D6]" /> */}
-            <div className="flex items-center gap-4 justify-start my-[1.3vw] ml-[8vw]">
-              <p className="text-[#949494] font-normal">{Row}</p>
+              {Object.entries(groupedSeats).map(([row, seats], index) => {
+          const seatPrice = seats[0]?.Price;
+          const prevRow = Object.entries(groupedSeats)[index - 1];
+          const prevPrice = prevRow ? prevRow[1][0]?.Price : null;
+          const showPrice = seatPrice !== prevPrice;
 
-              {Array.from({ length: SeatCount }).map((_, index) => {
-                const seatNumber = index + 1;
-                const seatId = `${Row}${seatNumber}`;
-                const paraId = `${seatId}text`;
+          return (
+            <div key={row} className="main-content mx-[3vw] ">
+              {showPrice && (
+                <>
+                  <h3 className="text-[#949494] font-normal text-lg">
+                    Rs. {seatPrice}
+                  </h3>
+                  <hr className="border-t border-gray-300 my-1 w-[75%] ml-[6vw]" />
+                </>
+              )}
 
-                return (
-                  <div
-                    key={seatId}
-                    id={seatId}
-                    className={`h-[2.4vw] w-[2.4vw] ml-[1vw] bg-[#F9F9F9] border-2 border-[#59B200] cursor-pointer rounded-md flex items-center justify-center ${
-                      seatNumber !== 1 && seatNumber % 5 === 1 ? "ml-[2vw]" : ""
-                    }`}
-                    onClick={() => handleMiddleRow(Row, seatNumber)}
-                  >
-                    <p
-                      id={paraId}
-                      className="text-center text-base text-[#59B200]"
+              <div className="flex items-center gap-4 justify-start my-[1vw] ml-[8vw]">
+                <p className="text-[#949494] font-medium w-6">{row}</p>
+
+                {seats.map((seat) => {
+                  const seatId = seat.Label;
+                  const paraId = `${seatId}text`;
+
+                  return (
+                    <div
+                      key={seatId}
+                      id={seatId}
+                      className={`h-[2.4vw] w-[2.4vw] ml-[1vw] border-2 ${
+                        seat.Status === "paid"
+                          ? "bg-red-300 border-red-600"
+                          : "bg-[#F9F9F9] border-[#59B200]"
+                      } cursor-pointer rounded-md flex items-center justify-center ${
+                        seat.Number !== 1 && seat.Number % 5 === 1
+                          ? "ml-[2vw]"
+                          : ""
+                      }`}
+                      onClick={() => handleMiddleRow(row, seat.Number)}
                     >
-                      {seatNumber}
-                    </p>
-                  </div>
-                );
-              })}
+                      <p
+                        id={paraId}
+                        className={`text-center text-sm font-semibold ${
+                          seat.Status === "paid"
+                            ? "text-red-700"
+                            : "text-[#59B200]"
+                        }`}
+                      >
+                        {seat.Number}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
+
         <div className="flex flex-col items-center justify-center">
           <img
             src="/assets/rect2.png"
@@ -351,16 +421,16 @@ const ShowBooking1 = () => {
           />
           <p className="text-center text-md text-zinc-300">Screen</p>
         </div>
-      </div>
-      <div className="flex items-center justify-around p-[1vw] w-[100%] bg-[#F0F0F0] relative mb-4">
-        <p className="font-bold text-xl">{storeId.length} seat selected</p>
+        <div className="flex items-center justify-around p-[1vw] w-[100%] bg-[#F0F0F0] relative mb-4">
+          <p className="font-bold text-xl">{storeId.length} seat selected</p>
 
-        <button
-          className="bg-[#FF5295]  text-md w-[12vw] h-[2vw]  rounded-lg text-white font-semibold text-center  mx-[1vw] cursor-pointer"
-          onClick={handleSubmit}
-        >
-          Submit
-        </button>
+          <button
+            className="bg-[#FF5295]  text-md w-[12vw] h-[2vw]  rounded-lg text-white font-semibold text-center  mx-[1vw] cursor-pointer"
+            onClick={handleSubmit}
+          >
+            Submit
+          </button>
+        </div>
       </div>
     </div>
   );

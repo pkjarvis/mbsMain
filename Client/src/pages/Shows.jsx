@@ -55,14 +55,6 @@ const Shows = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Filter logic
-  // const filteredShowtime = Array.isArray(showtime)
-  //   ? showtime.filter(
-  //       (show) =>
-  //         show.moviename.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //         show.theatrename.toLowerCase().includes(searchQuery.toLowerCase())
-  //     )
-  //   : [];
   const filteredShowtime = showtime.filter((show) => {
     const movieMatch = selectedMovie ? show.moviename === selectedMovie : true;
     const theatreMatch = selectedTheatre
@@ -100,6 +92,7 @@ const Shows = () => {
         btnlink="/admin-addnewshows"
         onSearch={setSearchQuery}
         searchValue={searchQuery}
+        placeholderValue="Search showtime by movie name or by theatre name"
       />
 
       <Box
@@ -147,22 +140,7 @@ const Shows = () => {
       {loading ? (
         <p className="text-center mt-8">Loading Showtime ...</p>
       ) : filteredShowtime.length > 0 ? (
-        // filteredShowtime.map((s) => (
-        //   <ShowTimeCard
-        //     key={s.id}
-        //     id={s.id}
-        //     startDate={s.startDate}
-        //     theatrename={s.theatrename}
-        //     moviename={s.moviename}
-        //     //  datetime12h={s.datetime12h}
-        //     //  datetime={s.datetime}
-        //     timearray={s.timearray}
-        //     language={s.language}
-        //     status={s.status}
-        //     archived={s.archived}
-        //     file={s.Movie.file}
-        //   />
-        // ))
+       
         paginatedShows.map((s) => (
           <ShowTimeCard
             key={s.ID}
@@ -170,8 +148,6 @@ const Shows = () => {
             startDate={s.startDate}
             theatrename={s.theatrename}
             moviename={s.moviename}
-            //  datetime12h={s.datetime12h}
-            //  datetime={s.datetime}
             timearray={s.timearray}
             language={s.language}
             status={s.status}
@@ -187,9 +163,6 @@ const Shows = () => {
           count={Math.ceil(filteredShowtime.length / itemsPerPage)}
           page={currentPage}
           onChange={(e, value) => setCurrentPage(value)}
-          // variant="outlined"
-          // shape="rounded"
-          // color="secondary" // pink theme
         />
       </div>
     </div>

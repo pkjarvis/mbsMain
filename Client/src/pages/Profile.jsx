@@ -5,6 +5,9 @@ import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
 import Cookies from "js-cookie";
 
+import Stack from "@mui/material/Stack";
+import Alert from "@mui/material/Alert";
+
 const baseUrl = import.meta.env.VITE_ROUTE;
 const Profile = () => {
   // const username = localStorage.getItem("userName");
@@ -17,27 +20,34 @@ const Profile = () => {
 
   const [image, setImage] = useState("/assets/camera.png");
 
+  const [showDateWarning, setShowDataWarning] = useState(false);
+  const [message, setMessage] = useState("");
 
- useEffect(() => {
-  axiosInstance.get("/user-details", { withCredentials: true })
-    .then((res) => {
-      const { username, email, profilePhoto } = res.data;
 
-      // Save to state
-      setName(username);
-      setEmail(email);
-      setImage(profilePhoto || "/assets/camera.png");
+  useEffect(() => {
+    axiosInstance
+      .get("/user-details", { withCredentials: true })
+      .then((res) => {
+        const { username, email, profilePhoto } = res.data;
 
-      // Save to localStorage
-      localStorage.setItem("userName", username);
-      localStorage.setItem("email", email);
-      localStorage.setItem("profilePhoto", profilePhoto || "/assets/camera.png");
-    })
-    .catch((err) => {
-      console.error("Failed to fetch user details", err);
-      // Optionally handle auth error (redirect to login, etc.)
-    });
-}, []);
+        // Save to state
+        setName(username);
+        setEmail(email);
+        setImage(profilePhoto || "/assets/camera.png");
+
+        // Save to localStorage
+        localStorage.setItem("userName", username);
+        localStorage.setItem("email", email);
+        localStorage.setItem(
+          "profilePhoto",
+          profilePhoto || "/assets/camera.png"
+        );
+      })
+      .catch((err) => {
+        console.error("Failed to fetch user details", err);
+        // Optionally handle auth error (redirect to login, etc.)
+      });
+  }, []);
 
   const navigate = useNavigate("");
 
@@ -71,27 +81,27 @@ const Profile = () => {
     fileInputRef.current.click();
   };
 
-  const handlePhotoChange = async(e) => {
+  const handlePhotoChange = async (e) => {
     const val = e.target.files[0];
-    if(!val) return;
-    
+    if (!val) return;
+
     const imageUrl = await uploadImage(val);
 
-    if(imageUrl?.url){
+    if (imageUrl?.url) {
       setImage(imageUrl?.url);
       localStorage.setItem("profilePhoto", imageUrl.url);
     }
-
-
   };
 
   const handleSave = () => {
     axiosInstance
-      .post("/update-profile", { name,image }, { withCredentials: true })
+      .post("/update-profile", { name, image }, { withCredentials: true })
       .then((res) => {
         console.log(res.data);
         localStorage.setItem("userName", name);
         localStorage.setItem("profilePhoto", image);
+        setShowDataWarning(true);
+        setMessage("Profile Updated Successfully !");
       })
       .catch((err) => console.log(err));
   };
@@ -110,6 +120,28 @@ const Profile = () => {
             <Link to="/history">History</Link>
           </div>
         </div>
+        {showDateWarning && (
+          <Stack
+            sx={{
+              width: "60%",
+              position: "absolute",
+              zIndex: "1020",
+              marginLeft: "18vw",
+              marginTop: "0.2vw",
+            }}
+            spacing={2}
+          >
+            <Alert
+              severity="success"
+              variant="filled"
+              onClose={() => {
+                setShowDataWarning(false);
+              }}
+            >
+              {message}
+            </Alert>
+          </Stack>
+        )}
         <div className="bg-[#F1F1F1] mx-[3vw] h-[70vh] pt-[2vw] mt-[1.6vw]">
           <div className="h-[6.4vw] w-[100%] bg-linear-to-r from-[#2D3148] to-[#E54D61] relative ">
             <div className="flex items-center justify-start gap-[2vw] pt-[2vw] mx-[12vw] ">

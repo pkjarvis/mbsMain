@@ -42,27 +42,31 @@ const MovieCard = ({
     setCheck(!check);
     setVisible(!visible);
   };
+  const handleClose = () => {
+    if (visible) {
+      setVisible(!visible);
+    }
+  };
 
   const handleUpdate = () => {
-    const datestart=formatDate(startDate);
-    const dateend=formatDate(endDate);
-    
+    const datestart = formatDate(startDate);
+    const dateend = formatDate(endDate);
+
     navigate("/admin-addnewmovie", {
       state: {
         movie: {
           id,
           movie,
           description,
-          startDate:datestart,
-          endDate:dateend,
+          startDate: datestart,
+          endDate: dateend,
           genre,
           language,
           status,
           file,
           duration,
         },
-        type:"update",
-
+        type: "update",
       },
     });
   };
@@ -78,7 +82,10 @@ const MovieCard = ({
 
   return (
     <div>
-      <div className="card-container h-22 w-[100%] mx-auto p-6 mb-6">
+      <div
+        className="card-container h-22 w-[100%] mx-auto p-6 mb-6"
+        onClick={handleClose}
+      >
         <div className="content flex items-center justify-start border-1 rounded-xl border-zinc-300 ">
           <div className="left w-[6.2%]">
             <img src={file} alt="MovieBg" className="w-23 h-23 rounded-l-md" />
@@ -128,12 +135,15 @@ const MovieCard = ({
               />
             ) : null}
             <div className="right-right cursor-pointer">
-              <img
-                src="/assets/3Dot.png"
-                alt="3Dot"
-                className="w-1.2 h-4"
-                onClick={handleClick}
-              />
+              <div className="w-[1.5vw] h-[2vw] flex items-center justify-center cursor-pointer" onClick={handleClick}>
+                <img
+                  src="/assets/3Dot.png"
+                  alt="3Dot"
+                  className="w-[0.3vw] h-[0.9vw]"
+                  onClick={handleClick}
+                />
+              </div>
+
               {visible ? (
                 <div className="hidden-card w-[8.5vw] h-[5vw]  bg-white py-2 mt-[-2vw] px-4 rounded-xl gap-3  absolute right-[4vw] shadow-[0_4px_4px_0px_rgb(0,0,0,0.45)] border-1 border-gray-200">
                   <span

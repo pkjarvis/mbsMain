@@ -42,13 +42,16 @@ const Showtime = () => {
     navigate("/showbooking");
   };
   const username = localStorage.getItem("userName");
+
   useEffect(() => {
     console.log(username);
   }, [username]);
 
+
   const { state } = useLocation();
   const movie = state?.movie;
   const showId = state?.showId;
+  const showID=state?.showID;
 
   console.log("movies", movie);
   console.log("showId is", showId);
@@ -141,7 +144,7 @@ const Showtime = () => {
     console.log("selected", selectedCity.name);
   }, []);
 
-  const datelist = getDatesBetween(startDate, endDate);
+  const datelist = getDatesBetween(curDate, endDate);
 
   const [curdate, setCurDate] = useState("");
   const handleDateSelection = (par1, par2, par3) => {
@@ -272,13 +275,13 @@ const filteredShowtime = useMemo(() => {
             {/* <a href="http://localhost:3000/movie" className='cursor-pointer font-light text-zinc-500'>Movie /</a>
                 <a href="http://localhost:3000/showtime" className='cursor-pointer'> Show Time</a> */}
             <Link
-              to={`/movie/${showId}`}
+              to={`/movie/${showID}`}
               state={{ movie }}
               className="cursor-pointer font-light text-zinc-500"
             >
               Movie /
             </Link>
-            <Link to="/showtime" state={{ movie }} className="cursor-pointer ">
+            <Link  state={{ movie }} className="cursor-pointer ">
               Show Time
             </Link>
           </span>
@@ -408,9 +411,11 @@ const filteredShowtime = useMemo(() => {
                 movies={show.Movie}
                 timearray={show.timearray}
                 date={curdate}
-                showID={showId}
+                showId={showId}
+                showID={showID}
 
                 // setShowDataWarning={setShowDataWarning}
+                
               />
             ))
           ) : (
