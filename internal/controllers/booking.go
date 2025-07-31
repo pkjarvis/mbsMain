@@ -426,9 +426,7 @@ func PaymentSuccess(c *gin.Context) {
 	status := c.PostForm("status")
 
 	frontend := os.Getenv("ALLOWED_ORIGIN1")
-	if frontend == "" {
-		frontend = "http://localhost:3000" // fallback for local testing
-	}
+	
 
 	// Only proceed if PayU reports "success"
 	if status != "success" {
